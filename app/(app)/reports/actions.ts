@@ -49,7 +49,7 @@ export async function saveReportDefinition(
   await session.supabase.rpc("log_audit", {
     p_module: "reports",
     p_entity: "report_definitions",
-    p_entity_id: "",
+    p_entity_id: null,
     p_action: "create",
     p_changes: { name, data_source: dataSource },
   })

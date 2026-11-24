@@ -4,7 +4,7 @@ import Link from "next/link"
 import { PageHeader, Panel } from "@/components/panel"
 import { Button } from "@/components/ui/button"
 import { requireOrganization, type Session } from "@/lib/auth"
-import { getDashboardWidgets } from "@/lib/dashboard"
+import { getDashboardWidgets } from "@/lib/dashboard-widgets"
 import { WidgetSettings } from "./widget-settings"
 
 export const metadata: Metadata = { title: "Dashboard settings" }
@@ -29,7 +29,7 @@ export default async function DashboardSettingsPage() {
         title="Dashboard settings"
         description="Choose the widgets on your dashboard. Permissions still hide anything your role can't view."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/dashboard" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/dashboard" />}>
             Back to Dashboard
           </Button>
         }

@@ -79,6 +79,7 @@ export function NotificationMenu({ initial }: { initial: Notification[] }) {
           notifications.map((notification) => (
             <DropdownMenuItem
               key={notification.id}
+              nativeButton={false}
               render={notification.link ? <Link href={notification.link} /> : undefined}
               className="flex-col items-start gap-0.5 py-2"
             >

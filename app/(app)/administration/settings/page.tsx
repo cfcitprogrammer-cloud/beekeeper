@@ -47,7 +47,7 @@ export default async function OrganizationSettingsPage() {
         title="Organization settings"
         description="Identity, timezone and currency used across every module."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/administration" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/administration" />}>
             Back to Administration
           </Button>
         }

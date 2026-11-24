@@ -50,7 +50,7 @@ export default async function AnnouncementsPage() {
         description="Broadcasts from your administrators. Acknowledgements are recorded per member."
         action={
           session.can("announcements", "create") ? (
-            <Button size="sm" render={<Link href="/announcements?entity=announcements" />}>
+            <Button size="sm" nativeButton={false} render={<Link href="/announcements?entity=announcements" />}>
               Manage announcements
             </Button>
           ) : null

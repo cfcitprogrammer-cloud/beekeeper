@@ -78,11 +78,11 @@ export default async function ReportsPage({
         action={
           <div className="flex gap-2">
             {session.can("reports", "create") ? (
-              <Button size="sm" render={<Link href="/reports/builder" />}>
+              <Button size="sm" nativeButton={false} render={<Link href="/reports/builder" />}>
                 New report
               </Button>
             ) : null}
-            <Button variant="outline" size="sm" render={<Link href="/reports?entity=report_definitions" />}>
+            <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/reports?entity=report_definitions" />}>
               Manage definitions
             </Button>
           </div>
@@ -124,7 +124,7 @@ export default async function ReportsPage({
               <Button
                 variant="outline"
                 size="xs"
-                render={<a href={`/reports/export?report=${selected.id}`} download />}
+                nativeButton={false} render={<a href={`/reports/export?report=${selected.id}`} download />}
               >
                 Export CSV
               </Button>

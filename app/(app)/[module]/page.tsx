@@ -85,28 +85,28 @@ export default async function ModulePage({
           <div className="flex flex-wrap justify-end gap-2">
             {slug === "administration" ? (
               <>
-                <Button size="sm" variant="outline" render={<Link href="/administration/roles" />}>
+                <Button size="sm" variant="outline" nativeButton={false} render={<Link href="/administration/roles" />}>
                   Role permissions
                 </Button>
-                <Button size="sm" variant="outline" render={<Link href="/administration/invite" />}>
+                <Button size="sm" variant="outline" nativeButton={false} render={<Link href="/administration/invite" />}>
                   Invite user
                 </Button>
-                <Button size="sm" variant="outline" render={<Link href="/administration/settings" />}>
+                <Button size="sm" variant="outline" nativeButton={false} render={<Link href="/administration/settings" />}>
                   Settings
                 </Button>
               </>
             ) : null}
             {slug === "employees" ? (
-              <Button size="sm" variant="outline" render={<Link href="/employees/chart" />}>
+              <Button size="sm" variant="outline" nativeButton={false} render={<Link href="/employees/chart" />}>
                 Org chart
               </Button>
             ) : null}
             {slug === "forms" && session.can("forms", "create") ? (
-              <Button size="sm" variant="outline" render={<Link href="/forms/builder" />}>
+              <Button size="sm" variant="outline" nativeButton={false} render={<Link href="/forms/builder" />}>
                 New form
               </Button>
             ) : null}
-            <Button variant="outline" size="sm" render={<Link href="/dashboard" />}>
+            <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/dashboard" />}>
               Dashboard
             </Button>
           </div>

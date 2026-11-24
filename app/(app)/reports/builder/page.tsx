@@ -28,7 +28,7 @@ export default async function ReportsBuilderPage() {
         title="Reports builder"
         description="Choose an approved view, the columns you need and a chart. Saved reports stay tenant-scoped."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/reports" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/reports" />}>
             Back to Reports
           </Button>
         }

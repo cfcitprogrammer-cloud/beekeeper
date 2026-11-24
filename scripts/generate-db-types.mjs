@@ -181,7 +181,7 @@ ${views.join("\n")}
         Args: {
           p_module: string
           p_entity: string
-          p_entity_id: string
+          p_entity_id: string | null
           p_action: string
           p_changes?: Json
         }

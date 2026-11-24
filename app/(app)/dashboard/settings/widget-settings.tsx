@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { DASHBOARD_WIDGETS } from "@/lib/dashboard"
+import { DASHBOARD_WIDGETS } from "@/lib/dashboard-widgets-shared"
 import { saveDashboardWidgets } from "./actions"
 
 export function WidgetSettings({ initial }: { initial: string[] }) {

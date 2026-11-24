@@ -106,7 +106,7 @@ export async function allocatePayment(paymentId: string, invoiceId: string, amou
   await session.supabase.rpc("log_audit", {
     p_module: "billing",
     p_entity: "payment_allocations",
-    p_entity_id: "",
+    p_entity_id: null,
     p_action: "create",
     p_changes: { payment_id: paymentId, invoice_id: invoiceId, amount },
   })

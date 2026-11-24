@@ -23,7 +23,7 @@ Supabase project in [`supabase/`](./supabase).
 | Module-specific workflows (approvals, field, pipeline, reports, forms) | ✅ Complete |
 | Application modules (API + UI) | 🟡 Mostly complete; gaps listed below |
 
-**Next milestone:** apply all 22 migrations to the Supabase project (user-owned),
+**Next milestone:** apply all 23 migrations to the Supabase project (user-owned),
 regenerate `lib/supabase/database.types.ts`, and close the remaining gaps in
 `Remaining work`.
 
@@ -98,6 +98,7 @@ All files live in `supabase/migrations/` and apply in filename order.
 | 20 | `20261125090000_current_permissions.sql` | `current_permissions()` RPC for role-aware navigation | ✅ |
 | 21 | `20261125091000_application_services.sql` | Audit triggers, tenant FK validation, starter roles, order/invoice/promo triggers | ✅ |
 | 22 | `20261125092000_field_helpers.sql` | Geofence distance RPC, notification read RPC, offline client UUID columns | ✅ |
+| 23 | `20261125093000_fix_audit_onboarding.sql` | Corrects `log_audit()` so onboarding can create the first organization | ✅ |
 
 ---
 
@@ -198,7 +199,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] Organization onboarding form calling `bootstrap_organization`.
 - [x] Session/profile helper and role-aware navigation shell.
 - [x] `PRODUCT.md` captured before building new surfaces.
-- [ ] Apply all 22 migrations: `npm run db:push` (user-owned).
+- [ ] Apply all 23 migrations: `npm run db:push` (user-owned).
 - [ ] Regenerate `lib/supabase/database.types.ts` with `npm run db:types`.
 - [ ] Add the deployment origin to Supabase Auth redirect URLs and configure email delivery.
 
@@ -278,11 +279,22 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
   payment allocation, reports and reports builder, CSV import/export, dashboard
   widget settings, announcement acknowledgements and forms builder.
 - Seed five non-admin roles during onboarding.
-- Added `npm run db:verify`: applies all 22 migrations to PGlite with Supabase
+- Added `npm run db:verify`: applies all 23 migrations to PGlite with Supabase
   shims and checks bootstrap, permissions, role seeding, tenant helper and RLS
   tenant isolation. All checks pass.
 - Verified `npm run typecheck`, `npm run lint` and `npm run build` after every
   batch of work.
+- Added migration 23 after a report that onboarding failed on
+  `audit_logs.org_id NOT NULL`: migration 21 had been edited after it was
+  applied, so the database kept the old `log_audit()` that wrote an audit row
+  before the new user had a tenant. The corrective migration replaces the
+  function with one that skips unonboarded callers.
+- Fixed three runtime UI errors reported from the dev server: the theme hotkey
+  reading `event.key.toLowerCase()` on synthetic keyboard events, a stale
+  `getDashboardWidgets` export (moved into `lib/dashboard-widgets.ts` so the
+  server-only function and shared constants no longer share a client module),
+  and Base UI button/link `nativeButton` warnings across button-links and menu
+  items.
 - Remaining gaps are listed explicitly under `Remaining work`; migrations still
   need to be pushed by the user before runtime verification against Supabase.
 

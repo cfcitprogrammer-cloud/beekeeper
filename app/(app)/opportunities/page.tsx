@@ -42,7 +42,7 @@ export default async function OpportunitiesPage() {
         title="Opportunities"
         description="Pipeline by stage. Move a card to update its stage; totals are the current expected value."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/opportunities?entity=opportunities" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/opportunities?entity=opportunities" />}>
             Table view
           </Button>
         }

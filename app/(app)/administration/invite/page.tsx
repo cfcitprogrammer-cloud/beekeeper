@@ -34,7 +34,7 @@ export default async function InviteUserPage() {
         title="Invite a user"
         description="The invitee joins your organization and inherits the role you choose."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/administration" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/administration" />}>
             Back to Administration
           </Button>
         }

@@ -52,7 +52,7 @@ export function UserMenu({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {canManageOrganization ? (
-          <DropdownMenuItem render={<Link href="/administration" />}>
+          <DropdownMenuItem nativeButton={false} render={<Link href="/administration" />}>
             <SettingsIcon />
             Organization settings
           </DropdownMenuItem>

@@ -26,7 +26,7 @@ export default async function FormsBuilderPage() {
         title="Forms builder"
         description="Define fields for offline-capable surveys, audits and checklists. New forms start as drafts."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/forms" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/forms" />}>
             Back to Forms
           </Button>
         }

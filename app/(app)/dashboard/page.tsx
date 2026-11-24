@@ -19,10 +19,10 @@ import { PageHeader, Panel } from "@/components/panel"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { firstName, requireOrganization } from "@/lib/auth"
+import { getDashboardWidgets } from "@/lib/dashboard-widgets"
 import {
   formatLongDate,
   formatRelativeTime,
-  getDashboardWidgets,
   greeting,
   loadDashboardData,
 } from "@/lib/dashboard"
@@ -196,7 +196,7 @@ export default async function DashboardPage() {
         title={`${greeting(now, timezone)}, ${firstName(profile)}`}
         description={`${formatLongDate(now, timezone)} · ${organization?.name ?? "Your organization"}`}
         action={
-          <Button variant="outline" size="sm" render={<Link href="/dashboard/settings" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/dashboard/settings" />}>
             Configure widgets
           </Button>
         }

@@ -21,7 +21,7 @@ export default async function ImportExportPage() {
         title="Import & export"
         description="Paste CSV rows into a permitted entity. Every imported row uses the same validation, tenant checks and audit trail as manual entry."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/reports" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/reports" />}>
             Export reports
           </Button>
         }

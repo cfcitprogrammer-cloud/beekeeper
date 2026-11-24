@@ -100,7 +100,7 @@ export default async function OrgChartPage() {
         title="Organization chart"
         description="Reporting lines from the employee master. Assign managers from Employees to build the tree."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/employees" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/employees" />}>
             Back to Employees
           </Button>
         }

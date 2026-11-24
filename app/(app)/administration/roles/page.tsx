@@ -43,7 +43,7 @@ export default async function RolesPage() {
         title="Role permissions"
         description="Module and action access applies to every member with the role. Data scope is stored for application-layer filtering."
         action={
-          <Button variant="outline" size="sm" render={<Link href="/administration" />}>
+          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/administration" />}>
             Back to Administration
           </Button>
         }
