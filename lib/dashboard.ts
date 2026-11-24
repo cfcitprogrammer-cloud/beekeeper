@@ -5,6 +5,36 @@ type CountQuery = PromiseLike<{
   error: { message: string } | null
 }>
 
+export const DASHBOARD_WIDGETS = [
+  { key: "team", label: "Team" },
+  { key: "outlets", label: "Outlets" },
+  { key: "visits", label: "Visits today" },
+  { key: "orders", label: "Open orders" },
+  { key: "overdue", label: "Overdue invoices" },
+  { key: "approvals", label: "Pending approvals" },
+  { key: "today", label: "Today panel" },
+  { key: "attention", label: "Needs attention" },
+  { key: "activity", label: "Recent activity" },
+  { key: "announcements", label: "Announcements" },
+] as const
+
+export async function getDashboardWidgets(session: Session) {
+  const { data } = await session.supabase
+    .from("dashboard_layouts")
+    .select("widgets")
+    .eq("org_id", session.organization?.id ?? "")
+    .or(`user_id.eq.${session.user.id},user_id.is.null`)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  const stored = data?.widgets
+  if (Array.isArray(stored) && stored.length) {
+    return new Set(stored.map(String))
+  }
+  return new Set(DASHBOARD_WIDGETS.map((widget) => widget.key))
+}
+
 export type DashboardData = {
   employeeCount: number | null
   fieldStaffCount: number | null

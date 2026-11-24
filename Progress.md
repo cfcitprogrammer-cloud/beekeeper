@@ -3,7 +3,7 @@
 Tracks implementation of [`RECOMMENDATION.md`](./RECOMMENDATION.md) against the
 Supabase project in [`supabase/`](./supabase).
 
-**Last updated:** 2026-11-24
+**Last updated:** 2026-11-25
 
 ---
 
@@ -17,11 +17,15 @@ Supabase project in [`supabase/`](./supabase).
 | Helper functions, triggers, onboarding | ✅ Complete |
 | Curated reporting views + system reports | ✅ Complete |
 | Supabase client wiring (Next.js 16) | ✅ Complete |
-| Auth screens / organization onboarding UI | ⬜ Not started |
-| Application modules (API + UI) | ⬜ Not started |
+| Auth screens / organization onboarding UI | ✅ Complete |
+| Role-aware application shell + dashboard | ✅ Complete |
+| Shared CRUD layer for all 78 data entities | ✅ Complete |
+| Module-specific workflows (approvals, field, pipeline, reports, forms) | ✅ Complete |
+| Application modules (API + UI) | 🟡 Mostly complete; gaps listed below |
 
-**Next milestone:** authentication + onboarding, then the Foundation phase
-(Administration, Master Data, Employees).
+**Next milestone:** apply all 22 migrations to the Supabase project (user-owned),
+regenerate `lib/supabase/database.types.ts`, and close the remaining gaps in
+`Remaining work`.
 
 ---
 
@@ -91,6 +95,9 @@ All files live in `supabase/migrations/` and apply in filename order.
 | 17 | `20261124091600_storage.sql` | 8 storage buckets + org-path policies | ✅ |
 | 18 | `20261124091700_reporting_views.sql` | 8 `security_invoker` reporting views | ✅ |
 | 19 | `20261124091800_seed.sql` | 180 permissions + 8 prebuilt report definitions | ✅ |
+| 20 | `20261125090000_current_permissions.sql` | `current_permissions()` RPC for role-aware navigation | ✅ |
+| 21 | `20261125091000_application_services.sql` | Audit triggers, tenant FK validation, starter roles, order/invoice/promo triggers | ✅ |
+| 22 | `20261125092000_field_helpers.sql` | Geofence distance RPC, notification read RPC, offline client UUID columns | ✅ |
 
 ---
 
@@ -100,35 +107,36 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 
 | Group | Module | Schema | RLS | Server/API | UI |
 |---|---|:---:|:---:|:---:|:---:|
-| Home | Dashboard | ✅ | ✅ | ⬜ | ⬜ |
-| Home | Announcements | ✅ | ✅ | ⬜ | ⬜ |
-| Home | Activity Feed | ✅ | ✅ | ⬜ | ⬜ |
-| People | Employees | ✅ | ✅ | ⬜ | ⬜ |
-| People | Attendances | ✅ | ✅ | ⬜ | ⬜ |
-| People | Leaves | ✅ | ✅ | ⬜ | ⬜ |
-| Operations | Maps | ✅ | ✅ | ⬜ | ⬜ |
-| Operations | Tracking | ✅ | ✅ | ⬜ | ⬜ |
-| Operations | Outlets | ✅ | ✅ | ⬜ | ⬜ |
-| Operations | Visits | ✅ | ✅ | ⬜ | ⬜ |
-| Sales & CRM | Leads | ✅ | ✅ | ⬜ | ⬜ |
-| Sales & CRM | Accounts | ✅ | ✅ | ⬜ | ⬜ |
-| Sales & CRM | Opportunities | ✅ | ✅ | ⬜ | ⬜ |
-| Sales & CRM | Orders | ✅ | ✅ | ⬜ | ⬜ |
-| Sales & CRM | Sales | ✅ | ✅ | ⬜ | ⬜ |
-| Sales & CRM | Promos | ✅ | ✅ | ⬜ | ⬜ |
-| Inventory | Products | ✅ | ✅ | ⬜ | ⬜ |
-| Inventory | Inventory | ✅ | ✅ | ⬜ | ⬜ |
-| Inventory | Production | ✅ | ✅ | ⬜ | ⬜ |
-| Inventory | Assets | ✅ | ✅ | ⬜ | ⬜ |
-| Finance | Expenses | ✅ | ✅ | ⬜ | ⬜ |
-| Finance | Billing & Collection | ✅ | ✅ | ⬜ | ⬜ |
-| Tools | Data Import/Export | ✅ | ✅ | ⬜ | ⬜ |
-| Tools | Digital Forms | ✅ | ✅ | ⬜ | ⬜ |
-| Tools | Service Tickets | ✅ | ✅ | ⬜ | ⬜ |
-| Tools | Reports | ✅ | ✅ | ⬜ | ⬜ |
-| Tools | Reports Builder | ✅ | ✅ | ⬜ | ⬜ |
-| System | Administration | ✅ | ✅ | ⬜ | ⬜ |
-| System | Master Data | ✅ | ✅ | ⬜ | ⬜ |
+| Home | Dashboard | ✅ | ✅ | 🟡 | ✅ |
+| Home | Approvals | ✅ | ✅ | ✅ | ✅ |
+| Home | Announcements | ✅ | ✅ | ✅ | ✅ |
+| Home | Activity Feed | ✅ | ✅ | ✅ | ✅ |
+| People | Employees | ✅ | ✅ | ✅ | ✅ |
+| People | Attendances | ✅ | ✅ | ✅ | ✅ |
+| People | Leaves | ✅ | ✅ | ✅ | ✅ |
+| Operations | Maps | ✅ | ✅ | 🟡 | 🟡 |
+| Operations | Tracking | ✅ | ✅ | ✅ | ✅ |
+| Operations | Outlets | ✅ | ✅ | ✅ | ✅ |
+| Operations | Visits | ✅ | ✅ | ✅ | ✅ |
+| Sales & CRM | Leads | ✅ | ✅ | ✅ | ✅ |
+| Sales & CRM | Accounts | ✅ | ✅ | ✅ | ✅ |
+| Sales & CRM | Opportunities | ✅ | ✅ | ✅ | ✅ |
+| Sales & CRM | Orders | ✅ | ✅ | ✅ | ✅ |
+| Sales & CRM | Sales | ✅ | ✅ | ✅ | ✅ |
+| Sales & CRM | Promos | ✅ | ✅ | ✅ | ✅ |
+| Inventory | Products | ✅ | ✅ | ✅ | ✅ |
+| Inventory | Inventory | ✅ | ✅ | ✅ | ✅ |
+| Inventory | Production | ✅ | ✅ | ✅ | ✅ |
+| Inventory | Assets | ✅ | ✅ | ✅ | ✅ |
+| Finance | Expenses | ✅ | ✅ | ✅ | ✅ |
+| Finance | Billing & Collection | ✅ | ✅ | ✅ | ✅ |
+| Tools | Data Import/Export | ✅ | ✅ | ✅ | ✅ |
+| Tools | Digital Forms | ✅ | ✅ | ✅ | ✅ |
+| Tools | Service Tickets | ✅ | ✅ | ✅ | ✅ |
+| Tools | Reports | ✅ | ✅ | ✅ | ✅ |
+| Tools | Reports Builder | ✅ | ✅ | ✅ | ✅ |
+| System | Administration | ✅ | ✅ | ✅ | ✅ |
+| System | Master Data | ✅ | ✅ | ✅ | ✅ |
 
 ---
 
@@ -166,71 +174,139 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 9. **System reports are global.** `report_definitions.org_id is null` marks a
    prebuilt report; schedules and runs carry their own `org_id` so they stay
    tenant-scoped.
+10. **Permissions are exposed through one RPC.** `current_permissions()` returns
+    only `auth.uid()`'s effective module/action/data-scope rows, because RLS
+    hides the role tables from users without `administration.view`. The role-aware
+    sidebar and dashboard use this single call instead of dozens of checks.
+11. **Audit writes are centralized.** `log_audit()` is `SECURITY DEFINER`, skips
+    writes when the caller has no tenant yet (during onboarding), and is called
+    by both the generic CRUD layer and table triggers.
+12. **Relationship checks are app-layer plus database helpers.** The generic
+    CRUD layer validates every relation with `parent_belongs_to_org()`, so a
+    record cannot point at another tenant's parent row.
+13. **Offline submissions carry a client UUID.** Seven high-volume tables have
+    `client_uuid` and `synced_at`; field actions send `crypto.randomUUID()` and
+    a unique index prevents duplicate retries.
 
 ---
 
 ## Remaining work
 
-### Phase 0 — Auth & onboarding (next)
-- [ ] Login, signup, forgot-password pages using Supabase Auth.
-- [ ] `proxy.ts` route protection once `/login` and `/dashboard` exist.
-- [ ] Organization onboarding form calling `bootstrap_organization`.
-- [ ] Session/profile helper and role-aware navigation shell.
-- [ ] Regenerate `lib/supabase/database.types.ts` (`npm run db:types`).
+### Phase 0 — Auth & onboarding (code complete)
+- [x] Login, signup, forgot-password and reset-password pages using Supabase Auth.
+- [x] `proxy.ts` session refresh + route protection.
+- [x] Organization onboarding form calling `bootstrap_organization`.
+- [x] Session/profile helper and role-aware navigation shell.
+- [x] `PRODUCT.md` captured before building new surfaces.
+- [ ] Apply all 22 migrations: `npm run db:push` (user-owned).
+- [ ] Regenerate `lib/supabase/database.types.ts` with `npm run db:types`.
+- [ ] Add the deployment origin to Supabase Auth redirect URLs and configure email delivery.
 
-### Phase 1 — Foundation (RECOMMENDATION build order #1)
-- [ ] Administration: users, roles, permissions, org settings, audit log.
-- [ ] Master Data CRUD (types/items, territories, UoMs, tax rates).
-- [ ] Employees, departments, positions, documents, org chart.
+### Phase 1 — Foundation
+- [x] Administration: users, invitations, roles, 180-permission matrix, org settings, audit log.
+- [x] Master Data CRUD (types/items, territories, UoMs, tax rates).
+- [x] Employees, departments, positions, documents, org chart.
 
 ### Phase 2 — Field core
-- [ ] Outlets, routes, visits (check-in/out with geofence validation).
-- [ ] Attendance clock-in/out, shifts, corrections.
-- [ ] Tracking ingestion, map views, geofences, partition maintenance job.
+- [x] Outlets, routes, visits with geofence-validated check-in/out.
+- [x] Attendance clock-in/out with location, shifts and correction records.
+- [x] Tracking/geofence data CRUD and monthly partition maintenance function.
+- [ ] Interactive map visualisation for outlets and GPS trails.
 
 ### Phase 3 — Catalog and stock
-- [ ] Products, categories, price lists.
-- [ ] Warehouses, stock levels, movements, counts, transfers.
-- [ ] Reservation/allocation rules on orders.
+- [x] Products, categories, UoM conversions and price lists.
+- [x] Warehouses, stock levels, ledger movements, counts and batches.
+- [x] Stock transfers represented as ledger movements.
+- [ ] Automated reservation/allocation rules on orders (quantity checks remain manual).
 
 ### Phase 4 — Revenue
-- [ ] Accounts, contacts, leads, opportunity pipeline (Kanban + forecast).
-- [ ] Orders with pricing/promos and totals recalculation.
-- [ ] Sell-out transactions, returns, credit memos, targets.
+- [x] Accounts, contacts, leads, opportunity pipeline (Kanban + stage forecast).
+- [x] Orders with line items; totals recalculated by database trigger.
+- [x] Sell-out transactions, returns, credit memos and sales targets.
+- [ ] Promo auto-application during order entry (rules/redemptions are manageable).
 
 ### Phase 5 — Money
-- [ ] Invoices from orders, payment allocation, aging.
-- [ ] Field collections and remittance reconciliation.
-- [ ] Expenses with receipts, policy checks, approvals.
-- [ ] Leaves with balances and multi-level approvals.
+- [x] Invoices generated from approved/fulfilled orders.
+- [x] Payment allocation with `amount_paid` and status recalculated by trigger.
+- [x] Receivables aging view, field collections and remittance reconciliation.
+- [x] Expenses, receipts metadata and shared approval queue.
+- [x] Leaves, leave types/balances and multi-level approval records.
+- [ ] Policy enforcement for per-diem/mileage and leave-balance deduction on approval.
 
 ### Phase 6 — Extensibility
-- [ ] Digital forms builder, submissions, offline sync.
-- [ ] Service tickets with SLA timers.
-- [ ] Assets assignment/maintenance.
-- [ ] Production orders and consumption.
+- [x] Digital forms builder with typed fields, options and required flags.
+- [x] Form submissions, offline client UUIDs and attachment records.
+- [x] Service tickets with SLA timestamps and comments; assets and maintenance.
+- [x] Production orders, BOMs and consumption records.
+- [ ] Live SLA countdown timers and offline conflict-resolution UI.
 
 ### Phase 7 — Insight
-- [ ] Dashboard widgets and configurable layouts.
-- [ ] Reports UI over the curated views, scheduling and exports.
-- [ ] Reports Builder (safe column/filter/aggregation config).
-- [ ] CSV/XLSX import/export workers with validation reports.
-- [ ] Announcements, read receipts, activity feed, comments.
+- [x] Dashboard KPI tiles, today/attention/activity panels and per-user widget layout.
+- [x] Reports over curated views, CSV export, schedules list and reports builder.
+- [x] CSV import with header mapping, validation and error report.
+- [x] Announcements with read receipts/acknowledgements, activity feed and comments.
+- [ ] Scheduled report execution workers and PDF/XLSX rendering.
 
 ### Cross-cutting
-- [ ] Approval engine shared by leaves, expenses, orders, attendance corrections.
-- [ ] Audit-log writes for create/update/delete/approve.
-- [ ] Notifications (DB rows + realtime + email/push).
-- [ ] Business-logic triggers: order totals, invoice `amount_paid`, promo budget.
-- [ ] Cross-tenant FK consistency beyond the stock ledger (composite FKs or
-      app-layer validation so e.g. an order cannot reference another org's account).
-- [ ] Seed non-admin roles (Manager, Sales Rep, Field Staff, Finance, Viewer).
-- [ ] RLS tests per module (tenant isolation and permission denial).
-- [ ] Offline-first client UUIDs + `synced_at` for mobile submissions.
+- [x] Shared approvals queue writing audit and activity records.
+- [x] Audit-log writes from CRUD actions and table triggers.
+- [x] Notifications as tenant-scoped rows, unread menu and realtime publication.
+- [x] Business triggers: order totals, invoice `amount_paid`, promo budget.
+- [x] Cross-tenant relationship validation in the generic CRUD layer.
+- [x] Starter roles: Manager, Sales Rep, Field Staff, Finance, Viewer.
+- [x] Migration smoke test covering tenant isolation (`npm run db:verify`).
+- [x] Offline client UUIDs and `synced_at` on field-submission tables.
+- [ ] Email/push notification delivery (needs provider credentials).
+- [ ] Per-module RLS test matrix beyond the isolation smoke test.
 
 ---
 
 ## Changelog
+
+### 2026-11-25 — Phase 1–7 implementation
+- Added migrations 21–22: audit triggers, tenant relationship validation,
+  starter roles, order/invoice/promo triggers, geofence and notification RPCs,
+  and offline client UUID columns.
+- Added generator scripts for full database types and declarative entity configs
+  from the migration SQL; the app now types all 89 tables and manages 78 entities.
+- Built a shared CRUD layer (server validation, RBAC checks, tenant filtering,
+  relation ownership checks, audit writes) and a generic table/form UI used by
+  every module hub.
+- Built specialised workflows: user invitations, role permission matrix, org
+  settings, org chart, approvals queue, notification menu, opportunity Kanban,
+  geofenced visit check-in/out and attendance clock, invoice generation and
+  payment allocation, reports and reports builder, CSV import/export, dashboard
+  widget settings, announcement acknowledgements and forms builder.
+- Seed five non-admin roles during onboarding.
+- Added `npm run db:verify`: applies all 22 migrations to PGlite with Supabase
+  shims and checks bootstrap, permissions, role seeding, tenant helper and RLS
+  tenant isolation. All checks pass.
+- Verified `npm run typecheck`, `npm run lint` and `npm run build` after every
+  batch of work.
+- Remaining gaps are listed explicitly under `Remaining work`; migrations still
+  need to be pushed by the user before runtime verification against Supabase.
+
+### 2026-11-25
+- Captured durable product truth in `PRODUCT.md` from `RECOMMENDATION.md`.
+- Added migration 20 (`current_permissions`) for permission-filtered navigation.
+- Installed the shadcn components needed by authenticated and auth surfaces.
+- Built `/login`, `/signup`, `/forgot-password`, `/reset-password` and
+  `/auth/callback` with server actions, safe redirect handling and honest
+  error/success states.
+- Built `/onboarding` on `bootstrap_organization` with starter-data disclosure.
+- Extended `proxy.ts` with route protection and built the `(app)` shell:
+  sidebar, mobile sheet, topbar, theme toggle and user menu. Role permissions
+  filter both navigation and dashboard modules.
+- Built `/dashboard` with RLS-scoped counts, permission-aware KPI tiles, honest
+  empty states, and module placeholder pages for the not-yet-built modules.
+- Added hand-written subset types in `lib/supabase/database.types.ts` to be
+  replaced by `npm run db:types` once migrations are pushed.
+- Verified `npm run typecheck`, `npm run lint` (0 errors/warnings) and
+  `npm run build`; visually checked auth screens at 1440×900 and 390×844 and
+  confirmed unauthenticated redirect behaviour.
+- Migrations have **not** been pushed: the user opted to run `npm run db:push`
+  themselves, so runtime auth/onboarding flows remain unverified against the
+  hosted database.
 
 ### 2026-11-24
 - Initialized `supabase/` with `supabase init`.

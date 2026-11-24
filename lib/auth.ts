@@ -3,13 +3,11 @@ import { redirect } from "next/navigation"
 import type { User } from "@supabase/supabase-js"
 
 import { createClient } from "@/lib/supabase/server"
-import type {
-  Database,
-  OrganizationRow,
-  UserRow,
-} from "@/lib/supabase/database.types"
+import type { Database } from "@/lib/supabase/database.types"
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>
+type UserRow = Database["public"]["Tables"]["users"]["Row"]
+type OrganizationRow = Database["public"]["Tables"]["organizations"]["Row"]
 type PermissionRow = Database["public"]["Functions"]["current_permissions"]["Returns"][number]
 
 export type Session = {

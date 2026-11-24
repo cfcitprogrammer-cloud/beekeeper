@@ -8,6 +8,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const organization = session.organization
   const allowedSlugs = visibleModules(session.can).map((module) => module.slug)
   const name = displayName(session.profile)
+  const { data: notifications } = await session.supabase
+    .from("notifications")
+    .select("*")
+    .eq("user_id", session.user.id)
+    .order("created_at", { ascending: false })
+    .limit(8)
 
   return (
     <div className="flex min-h-svh bg-background">
@@ -29,6 +35,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           userEmail={session.profile.email}
           userInitials={initials(session.profile)}
           canManageOrganization={session.can("administration", "update")}
+          notifications={notifications ?? []}
         />
         <main className="flex-1">{children}</main>
       </div>

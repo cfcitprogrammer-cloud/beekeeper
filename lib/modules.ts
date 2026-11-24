@@ -79,6 +79,20 @@ export const MODULES: ModuleDefinition[] = [
     icon: LayoutDashboardIcon,
   },
   {
+    slug: "approvals",
+    name: "Approvals",
+    group: "overview",
+    permission: "approvals",
+    description: "The shared queue of pending decisions across leave, expenses, orders and corrections.",
+    capabilities: [
+      "Multi-level approval steps",
+      "Approve or reject with remarks",
+      "Decisions written to the audit log and activity feed",
+    ],
+    phase: 5,
+    icon: ClipboardListIcon,
+  },
+  {
     slug: "announcements",
     name: "Announcements",
     group: "overview",

@@ -17,10 +17,12 @@ import type { LucideIcon } from "lucide-react"
 import { EmptyState } from "@/components/empty-state"
 import { PageHeader, Panel } from "@/components/panel"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { firstName, requireOrganization } from "@/lib/auth"
 import {
   formatLongDate,
   formatRelativeTime,
+  getDashboardWidgets,
   greeting,
   loadDashboardData,
 } from "@/lib/dashboard"
@@ -75,7 +77,10 @@ export default async function DashboardPage() {
   const { can, profile } = session
   const organization = session.organization
   const timezone = organization?.timezone ?? "UTC"
-  const data = await loadDashboardData(session, timezone)
+  const [data, enabled] = await Promise.all([
+    loadDashboardData(session, timezone),
+    getDashboardWidgets(session),
+  ])
   const now = new Date()
 
   const metrics = [
@@ -141,11 +146,13 @@ export default async function DashboardPage() {
           label: "Pending approvals",
           value: data.pendingApprovalCount,
           detail: "Waiting on a decision",
-          href: "/administration",
+          href: "/approvals",
           icon: ClipboardListIcon,
         }
       : null,
-  ].filter((metric): metric is Metric => metric !== null)
+  ]
+    .filter((metric): metric is Metric => metric !== null)
+    .filter((metric) => enabled.has(metric.key))
 
   const attention = [
     data.pendingApprovalCount !== null
@@ -153,7 +160,7 @@ export default async function DashboardPage() {
           label: "Pending approvals",
           detail: "Across leave, expenses, orders and corrections",
           count: data.pendingApprovalCount,
-          href: "/administration",
+          href: "/approvals",
           icon: ClipboardListIcon,
         }
       : null,
@@ -177,16 +184,22 @@ export default async function DashboardPage() {
       : null,
   ].filter((item): item is AttentionItem => item !== null)
 
-  const hasAttention = attention.length > 0
+  const hasAttention = attention.length > 0 && enabled.has("attention")
   const attentionTotal = attention.reduce((total, item) => total + item.count, 0)
-  const showActivity = can("activity") && data.activity !== null
-  const showAnnouncements = can("announcements") && data.announcements !== null
+  const showActivity = can("activity") && data.activity !== null && enabled.has("activity")
+  const showAnnouncements =
+    can("announcements") && data.announcements !== null && enabled.has("announcements")
 
   return (
     <div className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:py-8">
       <PageHeader
         title={`${greeting(now, timezone)}, ${firstName(profile)}`}
         description={`${formatLongDate(now, timezone)} · ${organization?.name ?? "Your organization"}`}
+        action={
+          <Button variant="outline" size="sm" render={<Link href="/dashboard/settings" />}>
+            Configure widgets
+          </Button>
+        }
       />
 
       {metrics.length > 0 ? (
@@ -208,7 +221,7 @@ export default async function DashboardPage() {
       <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <Panel title="Today" description={formatLongDate(now, timezone)}>
           <div className="divide-y">
-            {data.visits !== null ? (
+            {data.visits !== null && enabled.has("today") ? (
               <section className="px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-[11px] font-medium">Visits</h3>
@@ -234,7 +247,7 @@ export default async function DashboardPage() {
               </section>
             ) : null}
 
-            {data.attendance !== null ? (
+            {data.attendance !== null && enabled.has("today") ? (
               <section className="px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-[11px] font-medium">Attendance</h3>
@@ -265,7 +278,7 @@ export default async function DashboardPage() {
               </section>
             ) : null}
 
-            {data.visits === null && data.attendance === null ? (
+            {!enabled.has("today") ? null : data.visits === null && data.attendance === null ? (
               <EmptyState
                 icon={ActivityIcon}
                 title="Today has no permitted modules"

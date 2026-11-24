@@ -32,6 +32,9 @@ pnpm-debug.log*
 .env*
 !.env.example
 
+# impeccable runtime screenshots
+.impeccable/shots/
+
 # vercel
 .vercel
 

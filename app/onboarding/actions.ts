@@ -72,12 +72,16 @@ export async function createOrganization(
     redirect("/dashboard")
   }
 
-  const { error } = await supabase.rpc("bootstrap_organization", {
+  const { data: organizationId, error } = await supabase.rpc("bootstrap_organization", {
     p_name: name,
     p_code: code,
     p_timezone: timezone,
     p_currency_code: currency,
   })
+
+  if (!error && organizationId) {
+    await supabase.rpc("seed_standard_roles", { p_org: organizationId })
+  }
 
   if (error) {
     const message = error.message.toLowerCase()
