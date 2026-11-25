@@ -16,31 +16,39 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "code",
         "label": "Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "timezone",
         "label": "Timezone",
         "type": "text",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "currency_code",
         "label": "Currency Code",
         "type": "text",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "settings",
         "label": "Settings",
         "type": "json",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -70,13 +78,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "email",
         "label": "Email",
         "type": "email",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "full_name",
         "label": "Full Name",
         "type": "text",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "avatar_url",
@@ -95,6 +106,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "active",
@@ -114,7 +127,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "is_super_admin",
         "label": "Is Super Admin",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "last_login_at",
@@ -151,7 +166,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "description",
@@ -183,13 +199,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "module",
         "label": "Module",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "action",
         "label": "Action",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -226,13 +244,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "module",
         "label": "Module",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_type",
         "label": "Entity Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_id",
@@ -244,7 +264,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "action",
         "label": "Action",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "changes",
@@ -291,25 +312,30 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "module",
         "label": "Module",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "steps",
         "label": "Steps",
         "type": "json",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "is_active",
         "label": "Is Active",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -348,19 +374,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "entity_type",
         "label": "Entity Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_id",
         "label": "Entity Id",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "level",
         "label": "Level",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "approver_id",
@@ -378,6 +407,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "pending",
@@ -443,6 +474,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "User Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "users",
           "field": "id",
@@ -453,7 +485,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "title",
         "label": "Title",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "body",
@@ -505,13 +538,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "code",
         "label": "Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -538,6 +573,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Type Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "master_data_types",
           "field": "id",
@@ -548,31 +584,39 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "code",
         "label": "Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "label",
         "label": "Label",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "metadata",
         "label": "Metadata",
         "type": "json",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "sort_order",
         "label": "Sort Order",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_active",
         "label": "Is Active",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -617,13 +661,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "level",
         "label": "Level",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "boundary",
@@ -662,13 +708,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "code",
         "label": "Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -694,19 +742,23 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "rate",
         "label": "Rate",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "is_inclusive",
         "label": "Is Inclusive",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -743,7 +795,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -772,7 +825,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "title",
         "label": "Title",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "grade",
@@ -815,19 +869,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "employee_no",
         "label": "Employee No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "first_name",
         "label": "First Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "last_name",
         "label": "Last Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "email",
@@ -896,6 +953,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "active",
@@ -925,6 +984,224 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "is_field_staff",
         "label": "Is Field Staff",
         "type": "checkbox",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "middle_name",
+        "label": "Middle Name",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "name_suffix",
+        "label": "Name Suffix",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "date_of_birth",
+        "label": "Date Of Birth",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "sex",
+        "label": "Sex",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "civil_status",
+        "label": "Civil Status",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "nationality",
+        "label": "Nationality",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "place_of_birth",
+        "label": "Place Of Birth",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "religion",
+        "label": "Religion",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "present_address",
+        "label": "Present Address",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "permanent_address",
+        "label": "Permanent Address",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "province",
+        "label": "Province",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "city_municipality",
+        "label": "City Municipality",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "barangay",
+        "label": "Barangay",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "zip_code",
+        "label": "Zip Code",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "sss_no",
+        "label": "Sss No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "philhealth_no",
+        "label": "Philhealth No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "pagibig_no",
+        "label": "Pagibig No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "tin",
+        "label": "Tin",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "umid_no",
+        "label": "Umid No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "passport_no",
+        "label": "Passport No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "drivers_license_no",
+        "label": "Drivers License No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "prc_license_no",
+        "label": "Prc License No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "emergency_contact_name",
+        "label": "Emergency Contact Name",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "emergency_contact_relationship",
+        "label": "Emergency Contact Relationship",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "emergency_contact_phone",
+        "label": "Emergency Contact Phone",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "emergency_contact_address",
+        "label": "Emergency Contact Address",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "regularization_date",
+        "label": "Regularization Date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "employment_type",
+        "label": "Employment Type",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "basic_salary",
+        "label": "Basic Salary",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "pay_frequency",
+        "label": "Pay Frequency",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "bank_name",
+        "label": "Bank Name",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "bank_account_no",
+        "label": "Bank Account No",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "highest_education",
+        "label": "Highest Education",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "school_name",
+        "label": "School Name",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "course",
+        "label": "Course",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "year_graduated",
+        "label": "Year Graduated",
+        "type": "number",
         "required": false
       }
     ],
@@ -961,6 +1238,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -971,13 +1249,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "doc_type",
         "label": "Doc Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "file_url",
         "label": "File Url",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "expires_on",
@@ -1015,25 +1295,30 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "start_time",
         "label": "Start Time",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "end_time",
         "label": "End Time",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "grace_minutes",
         "label": "Grace Minutes",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -1063,6 +1348,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -1073,7 +1359,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "work_date",
         "label": "Work Date",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "clock_in_at",
@@ -1116,6 +1403,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "present",
@@ -1147,13 +1436,17 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "late_minutes",
         "label": "Late Minutes",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "overtime_minutes",
         "label": "Overtime Minutes",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_within_geofence",
@@ -1212,13 +1505,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "is_paid",
         "label": "Is Paid",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "annual_quota",
@@ -1230,7 +1526,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "carry_over",
         "label": "Carry Over",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -1258,6 +1556,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -1269,6 +1568,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Leave Type Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "leave_types",
           "field": "id",
@@ -1279,19 +1579,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "start_date",
         "label": "Start Date",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "end_date",
         "label": "End Date",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "days",
         "label": "Days",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "reason",
@@ -1304,6 +1607,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "draft",
@@ -1358,13 +1663,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "holiday_date",
         "label": "Holiday Date",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -1389,13 +1696,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "account_no",
         "label": "Account No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "legal_name",
@@ -1436,13 +1745,17 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "payment_term_days",
         "label": "Payment Term Days",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "credit_limit",
         "label": "Credit Limit",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "billing_address",
@@ -1461,6 +1774,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "prospect",
@@ -1524,7 +1839,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "first_name",
         "label": "First Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "last_name",
@@ -1554,7 +1870,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "is_primary",
         "label": "Is Primary",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -1589,7 +1907,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "company",
@@ -1631,6 +1950,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "new",
@@ -1716,31 +2037,39 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "sort_order",
         "label": "Sort Order",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "probability",
         "label": "Probability",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_won",
         "label": "Is Won",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_lost",
         "label": "Is Lost",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -1769,6 +2098,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Account Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "accounts",
           "field": "id",
@@ -1790,13 +2120,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "stage_id",
         "label": "Stage Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "pipeline_stages",
           "field": "id",
@@ -1807,7 +2139,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "amount",
         "label": "Amount",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "expected_close",
@@ -1864,19 +2198,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "entity_type",
         "label": "Entity Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_id",
         "label": "Entity Id",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "type",
         "label": "Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "subject",
@@ -1957,13 +2294,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "outlet_code",
         "label": "Outlet Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "outlet_type",
@@ -2004,7 +2343,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "geofence_radius_m",
         "label": "Geofence Radius M",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "visit_frequency",
@@ -2017,6 +2358,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "prospect",
@@ -2040,7 +2383,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "photos",
         "label": "Photos",
         "type": "json",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -2075,7 +2420,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "employee_id",
@@ -2123,6 +2469,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -2134,6 +2481,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Outlet Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "outlets",
           "field": "id",
@@ -2162,6 +2510,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "planned",
@@ -2273,6 +2623,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Visit Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "visits",
           "field": "id",
@@ -2283,7 +2634,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "file_url",
         "label": "File Url",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "caption",
@@ -2295,7 +2647,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "taken_at",
         "label": "Taken At",
         "type": "datetime",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -2328,6 +2682,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -2338,13 +2693,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "recorded_at",
         "label": "Recorded At",
         "type": "datetime",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "location",
         "label": "Location",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "accuracy_m",
@@ -2368,7 +2725,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "is_mock",
         "label": "Is Mock",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "primary",
@@ -2408,13 +2767,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "shape",
         "label": "Shape",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -2451,7 +2812,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -2480,7 +2842,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "sku",
         "label": "Sku",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "barcode",
@@ -2492,7 +2855,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "description",
@@ -2522,6 +2886,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Type",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "finished",
@@ -2546,6 +2912,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Base Uom Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "uoms",
           "field": "id",
@@ -2567,19 +2934,25 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "cost",
         "label": "Cost",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_batch_tracked",
         "label": "Is Batch Tracked",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_active",
         "label": "Is Active",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "image_url",
@@ -2620,13 +2993,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "currency_code",
         "label": "Currency Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "valid_from",
@@ -2644,7 +3019,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "is_default",
         "label": "Is Default",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -2673,19 +3050,23 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "code",
         "label": "Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "type",
         "label": "Type",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "warehouse",
@@ -2755,6 +3136,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "products",
           "field": "id",
@@ -2765,7 +3147,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "batch_no",
         "label": "Batch No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "mfg_date",
@@ -2809,6 +3192,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Warehouse Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "warehouses",
           "field": "id",
@@ -2820,6 +3204,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "products",
           "field": "id",
@@ -2841,13 +3226,17 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "on_hand",
         "label": "On Hand",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "reserved",
         "label": "Reserved",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "available",
@@ -2891,6 +3280,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Warehouse Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "warehouses",
           "field": "id",
@@ -2902,6 +3292,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "products",
           "field": "id",
@@ -2923,13 +3314,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "movement_type",
         "label": "Movement Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "quantity",
         "label": "Quantity",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "unit_cost",
@@ -3000,6 +3393,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Warehouse Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "warehouses",
           "field": "id",
@@ -3050,6 +3444,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Count Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "stock_counts",
           "field": "id",
@@ -3061,6 +3456,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "products",
           "field": "id",
@@ -3082,13 +3478,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "system_qty",
         "label": "System Qty",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "counted_qty",
         "label": "Counted Qty",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -3119,6 +3517,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "products",
           "field": "id",
@@ -3129,19 +3528,25 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "version",
         "label": "Version",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "output_qty",
         "label": "Output Qty",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_active",
         "label": "Is Active",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -3170,13 +3575,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "order_no",
         "label": "Order No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "bom_id",
         "label": "Bom Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "boms",
           "field": "id",
@@ -3188,6 +3595,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Warehouse Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "warehouses",
           "field": "id",
@@ -3198,25 +3606,32 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "planned_qty",
         "label": "Planned Qty",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "produced_qty",
         "label": "Produced Qty",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "scrap_qty",
         "label": "Scrap Qty",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "status",
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "planned",
@@ -3283,13 +3698,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "asset_tag",
         "label": "Asset Tag",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "category",
@@ -3325,13 +3742,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "salvage_value",
         "label": "Salvage Value",
         "type": "number",
-        "required": false
+        "required": false,
+        "hasDefault": true
       },
       {
         "name": "status",
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "available",
@@ -3411,6 +3831,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Asset Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "assets",
           "field": "id",
@@ -3443,7 +3864,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "assigned_at",
         "label": "Assigned At",
         "type": "datetime",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "returned_at",
@@ -3496,6 +3919,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Asset Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "assets",
           "field": "id",
@@ -3556,25 +3980,29 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "code",
         "label": "Code",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "valid_from",
         "label": "Valid From",
         "type": "datetime",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "valid_to",
         "label": "Valid To",
         "type": "datetime",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "budget",
@@ -3587,19 +4015,25 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Budget Used",
         "type": "number",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "readOnly": true
       },
       {
         "name": "is_stackable",
         "label": "Is Stackable",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "priority",
         "label": "Priority",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -3630,6 +4064,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Promo Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "promos",
           "field": "id",
@@ -3640,13 +4075,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "rule_type",
         "label": "Rule Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "config",
         "label": "Config",
         "type": "json",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -3676,13 +4113,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "order_no",
         "label": "Order No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "account_id",
         "label": "Account Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "accounts",
           "field": "id",
@@ -3748,7 +4187,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "order_date",
         "label": "Order Date",
         "type": "date",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "delivery_date",
@@ -3760,13 +4201,17 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "status",
         "label": "Status",
         "type": "text",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "subtotal",
         "label": "Subtotal",
         "type": "number",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "readOnly": true
       },
       {
@@ -3774,6 +4219,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Discount Total",
         "type": "number",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "readOnly": true
       },
       {
@@ -3781,6 +4228,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Tax Total",
         "type": "number",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "readOnly": true
       },
       {
@@ -3788,13 +4237,17 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Grand Total",
         "type": "number",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "readOnly": true
       },
       {
         "name": "currency_code",
         "label": "Currency Code",
         "type": "text",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "notes",
@@ -3848,6 +4301,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Order Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "orders",
           "field": "id",
@@ -3859,6 +4313,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "products",
           "field": "id",
@@ -3870,6 +4325,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Uom Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "uoms",
           "field": "id",
@@ -3880,31 +4336,38 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "quantity",
         "label": "Quantity",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "unit_price",
         "label": "Unit Price",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "discount_amount",
         "label": "Discount Amount",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "tax_amount",
         "label": "Tax Amount",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "line_total",
         "label": "Line Total",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "promo_id",
@@ -3921,13 +4384,17 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "is_free_item",
         "label": "Is Free Item",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "fulfilled_qty",
         "label": "Fulfilled Qty",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -3959,6 +4426,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Promo Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "promos",
           "field": "id",
@@ -3970,6 +4438,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Order Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "orders",
           "field": "id",
@@ -3991,13 +4460,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "discount_value",
         "label": "Discount Value",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "redeemed_at",
         "label": "Redeemed At",
         "type": "datetime",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -4027,7 +4499,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "txn_no",
         "label": "Txn No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "order_id",
@@ -4077,13 +4550,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "txn_date",
         "label": "Txn Date",
         "type": "datetime",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "total_amount",
         "label": "Total Amount",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "payment_method",
@@ -4137,6 +4613,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Txn Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "sales_transactions",
           "field": "id",
@@ -4148,6 +4625,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Product Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "products",
           "field": "id",
@@ -4158,19 +4636,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "quantity",
         "label": "Quantity",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "unit_price",
         "label": "Unit Price",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "line_total",
         "label": "Line Total",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -4233,19 +4714,23 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "period_start",
         "label": "Period Start",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "period_end",
         "label": "Period End",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "metric",
         "label": "Metric",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "revenue",
@@ -4269,7 +4754,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "target_value",
         "label": "Target Value",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -4300,7 +4786,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "max_amount",
@@ -4312,7 +4799,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "requires_receipt",
         "label": "Requires Receipt",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -4338,13 +4827,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "report_no",
         "label": "Report No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "employee_id",
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -4361,13 +4852,17 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "total_amount",
         "label": "Total Amount",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "status",
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "draft",
@@ -4447,6 +4942,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -4458,6 +4954,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Category Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "expense_categories",
           "field": "id",
@@ -4468,19 +4965,23 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "expense_date",
         "label": "Expense Date",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "amount",
         "label": "Amount",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "currency_code",
         "label": "Currency Code",
         "type": "text",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "description",
@@ -4516,6 +5017,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "draft",
@@ -4580,13 +5083,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "invoice_no",
         "label": "Invoice No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "account_id",
         "label": "Account Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "accounts",
           "field": "id",
@@ -4608,19 +5113,23 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "invoice_date",
         "label": "Invoice Date",
         "type": "date",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "due_date",
         "label": "Due Date",
         "type": "date",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "subtotal",
         "label": "Subtotal",
         "type": "number",
         "required": true,
+        "notNull": true,
         "readOnly": true
       },
       {
@@ -4628,6 +5137,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Tax Total",
         "type": "number",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "readOnly": true
       },
       {
@@ -4635,6 +5146,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Total",
         "type": "number",
         "required": true,
+        "notNull": true,
         "readOnly": true
       },
       {
@@ -4642,6 +5154,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Amount Paid",
         "type": "number",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "readOnly": true
       },
       {
@@ -4649,6 +5163,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "draft",
@@ -4708,6 +5224,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Invoice Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "invoices",
           "field": "id",
@@ -4735,19 +5252,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "quantity",
         "label": "Quantity",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "unit_price",
         "label": "Unit Price",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "line_total",
         "label": "Line Total",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -4780,13 +5300,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "payment_no",
         "label": "Payment No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "account_id",
         "label": "Account Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "accounts",
           "field": "id",
@@ -4819,7 +5341,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "amount",
         "label": "Amount",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "reference_no",
@@ -4837,7 +5360,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "received_at",
         "label": "Received At",
         "type": "datetime",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "proof_url",
@@ -4850,6 +5375,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "received",
@@ -4913,6 +5440,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Payment Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "payments",
           "field": "id",
@@ -4924,6 +5452,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Invoice Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "invoices",
           "field": "id",
@@ -4934,7 +5463,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "amount",
         "label": "Amount",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -4963,6 +5493,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Employee Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -4973,7 +5504,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "total_amount",
         "label": "Total Amount",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "bank_reference",
@@ -5003,6 +5535,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "pending",
@@ -5053,7 +5587,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "form_type",
@@ -5065,13 +5600,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "version",
         "label": "Version",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "schema",
         "label": "Schema",
         "type": "json",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -5100,6 +5638,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Form Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "forms",
           "field": "id",
@@ -5110,25 +5649,30 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "key",
         "label": "Key",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "label",
         "label": "Label",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "field_type",
         "label": "Field Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "is_required",
         "label": "Is Required",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "options",
@@ -5146,7 +5690,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "sort_order",
         "label": "Sort Order",
         "type": "number",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -5182,6 +5728,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Form Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "forms",
           "field": "id",
@@ -5192,13 +5739,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "form_version",
         "label": "Form Version",
         "type": "number",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "submitted_by",
         "label": "Submitted By",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "employees",
           "field": "id",
@@ -5237,7 +5786,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "answers",
         "label": "Answers",
         "type": "json",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "location",
@@ -5249,7 +5799,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "submitted_at",
         "label": "Submitted At",
         "type": "datetime",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "synced_at",
@@ -5296,13 +5848,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "ticket_no",
         "label": "Ticket No",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "title",
         "label": "Title",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "description",
@@ -5321,6 +5875,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "open",
@@ -5478,6 +6034,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Ticket Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "service_tickets",
           "field": "id",
@@ -5489,6 +6046,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Author Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "users",
           "field": "id",
@@ -5499,13 +6057,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "body",
         "label": "Body",
         "type": "textarea",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "is_internal",
         "label": "Is Internal",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -5536,7 +6097,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "module",
         "label": "Module",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "file_url",
@@ -5555,6 +6117,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Status",
         "type": "select",
         "required": false,
+        "notNull": true,
+        "hasDefault": true,
         "options": [
           {
             "value": "queued",
@@ -5652,7 +6216,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "name",
         "label": "Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "description",
@@ -5664,19 +6229,23 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "data_source",
         "label": "Data Source",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "config",
         "label": "Config",
         "type": "json",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "is_system",
         "label": "Is System",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "owner_id",
@@ -5723,6 +6292,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Report Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "report_definitions",
           "field": "id",
@@ -5733,13 +6303,15 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "cron",
         "label": "Cron",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "recipients",
         "label": "Recipients",
         "type": "json",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "last_run_at",
@@ -5751,7 +6323,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "is_active",
         "label": "Is Active",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -5784,6 +6358,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Report Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "report_definitions",
           "field": "id",
@@ -5871,7 +6446,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "widgets",
         "label": "Widgets",
         "type": "json",
-        "required": true
+        "required": true,
+        "notNull": true
       }
     ],
     "columns": [
@@ -5899,43 +6475,55 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "title",
         "label": "Title",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "body",
         "label": "Body",
         "type": "textarea",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "attachments",
         "label": "Attachments",
         "type": "json",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "audience",
         "label": "Audience",
         "type": "json",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "is_pinned",
         "label": "Is Pinned",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "requires_ack",
         "label": "Requires Ack",
         "type": "checkbox",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "publish_at",
         "label": "Publish At",
         "type": "datetime",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       },
       {
         "name": "expires_at",
@@ -5997,25 +6585,29 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "verb",
         "label": "Verb",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_type",
         "label": "Entity Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_id",
         "label": "Entity Id",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "summary",
         "label": "Summary",
         "type": "textarea",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "audience",
@@ -6056,19 +6648,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "entity_type",
         "label": "Entity Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_id",
         "label": "Entity Id",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "author_id",
         "label": "Author Id",
         "type": "relation",
         "required": true,
+        "notNull": true,
         "relation": {
           "table": "users",
           "field": "id",
@@ -6079,13 +6674,16 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "body",
         "label": "Body",
         "type": "textarea",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "mentions",
         "label": "Mentions",
         "type": "json",
-        "required": false
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
       }
     ],
     "columns": [
@@ -6119,19 +6717,22 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "entity_type",
         "label": "Entity Type",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "entity_id",
         "label": "Entity Id",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "file_name",
         "label": "File Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "mime_type",
@@ -6149,7 +6750,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "name": "storage_url",
         "label": "Storage Url",
         "type": "text",
-        "required": true
+        "required": true,
+        "notNull": true
       },
       {
         "name": "uploaded_by",

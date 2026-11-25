@@ -43,10 +43,15 @@ for (const match of sql.matchAll(tablePattern)) {
       relations[column] = { table: relation[1], field: relation[2] }
     }
 
+    const notNull = /\bnot\s+null\b/i.test(rest)
+    const hasDefault = /\bdefault\b/i.test(rest)
+
     columns.push({
       name: column,
       type: rawType.toLowerCase().replace(/\(.*\)$/, ""),
-      required: /\bnot\s+null\b/i.test(rest) && !/\bdefault\b/i.test(rest),
+      required: notNull && !hasDefault,
+      notNull,
+      hasDefault,
     })
   }
 
@@ -119,6 +124,9 @@ function fieldFor(column, relation, options) {
     type: "text",
     required: column.required,
   }
+
+  if (column.notNull) field.notNull = true
+  if (column.hasDefault) field.hasDefault = true
 
   if (relation) {
     field.type = "relation"

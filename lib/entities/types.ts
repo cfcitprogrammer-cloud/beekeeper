@@ -17,6 +17,10 @@ export type FieldDef = {
   label: string
   type: FieldType
   required?: boolean
+  /** Column is NOT NULL (whether or not it has a database default). */
+  notNull?: boolean
+  /** Column has a database default, so empty values can be omitted on insert. */
+  hasDefault?: boolean
   options?: FieldOption[]
   relation?: { table: string; field: string; labelField: string }
   placeholder?: string
@@ -39,4 +43,8 @@ export type EntityConfig = {
   parent?: { field: string; table: string }
 }
 
-export type EntityRow = Record<string, unknown> & { id?: string }
+export type EntityRow = Record<string, unknown> & {
+  id?: string
+  /** Human-readable labels for relation columns, keyed by field name. */
+  __labels?: Record<string, string>
+}

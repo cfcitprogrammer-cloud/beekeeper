@@ -1,8 +1,10 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { LoaderCircleIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import Link from "next/link"
+import { FileTextIcon, LoaderCircleIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react"
 
 import { EmptyState } from "@/components/empty-state"
 import { EntityForm, initialFormValues } from "@/components/entity-form"
@@ -23,7 +25,11 @@ import {
   fetchRelationOptions,
   saveEntityAction,
 } from "@/app/(app)/entities/actions"
+import { fieldDisplayLabel } from "@/lib/entities/format"
 import type { EntityConfig, EntityRow, FieldDef } from "@/lib/entities/types"
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 function displayValue(value: unknown, field?: FieldDef) {
   if (value === null || value === undefined || value === "") return "—"
@@ -69,6 +75,7 @@ export function EntityManager({
   >({})
   const [deleting, setDeleting] = React.useState<EntityRow | null>(null)
   const [pending, startTransition] = React.useTransition()
+  const router = useRouter()
 
   const statusField = config.fields.find((field) => field.name === "status")
   const pageCount = Math.max(1, Math.ceil(total / 20))
@@ -186,7 +193,14 @@ export function EntityManager({
         </span>
 
         {canCreate ? (
-          <Button size="sm" onClick={() => openForm(null)}>
+          <Button
+            size="sm"
+            onClick={() =>
+              config.key === "employees"
+                ? router.push("/employees/new")
+                : openForm(null)
+            }
+          >
             <PlusIcon />
             New {config.singular.toLowerCase()}
           </Button>
@@ -216,11 +230,11 @@ export function EntityManager({
                       key={column}
                       className="px-3 py-2 text-[10px] font-medium tracking-wide text-muted-foreground uppercase whitespace-nowrap"
                     >
-                      {field?.label ?? column}
+                      {fieldDisplayLabel(field) || column}
                     </th>
                   )
                 })}
-                {canUpdate || canDelete ? (
+                {canUpdate || canDelete || config.key === "employees" ? (
                   <th className="px-3 py-2 text-right text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                     Actions
                   </th>
@@ -230,21 +244,45 @@ export function EntityManager({
             <tbody className="divide-y">
               {rows.map((row, index) => (
                 <tr key={String(row.id ?? index)} className="hover:bg-muted/30">
-                  {config.columns.map((column) => (
-                    <td key={column} className="px-3 py-2 align-top tabular-nums">
-                      {displayValue(
-                        row[column],
-                        config.fields.find((field) => field.name === column),
-                      )}
-                    </td>
-                  ))}
-                  {canUpdate || canDelete ? (
+                  {config.columns.map((column) => {
+                    const field = config.fields.find((item) => item.name === column)
+                    const raw = row[column]
+                    // Never fall back to a raw reference UUID in the table.
+                    const value =
+                      field?.type === "relation"
+                        ? (row.__labels?.[column] ?? "—")
+                        : column.endsWith("_id") &&
+                            typeof raw === "string" &&
+                            UUID_PATTERN.test(raw)
+                          ? "—"
+                          : displayValue(raw, field)
+
+                    return (
+                      <td key={column} className="px-3 py-2 align-top tabular-nums">
+                        {value}
+                      </td>
+                    )
+                  })}
+                  {canUpdate || canDelete || config.key === "employees" ? (
                     <td className="px-3 py-2 text-right whitespace-nowrap">
+                      {config.key === "employees" && row.id ? (
+                          <Link
+                            href={`/employees/201/${row.id}`}
+                            aria-label="View 201 file"
+                            className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          >
+                            <FileTextIcon className="size-3.5" />
+                          </Link>
+                      ) : null}
                       {canUpdate ? (
                         <Button
                           variant="ghost"
                           size="icon-xs"
-                          onClick={() => openForm(row)}
+                          onClick={() =>
+                            config.key === "employees" && row.id
+                              ? router.push(`/employees/${row.id}/edit`)
+                              : openForm(row)
+                          }
                           aria-label={`Edit ${config.singular}`}
                         >
                           <PencilIcon />
@@ -310,6 +348,7 @@ export function EntityManager({
             config={config}
             values={values}
             relationOptions={relationOptions}
+            relationLabels={editing?.__labels}
             onChange={(name, value) =>
               setValues((current) => ({ ...current, [name]: value }))
             }

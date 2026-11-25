@@ -3,6 +3,7 @@
 import { Field } from "@/components/form-field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { fieldDisplayLabel } from "@/lib/entities/format"
 import type { EntityConfig, EntityRow, FieldDef } from "@/lib/entities/types"
 
 export function initialFormValues(config: EntityConfig, row: EntityRow | null) {
@@ -34,14 +35,26 @@ export function EntityForm({
   values,
   onChange,
   relationOptions,
+  relationLabels,
+  fullPage = false,
 }: {
   config: EntityConfig
   values: Record<string, unknown>
   onChange: (name: string, value: string) => void
   relationOptions: Record<string, { value: string; label: string }[]>
+  /** Friendly labels for already-selected relations, even beyond the option limit. */
+  relationLabels?: Record<string, string>
+  /** Render without the compact scroll container used inside sheets. */
+  fullPage?: boolean
 }) {
   return (
-    <div className="grid max-h-[60vh] gap-4 overflow-y-auto pr-1 sm:grid-cols-2">
+    <div
+      className={
+        fullPage
+          ? "grid gap-4 sm:grid-cols-2"
+          : "grid max-h-[60vh] gap-4 overflow-y-auto pr-1 sm:grid-cols-2"
+      }
+    >
       {config.fields.map((field: FieldDef) => {
         if (field.readOnly) return null
         const value = String(values[field.name] ?? "")
@@ -56,7 +69,7 @@ export function EntityForm({
                 onChange={(event) => onChange(field.name, String(event.target.checked))}
                 className="size-3.5 accent-[var(--primary)]"
               />
-              {field.label}
+              {fieldDisplayLabel(field)}
             </label>
           )
         }
@@ -66,7 +79,7 @@ export function EntityForm({
             <Field
               key={field.name}
               id={field.name}
-              label={field.label}
+              label={fieldDisplayLabel(field)}
               hint={field.hint ?? (field.type === "json" ? "Enter valid JSON." : undefined)}
               className="sm:col-span-2"
             >
@@ -87,9 +100,17 @@ export function EntityForm({
         if (field.type === "select" || field.type === "relation") {
           const options =
             field.type === "relation" ? (relationOptions[field.name] ?? []) : (field.options ?? [])
+          // Keep the current relation visible when it falls outside the option limit.
+          const missingSelection =
+            Boolean(value) && !options.some((option) => option.value === value)
 
           return (
-            <Field key={field.name} id={field.name} label={field.label} hint={field.hint}>
+            <Field
+              key={field.name}
+              id={field.name}
+              label={fieldDisplayLabel(field)}
+              hint={field.hint}
+            >
               <select
                 id={field.name}
                 name={field.name}
@@ -99,6 +120,11 @@ export function EntityForm({
                 required={field.required}
               >
                 <option value="">— None —</option>
+                {missingSelection ? (
+                  <option value={value}>
+                    {relationLabels?.[field.name] ?? "Current selection"}
+                  </option>
+                ) : null}
                 {options.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -110,7 +136,12 @@ export function EntityForm({
         }
 
         return (
-          <Field key={field.name} id={field.name} label={field.label} hint={field.hint}>
+          <Field
+            key={field.name}
+            id={field.name}
+            label={fieldDisplayLabel(field)}
+            hint={field.hint}
+          >
             <Input
               id={field.name}
               name={field.name}
