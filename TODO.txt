@@ -1,0 +1,53 @@
+Dashboard
+Approvals
+Announcements
+Activity Feed
+
+Attendance
+Leaves
+Employee
+ - Dashboard
+ - Employees
+ - Org Chart
+ - Conifguration
+   - Departments
+   - Positions
+
+Visits
+Tracking & Maps
+Outlet
+ - Dashboard
+ - Outlets
+ - Outlets Assignment
+ - Configuration
+   - Outlet Type
+
+Leads
+Accounts
+Oppurtunities
+Orders
+Sales
+Promotions
+
+Inventory
+Production
+Assets
+Product
+- Dashboard
+- Products
+- Batches
+- Price Lists
+- Configuration
+  - Product Categories
+
+Expenses
+Billing and Collection
+
+Import & Export
+Digital Forms
+Service Tickets
+Reports
+Reports Builder
+
+Administration
+Master Data
