@@ -295,7 +295,7 @@ export function EntityManager({
 
       <Sheet open={formOpen} onOpenChange={setFormOpen}>
         <SheetContent side="right" className="gap-4 p-4 sm:max-w-lg">
-          <SheetHeader>
+          <SheetHeader className="p-0">
             <SheetTitle>
               {editing ? `Edit ${config.singular}` : `New ${config.singular}`}
             </SheetTitle>
