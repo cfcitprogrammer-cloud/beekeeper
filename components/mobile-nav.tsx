@@ -7,13 +7,13 @@ import { AppNav } from "@/components/app-nav"
 import { Brand } from "@/components/brand"
 import { Button } from "@/components/ui/button"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
 export function MobileNav({
   organizationName,
@@ -27,18 +27,18 @@ export function MobileNav({
   const [open, setOpen] = React.useState(false)
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
+    <Drawer open={open} onOpenChange={setOpen} swipeDirection="left">
+      <DrawerTrigger
         render={<Button variant="ghost" size="icon-sm" className="lg:hidden" />}
       >
         <MenuIcon />
         <span className="sr-only">Open navigation</span>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-72 p-0">
-        <SheetHeader className="sr-only">
-          <SheetTitle>Navigation</SheetTitle>
-          <SheetDescription>Modules available to your organization.</SheetDescription>
-        </SheetHeader>
+      </DrawerTrigger>
+      <DrawerContent className="w-72 p-0">
+        <DrawerHeader className="sr-only">
+          <DrawerTitle>Navigation</DrawerTitle>
+          <DrawerDescription>Modules available to your organization.</DrawerDescription>
+        </DrawerHeader>
         <div className="flex h-12 items-center border-b px-4">
           <Brand />
         </div>
@@ -49,7 +49,7 @@ export function MobileNav({
         <div className="min-h-0 flex-1 overflow-y-auto py-3">
           <AppNav allowedSlugs={allowedSlugs} onNavigate={() => setOpen(false)} />
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   )
 }

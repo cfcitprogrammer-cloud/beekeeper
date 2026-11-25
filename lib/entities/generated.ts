@@ -222,6 +222,151 @@ export const generatedEntities: Record<string, EntityConfig> = {
     "readOnly": true,
     "tenantScoped": false
   },
+  role_permissions: {
+    "key": "role_permissions",
+    "module": "administration",
+    "title": "Role Permissions",
+    "singular": "Role Permission",
+    "table": "role_permissions",
+    "fields": [
+      {
+        "name": "role_id",
+        "label": "Role Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "roles",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "permission_id",
+        "label": "Permission Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "permissions",
+          "field": "id",
+          "labelField": "id"
+        }
+      },
+      {
+        "name": "data_scope",
+        "label": "Data Scope",
+        "type": "select",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true,
+        "options": [
+          {
+            "value": "own",
+            "label": "Own"
+          },
+          {
+            "value": "team",
+            "label": "Team"
+          },
+          {
+            "value": "territory",
+            "label": "Territory"
+          },
+          {
+            "value": "org",
+            "label": "Org"
+          }
+        ]
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "role_id",
+      "permission_id",
+      "data_scope",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "role_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "role_id",
+      "table": "roles"
+    },
+    "child": true,
+    "primaryKeys": [
+      "role_id",
+      "permission_id"
+    ]
+  },
+  user_roles: {
+    "key": "user_roles",
+    "module": "administration",
+    "title": "User Roles",
+    "singular": "User Role",
+    "table": "user_roles",
+    "fields": [
+      {
+        "name": "user_id",
+        "label": "User Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "users",
+          "field": "id",
+          "labelField": "full_name"
+        }
+      },
+      {
+        "name": "role_id",
+        "label": "Role Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "roles",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "user_id",
+      "role_id",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "user_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "user_id",
+      "table": "users"
+    },
+    "child": true,
+    "primaryKeys": [
+      "user_id",
+      "role_id"
+    ]
+  },
   audit_logs: {
     "key": "audit_logs",
     "module": "administration",
@@ -1336,6 +1481,81 @@ export const generatedEntities: Record<string, EntityConfig> = {
     "readOnly": false,
     "tenantScoped": true
   },
+  employee_shifts: {
+    "key": "employee_shifts",
+    "module": "attendance",
+    "title": "Employee Shifts",
+    "singular": "Employee Shift",
+    "table": "employee_shifts",
+    "fields": [
+      {
+        "name": "employee_id",
+        "label": "Employee Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "employees",
+          "field": "id",
+          "labelField": "email"
+        }
+      },
+      {
+        "name": "shift_id",
+        "label": "Shift Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "shifts",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "effective_from",
+        "label": "Effective From",
+        "type": "date",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "effective_to",
+        "label": "Effective To",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "employee_id",
+      "shift_id",
+      "effective_from",
+      "effective_to",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "employee_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "employee_id",
+      "table": "employees"
+    },
+    "child": true,
+    "primaryKeys": [
+      "employee_id",
+      "shift_id",
+      "effective_from"
+    ]
+  },
   attendances: {
     "key": "attendances",
     "module": "attendance",
@@ -1543,6 +1763,92 @@ export const generatedEntities: Record<string, EntityConfig> = {
     "defaultOrder": "created_at",
     "readOnly": false,
     "tenantScoped": true
+  },
+  leave_balances: {
+    "key": "leave_balances",
+    "module": "leaves",
+    "title": "Leave Balances",
+    "singular": "Leave Balance",
+    "table": "leave_balances",
+    "fields": [
+      {
+        "name": "employee_id",
+        "label": "Employee Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "employees",
+          "field": "id",
+          "labelField": "email"
+        }
+      },
+      {
+        "name": "leave_type_id",
+        "label": "Leave Type Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "leave_types",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "year",
+        "label": "Year",
+        "type": "number",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "entitled",
+        "label": "Entitled",
+        "type": "number",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "used",
+        "label": "Used",
+        "type": "number",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "employee_id",
+      "leave_type_id",
+      "year",
+      "entitled",
+      "used",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "employee_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "employee_id",
+      "table": "employees"
+    },
+    "child": true,
+    "primaryKeys": [
+      "employee_id",
+      "leave_type_id",
+      "year"
+    ]
   },
   leaves: {
     "key": "leaves",
@@ -2457,6 +2763,73 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "table": "employees"
     }
   },
+  route_stops: {
+    "key": "route_stops",
+    "module": "visits",
+    "title": "Route Stops",
+    "singular": "Route Stop",
+    "table": "route_stops",
+    "fields": [
+      {
+        "name": "route_id",
+        "label": "Route Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "routes",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "outlet_id",
+        "label": "Outlet Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "outlets",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "sequence",
+        "label": "Sequence",
+        "type": "number",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "route_id",
+      "outlet_id",
+      "sequence",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "route_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "route_id",
+      "table": "routes"
+    },
+    "child": true,
+    "primaryKeys": [
+      "route_id",
+      "outlet_id"
+    ]
+  },
   visits: {
     "key": "visits",
     "module": "visits",
@@ -2982,6 +3355,73 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "table": "product_categories"
     }
   },
+  product_uom_conversions: {
+    "key": "product_uom_conversions",
+    "module": "products",
+    "title": "Product Uom Conversions",
+    "singular": "Product Uom Conversion",
+    "table": "product_uom_conversions",
+    "fields": [
+      {
+        "name": "product_id",
+        "label": "Product Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "products",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "uom_id",
+        "label": "Uom Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "uoms",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "factor",
+        "label": "Factor",
+        "type": "number",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "product_id",
+      "uom_id",
+      "factor",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "product_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "product_id",
+      "table": "products"
+    },
+    "child": true,
+    "primaryKeys": [
+      "product_id",
+      "uom_id"
+    ]
+  },
   price_lists: {
     "key": "price_lists",
     "module": "products",
@@ -3038,6 +3478,97 @@ export const generatedEntities: Record<string, EntityConfig> = {
     "defaultOrder": "created_at",
     "readOnly": false,
     "tenantScoped": true
+  },
+  price_list_items: {
+    "key": "price_list_items",
+    "module": "products",
+    "title": "Price List Items",
+    "singular": "Price List Item",
+    "table": "price_list_items",
+    "fields": [
+      {
+        "name": "price_list_id",
+        "label": "Price List Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "price_lists",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "product_id",
+        "label": "Product Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "products",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "uom_id",
+        "label": "Uom Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "uoms",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "price",
+        "label": "Price",
+        "type": "number",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "min_qty",
+        "label": "Min Qty",
+        "type": "number",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "price_list_id",
+      "product_id",
+      "uom_id",
+      "price",
+      "min_qty",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "price_list_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "price_list_id",
+      "table": "price_lists"
+    },
+    "child": true,
+    "primaryKeys": [
+      "price_list_id",
+      "product_id",
+      "uom_id",
+      "min_qty"
+    ]
   },
   warehouses: {
     "key": "warehouses",
@@ -3564,6 +4095,82 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "table": "products"
     }
   },
+  bom_items: {
+    "key": "bom_items",
+    "module": "production",
+    "title": "Bom Items",
+    "singular": "Bom Item",
+    "table": "bom_items",
+    "fields": [
+      {
+        "name": "bom_id",
+        "label": "Bom Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "boms",
+          "field": "id",
+          "labelField": "id"
+        }
+      },
+      {
+        "name": "component_id",
+        "label": "Component Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "products",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "quantity",
+        "label": "Quantity",
+        "type": "number",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "scrap_pct",
+        "label": "Scrap Pct",
+        "type": "number",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "bom_id",
+      "component_id",
+      "quantity",
+      "scrap_pct",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "bom_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "bom_id",
+      "table": "boms"
+    },
+    "child": true,
+    "primaryKeys": [
+      "bom_id",
+      "component_id"
+    ]
+  },
   production_orders: {
     "key": "production_orders",
     "module": "production",
@@ -3686,6 +4293,82 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "field": "bom_id",
       "table": "boms"
     }
+  },
+  production_consumption: {
+    "key": "production_consumption",
+    "module": "production",
+    "title": "Production Consumption",
+    "singular": "Production Consumption",
+    "table": "production_consumption",
+    "fields": [
+      {
+        "name": "production_order_id",
+        "label": "Production Order Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "production_orders",
+          "field": "id",
+          "labelField": "id"
+        }
+      },
+      {
+        "name": "component_id",
+        "label": "Component Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "products",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "planned_qty",
+        "label": "Planned Qty",
+        "type": "number",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "actual_qty",
+        "label": "Actual Qty",
+        "type": "number",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "production_order_id",
+      "component_id",
+      "planned_qty",
+      "actual_qty",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "production_order_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "production_order_id",
+      "table": "production_orders"
+    },
+    "child": true,
+    "primaryKeys": [
+      "production_order_id",
+      "component_id"
+    ]
   },
   assets: {
     "key": "assets",
@@ -4101,6 +4784,71 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "field": "promo_id",
       "table": "promos"
     }
+  },
+  promo_scopes: {
+    "key": "promo_scopes",
+    "module": "promos",
+    "title": "Promo Scopes",
+    "singular": "Promo Scope",
+    "table": "promo_scopes",
+    "fields": [
+      {
+        "name": "promo_id",
+        "label": "Promo Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "promos",
+          "field": "id",
+          "labelField": "name"
+        }
+      },
+      {
+        "name": "scope_type",
+        "label": "Scope Type",
+        "type": "text",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "scope_ref",
+        "label": "Scope Ref",
+        "type": "text",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "promo_id",
+      "scope_type",
+      "scope_ref",
+      "primary"
+    ],
+    "searchColumns": [
+      "scope_type",
+      "scope_ref",
+      "primary"
+    ],
+    "defaultOrder": "promo_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "promo_id",
+      "table": "promos"
+    },
+    "child": true,
+    "primaryKeys": [
+      "promo_id",
+      "scope_type",
+      "scope_ref"
+    ]
   },
   orders: {
     "key": "orders",
@@ -6563,6 +7311,81 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "table": "users"
     }
   },
+  announcement_reads: {
+    "key": "announcement_reads",
+    "module": "announcements",
+    "title": "Announcement Reads",
+    "singular": "Announcement Read",
+    "table": "announcement_reads",
+    "fields": [
+      {
+        "name": "announcement_id",
+        "label": "Announcement Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "announcements",
+          "field": "id",
+          "labelField": "title"
+        }
+      },
+      {
+        "name": "user_id",
+        "label": "User Id",
+        "type": "relation",
+        "required": true,
+        "notNull": true,
+        "relation": {
+          "table": "users",
+          "field": "id",
+          "labelField": "full_name"
+        }
+      },
+      {
+        "name": "read_at",
+        "label": "Read At",
+        "type": "datetime",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "acknowledged_at",
+        "label": "Acknowledged At",
+        "type": "datetime",
+        "required": false
+      },
+      {
+        "name": "primary",
+        "label": "Primary",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "columns": [
+      "announcement_id",
+      "user_id",
+      "read_at",
+      "acknowledged_at",
+      "primary"
+    ],
+    "searchColumns": [
+      "primary"
+    ],
+    "defaultOrder": "announcement_id",
+    "readOnly": false,
+    "tenantScoped": false,
+    "parent": {
+      "field": "announcement_id",
+      "table": "announcements"
+    },
+    "child": true,
+    "primaryKeys": [
+      "announcement_id",
+      "user_id"
+    ]
+  },
   activity_feed: {
     "key": "activity_feed",
     "module": "activity",
@@ -6794,6 +7617,8 @@ export const moduleEntities: Record<string, string[]> = {
     "users",
     "roles",
     "permissions",
+    "role_permissions",
+    "user_roles",
     "audit_logs",
     "approval_workflows",
     "notifications"
@@ -6816,10 +7641,12 @@ export const moduleEntities: Record<string, string[]> = {
   ],
   "attendance": [
     "shifts",
+    "employee_shifts",
     "attendances"
   ],
   "leaves": [
     "leave_types",
+    "leave_balances",
     "leaves",
     "holidays"
   ],
@@ -6842,6 +7669,7 @@ export const moduleEntities: Record<string, string[]> = {
   ],
   "visits": [
     "routes",
+    "route_stops",
     "visits",
     "visit_photos"
   ],
@@ -6852,7 +7680,9 @@ export const moduleEntities: Record<string, string[]> = {
   "products": [
     "product_categories",
     "products",
+    "product_uom_conversions",
     "price_lists",
+    "price_list_items",
     "batches"
   ],
   "inventory": [
@@ -6864,7 +7694,9 @@ export const moduleEntities: Record<string, string[]> = {
   ],
   "production": [
     "boms",
-    "production_orders"
+    "bom_items",
+    "production_orders",
+    "production_consumption"
   ],
   "assets": [
     "assets",
@@ -6874,6 +7706,7 @@ export const moduleEntities: Record<string, string[]> = {
   "promos": [
     "promos",
     "promo_rules",
+    "promo_scopes",
     "promo_redemptions"
   ],
   "orders": [
@@ -6918,7 +7751,8 @@ export const moduleEntities: Record<string, string[]> = {
     "dashboard_layouts"
   ],
   "announcements": [
-    "announcements"
+    "announcements",
+    "announcement_reads"
   ],
   "activity": [
     "activity_feed",

@@ -5,7 +5,14 @@ import { fieldDisplayLabel } from "./format"
 import { getEntity } from "./registry"
 import type { EntityConfig, EntityRow, FieldDef } from "./types"
 
-const GLOBAL_TABLES = new Set(["organizations", "permissions"])
+/**
+ * Only tables that actually have an `org_id` column can be scoped to the
+ * current organization. Generated configs carry this from the migrations, so
+ * we use it instead of a hardcoded global-table list.
+ */
+function isTenantScoped(table: string) {
+  return getEntity(table)?.tenantScoped ?? false
+}
 
 type RelationLabelConfig = {
   /** Extra columns needed to build a friendly label. */
@@ -258,7 +265,7 @@ async function attachRelationLabels(
         .select(relationSelectColumns(labelConfig, request.valueField))
         .in(request.valueField, [...request.ids])
 
-      if (!GLOBAL_TABLES.has(request.table)) {
+      if (isTenantScoped(request.table)) {
         query = query.eq("org_id", session.profile.org_id)
       }
 
@@ -305,11 +312,11 @@ export async function getEntityRow(
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (session.supabase as any)
-    .from(config.table)
-    .select("*")
-    .eq("id", id)
-    .maybeSingle()
+  let query = (session.supabase as any).from(config.table).select("*").eq("id", id)
+  if (config.tenantScoped) {
+    query = query.eq("org_id", session.profile.org_id)
+  }
+  const { data, error } = await query.maybeSingle()
 
   if (error) return { config, row: null, error: error.message }
   if (!data) return { config, row: null, error: "Record not found." }
@@ -372,7 +379,7 @@ export async function relationOptions(
     .from(table)
     .select(relationSelectColumns(labelConfig, valueField))
 
-  if (!GLOBAL_TABLES.has(table)) {
+  if (isTenantScoped(table)) {
     query = query.eq("org_id", session.profile.org_id)
   }
 
@@ -395,7 +402,11 @@ async function validateRelations(
   for (const field of config.fields) {
     if (field.type !== "relation" || !field.relation) continue
     const value = data[field.name]
-    if (value === null || value === undefined || GLOBAL_TABLES.has(field.relation.table)) {
+    if (
+      value === null ||
+      value === undefined ||
+      !isTenantScoped(field.relation.table)
+    ) {
       continue
     }
     if (field.name === "org_id") continue

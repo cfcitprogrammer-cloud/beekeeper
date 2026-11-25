@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 import * as React from "react"
 
 import { MODULE_GROUPS, MODULES } from "@/lib/modules"
@@ -9,21 +9,10 @@ import { cn } from "@/lib/utils"
 import {
   ChevronDownIcon,
   ChevronRightIcon,
-  SettingsIcon,
+  PackageIcon,
   StoreIcon,
   UsersIcon,
 } from "lucide-react"
-
-function isActivePath(pathname: string, searchParams: URLSearchParams, href: string) {
-  const [path, query] = href.split("?")
-  if (pathname !== path) return false
-  if (!query) return true
-  const params = new URLSearchParams(query)
-  for (const [key, value] of params.entries()) {
-    if (searchParams.get(key) !== value) return false
-  }
-  return true
-}
 
 export function AppNav({
   allowedSlugs,
@@ -33,16 +22,18 @@ export function AppNav({
   onNavigate?: () => void
 }) {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const allowed = new Set(allowedSlugs)
 
   const [employeeOpen, setEmployeeOpen] = React.useState(true)
   const [employeeConfigOpen, setEmployeeConfigOpen] = React.useState(true)
   const [outletOpen, setOutletOpen] = React.useState(true)
   const [outletConfigOpen, setOutletConfigOpen] = React.useState(true)
+  const [productOpen, setProductOpen] = React.useState(true)
+  const [productConfigOpen, setProductConfigOpen] = React.useState(true)
 
   const showEmployee = allowed.has("employees")
   const showOutlets = allowed.has("outlets")
+  const showProduct = allowed.has("products")
 
   const subItemClass = (active: boolean) =>
     cn(
@@ -69,13 +60,20 @@ export function AppNav({
           // Render employees/outlets as nested sections instead of flat module links.
           if (group.id === "people" && module.slug === "employees") return false
           if (group.id === "operations" && module.slug === "outlets") return false
+          if (group.id === "inventory" && module.slug === "products") return false
           return true
         })
 
         const renderEmployeeSection = group.id === "people" && showEmployee
         const renderOutletSection = group.id === "operations" && showOutlets
+        const renderProductSection = group.id === "inventory" && showProduct
 
-        if (modules.length === 0 && !renderEmployeeSection && !renderOutletSection) {
+        if (
+          modules.length === 0 &&
+          !renderEmployeeSection &&
+          !renderOutletSection &&
+          !renderProductSection
+        ) {
           return null
         }
 
@@ -138,21 +136,18 @@ export function AppNav({
                     <ul className="space-y-px">
                       <li>
                         <Link
-                          href="/dashboard"
+                          href="/employees/dashboard"
                           onClick={onNavigate}
-                          className={subItemClass(pathname === "/dashboard")}
+                          className={subItemClass(pathname === "/employees/dashboard")}
                         >
                           <span className="truncate">Dashboard</span>
                         </Link>
                       </li>
                       <li>
                         <Link
-                          href="/employees?entity=employees"
+                          href="/employees"
                           onClick={onNavigate}
-                          className={subItemClass(
-                            isActivePath(pathname, searchParams, "/employees?entity=employees") ||
-                              (pathname === "/employees" && !searchParams.get("entity")),
-                          )}
+                          className={subItemClass(pathname === "/employees")}
                         >
                           <span className="truncate">Employees</span>
                         </Link>
@@ -184,22 +179,18 @@ export function AppNav({
                           <ul className="space-y-px">
                             <li>
                               <Link
-                                href="/employees?entity=departments"
+                                href="/employees/departments"
                                 onClick={onNavigate}
-                                className={nestedItemClass(
-                                  isActivePath(pathname, searchParams, "/employees?entity=departments"),
-                                )}
+                                className={nestedItemClass(pathname === "/employees/departments")}
                               >
                                 <span className="truncate">Departments</span>
                               </Link>
                             </li>
                             <li>
                               <Link
-                                href="/employees?entity=positions"
+                                href="/employees/positions"
                                 onClick={onNavigate}
-                                className={nestedItemClass(
-                                  isActivePath(pathname, searchParams, "/employees?entity=positions"),
-                                )}
+                                className={nestedItemClass(pathname === "/employees/positions")}
                               >
                                 <span className="truncate">Positions</span>
                               </Link>
@@ -232,21 +223,18 @@ export function AppNav({
                     <ul className="space-y-px">
                       <li>
                         <Link
-                          href="/dashboard"
+                          href="/outlets/dashboard"
                           onClick={onNavigate}
-                          className={subItemClass(pathname === "/dashboard")}
+                          className={subItemClass(pathname === "/outlets/dashboard")}
                         >
                           <span className="truncate">Dashboard</span>
                         </Link>
                       </li>
                       <li>
                         <Link
-                          href="/outlets?entity=outlets"
+                          href="/outlets"
                           onClick={onNavigate}
-                          className={subItemClass(
-                            isActivePath(pathname, searchParams, "/outlets?entity=outlets") ||
-                              (pathname === "/outlets" && !searchParams.get("entity")),
-                          )}
+                          className={subItemClass(pathname === "/outlets")}
                         >
                           <span className="truncate">Outlets</span>
                         </Link>
@@ -283,6 +271,93 @@ export function AppNav({
                                 className={nestedItemClass(pathname === "/outlets/types")}
                               >
                                 <span className="truncate">Outlets Type</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        ) : null}
+                      </li>
+                    </ul>
+                  ) : null}
+                </li>
+              ) : null}
+
+              {renderProductSection ? (
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setProductOpen((value) => !value)}
+                    className="group flex h-7 w-full items-center gap-2 px-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                  >
+                    <PackageIcon className="size-3.5 shrink-0" />
+                    <span className="truncate">Product</span>
+                    <span className="ml-auto" />
+                    {productOpen ? (
+                      <ChevronDownIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      <ChevronRightIcon className="size-3.5 shrink-0" />
+                    )}
+                  </button>
+                  {productOpen ? (
+                    <ul className="space-y-px">
+                      <li>
+                        <Link
+                          href="/products/dashboard"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/products/dashboard")}
+                        >
+                          <span className="truncate">Dashboard</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/products"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/products")}
+                        >
+                          <span className="truncate">Products</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/products/batches"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/products/batches")}
+                        >
+                          <span className="truncate">Batches</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/products/price-lists"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/products/price-lists")}
+                        >
+                          <span className="truncate">Price Lists</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setProductConfigOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Configuration</span>
+                          <span className="ml-auto" />
+                          {productConfigOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {productConfigOpen ? (
+                          <ul className="space-y-px">
+                            <li>
+                              <Link
+                                href="/products/categories"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/products/categories")}
+                              >
+                                <span className="truncate">Product Categories</span>
                               </Link>
                             </li>
                           </ul>

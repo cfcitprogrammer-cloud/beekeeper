@@ -19,6 +19,10 @@ for (const match of sql.matchAll(tablePattern)) {
   const columns = []
   const relations = {}
   const options = {}
+  const primaryKeyMatch = body.match(/primary\s+key\s*\(([^)]+)\)/i)
+  const primaryKeys = primaryKeyMatch
+    ? primaryKeyMatch[1].split(",").map((value) => value.trim().replace(/"/g, ""))
+    : []
 
   for (const line of body.split("\n")) {
     const trimmed = line.trim().replace(/,$/, "")
@@ -55,7 +59,7 @@ for (const match of sql.matchAll(tablePattern)) {
     })
   }
 
-  tables.set(name, { columns, relations, options })
+  tables.set(name, { columns, relations, options, primaryKeys })
 }
 
 for (const match of sql.matchAll(
@@ -165,7 +169,8 @@ const entityEntries = []
 const moduleEntities = {}
 
 for (const [table, meta] of tables) {
-  if (!meta.columns.some((column) => column.name === "id")) continue
+  const hasId = meta.columns.some((column) => column.name === "id")
+  if (!hasId && !meta.primaryKeys.length) continue
   if (!moduleMap[table]) continue
 
   const fields = meta.columns
@@ -201,6 +206,11 @@ for (const [table, meta] of tables) {
 
   if (parentRelation) {
     config.parent = { field: parentRelation[0], table: parentRelation[1].table }
+  }
+
+  if (!hasId) {
+    config.child = true
+    config.primaryKeys = meta.primaryKeys
   }
 
   entityEntries.push(`  ${table}: ${JSON.stringify(config, null, 2).replace(/\n/g, "\n  ")},`)

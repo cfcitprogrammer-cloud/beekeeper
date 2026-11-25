@@ -4,20 +4,27 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
-import { FileTextIcon, LoaderCircleIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import {
+  FileTextIcon,
+  LayersIcon,
+  LoaderCircleIcon,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
+} from "lucide-react"
 
 import { EmptyState } from "@/components/empty-state"
 import { EntityForm, initialFormValues } from "@/components/entity-form"
 import { FormError } from "@/components/form-message"
 import { Button } from "@/components/ui/button"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer"
 import { Input } from "@/components/ui/input"
 import {
   deleteEntityAction,
@@ -26,6 +33,7 @@ import {
   saveEntityAction,
 } from "@/app/(app)/entities/actions"
 import { fieldDisplayLabel } from "@/lib/entities/format"
+import { childEntitiesFor } from "@/lib/entities/registry"
 import type { EntityConfig, EntityRow, FieldDef } from "@/lib/entities/types"
 
 const UUID_PATTERN =
@@ -78,6 +86,7 @@ export function EntityManager({
   const router = useRouter()
 
   const statusField = config.fields.find((field) => field.name === "status")
+  const childCount = childEntitiesFor(config.key).length
   const pageCount = Math.max(1, Math.ceil(total / 20))
 
   function refresh(nextPage = page, nextSearch = search, nextStatus = status) {
@@ -234,7 +243,7 @@ export function EntityManager({
                     </th>
                   )
                 })}
-                {canUpdate || canDelete || config.key === "employees" ? (
+                {canUpdate || canDelete || config.key === "employees" || childCount > 0 ? (
                   <th className="px-3 py-2 text-right text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                     Actions
                   </th>
@@ -263,7 +272,7 @@ export function EntityManager({
                       </td>
                     )
                   })}
-                  {canUpdate || canDelete || config.key === "employees" ? (
+                  {canUpdate || canDelete || config.key === "employees" || childCount > 0 ? (
                     <td className="px-3 py-2 text-right whitespace-nowrap">
                       {config.key === "employees" && row.id ? (
                           <Link
@@ -273,6 +282,15 @@ export function EntityManager({
                           >
                             <FileTextIcon className="size-3.5" />
                           </Link>
+                      ) : null}
+                      {childCount > 0 && row.id ? (
+                        <Link
+                          href={`/${config.module}/${config.key}/${row.id}`}
+                          aria-label="Manage related records"
+                          className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        >
+                          <LayersIcon className="size-3.5" />
+                        </Link>
                       ) : null}
                       {canUpdate ? (
                         <Button
@@ -331,16 +349,16 @@ export function EntityManager({
         </div>
       </div>
 
-      <Sheet open={formOpen} onOpenChange={setFormOpen}>
-        <SheetContent side="right" className="gap-4 p-4 sm:max-w-lg">
-          <SheetHeader className="p-0">
-            <SheetTitle>
+      <Drawer open={formOpen} onOpenChange={setFormOpen}>
+        <DrawerContent className="gap-4 p-4 sm:max-w-xl">
+          <DrawerHeader className="p-0">
+            <DrawerTitle>
               {editing ? `Edit ${config.singular}` : `New ${config.singular}`}
-            </SheetTitle>
-            <SheetDescription>
+            </DrawerTitle>
+            <DrawerDescription>
               Changes are scoped to your organization and written to the audit log.
-            </SheetDescription>
-          </SheetHeader>
+            </DrawerDescription>
+          </DrawerHeader>
 
           {error ? <FormError message={error} /> : null}
 
@@ -354,7 +372,7 @@ export function EntityManager({
             }
           />
 
-          <SheetFooter>
+          <DrawerFooter>
             <Button variant="outline" size="sm" onClick={() => setFormOpen(false)}>
               Cancel
             </Button>
@@ -362,20 +380,20 @@ export function EntityManager({
               {pending ? <LoaderCircleIcon className="animate-spin" /> : null}
               Save
             </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
-      <Sheet open={Boolean(deleting)} onOpenChange={(open) => !open && setDeleting(null)}>
-        <SheetContent side="right" className="gap-4 p-4 sm:max-w-sm">
-          <SheetHeader>
-            <SheetTitle>Delete this {config.singular.toLowerCase()}?</SheetTitle>
-            <SheetDescription>
+      <Drawer open={Boolean(deleting)} onOpenChange={(open) => !open && setDeleting(null)}>
+        <DrawerContent className="gap-4 p-4 w-full sm:max-w-5xl">
+          <DrawerHeader>
+            <DrawerTitle>Delete this {config.singular.toLowerCase()}?</DrawerTitle>
+            <DrawerDescription>
               This removes the record from your organization. The action is recorded in
               the audit log.
-            </SheetDescription>
-          </SheetHeader>
-          <SheetFooter>
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
             <Button variant="outline" size="sm" onClick={() => setDeleting(null)}>
               Cancel
             </Button>
@@ -387,9 +405,9 @@ export function EntityManager({
             >
               Delete
             </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   )
 }

@@ -41,6 +41,10 @@ export type EntityConfig = {
   readOnly?: boolean
   tenantScoped?: boolean
   parent?: { field: string; table: string }
+  /** Child/junction table without a single `id` primary key. */
+  child?: boolean
+  /** Columns that uniquely identify a child row. */
+  primaryKeys?: string[]
 }
 
 export type EntityRow = Record<string, unknown> & {

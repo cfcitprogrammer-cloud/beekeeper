@@ -65,7 +65,14 @@ export function getEntity(key: string) {
 export function entitiesForModule(module: string): EntityConfig[] {
   return (moduleEntities[module] ?? [])
     .map((key) => entities[key])
-    .filter((config): config is EntityConfig => Boolean(config))
+    .filter((config): config is EntityConfig => Boolean(config) && !config.child)
+}
+
+/** Child tables that belong to a parent entity, keyed by parent entity key. */
+export function childEntitiesFor(parentKey: string): EntityConfig[] {
+  return Object.values(entities).filter(
+    (config) => config.child && config.parent?.table === parentKey,
+  )
 }
 
 export function moduleForEntity(key: string) {
