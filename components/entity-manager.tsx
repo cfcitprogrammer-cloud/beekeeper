@@ -9,13 +9,13 @@ import { EntityForm, initialFormValues } from "@/components/entity-form"
 import { FormError } from "@/components/form-message"
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import {
   deleteEntityAction,
@@ -293,16 +293,16 @@ export function EntityManager({
         </div>
       </div>
 
-      <Dialog open={formOpen} onOpenChange={setFormOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>
+      <Sheet open={formOpen} onOpenChange={setFormOpen}>
+        <SheetContent side="right" className="gap-4 p-4 sm:max-w-lg">
+          <SheetHeader>
+            <SheetTitle>
               {editing ? `Edit ${config.singular}` : `New ${config.singular}`}
-            </DialogTitle>
-            <DialogDescription>
+            </SheetTitle>
+            <SheetDescription>
               Changes are scoped to your organization and written to the audit log.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           {error ? <FormError message={error} /> : null}
 
@@ -315,7 +315,7 @@ export function EntityManager({
             }
           />
 
-          <DialogFooter>
+          <SheetFooter>
             <Button variant="outline" size="sm" onClick={() => setFormOpen(false)}>
               Cancel
             </Button>
@@ -323,20 +323,20 @@ export function EntityManager({
               {pending ? <LoaderCircleIcon className="animate-spin" /> : null}
               Save
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
 
-      <Dialog open={Boolean(deleting)} onOpenChange={(open) => !open && setDeleting(null)}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete this {config.singular.toLowerCase()}?</DialogTitle>
-            <DialogDescription>
+      <Sheet open={Boolean(deleting)} onOpenChange={(open) => !open && setDeleting(null)}>
+        <SheetContent side="right" className="gap-4 p-4 sm:max-w-sm">
+          <SheetHeader>
+            <SheetTitle>Delete this {config.singular.toLowerCase()}?</SheetTitle>
+            <SheetDescription>
               This removes the record from your organization. The action is recorded in
               the audit log.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
+            </SheetDescription>
+          </SheetHeader>
+          <SheetFooter>
             <Button variant="outline" size="sm" onClick={() => setDeleting(null)}>
               Cancel
             </Button>
@@ -348,9 +348,9 @@ export function EntityManager({
             >
               Delete
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </div>
   )
 }
