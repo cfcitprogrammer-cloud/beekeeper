@@ -19,9 +19,10 @@ export async function fetchEntities(
   status: string,
   limit: number,
   filters: Record<string, string>,
+  sort?: { field: string; direction: "asc" | "desc" },
 ) {
   const session = await requireSession()
-  return listEntities(session, key, { page, search, status, limit, filters })
+  return listEntities(session, key, { page, search, status, limit, filters, sort })
 }
 
 export async function fetchRelationOptions(key: string, fieldName: string) {

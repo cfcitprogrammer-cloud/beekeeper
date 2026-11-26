@@ -5,12 +5,21 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
 import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ArrowUpDownIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Columns3Icon,
+  DownloadIcon,
   FileTextIcon,
   FilterIcon,
   LayersIcon,
   LoaderCircleIcon,
   PencilIcon,
   PlusIcon,
+  SearchIcon,
   Trash2Icon,
 } from "lucide-react"
 
@@ -18,7 +27,17 @@ import { EmptyState } from "@/components/empty-state"
 import { EntityForm, initialFormValues } from "@/components/entity-form"
 import { Field } from "@/components/form-field"
 import { FormError } from "@/components/form-message"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Drawer,
   DrawerContent,
@@ -43,6 +62,7 @@ import {
   type EntityRow,
   type FieldDef,
 } from "@/lib/entities/types"
+import { cn } from "@/lib/utils"
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -61,6 +81,38 @@ function displayValue(value: unknown, field?: FieldDef) {
     return new Date(value).toLocaleString()
   }
   return String(value)
+}
+
+function statusVariant(
+  value: unknown
+): "secondary" | "destructive" | "outline" {
+  const text = String(value).toLowerCase()
+  if (
+    ["active", "success", "completed", "approved", "fulfilled", "paid", "open"].includes(
+      text
+    )
+  ) {
+    return "secondary"
+  }
+  if (
+    ["error", "failed", "rejected", "inactive", "cancelled", "terminated", "overdue"].includes(
+      text
+    )
+  ) {
+    return "destructive"
+  }
+  return "outline"
+}
+
+function initials(value: string) {
+  return (
+    value
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "—"
+  )
 }
 
 export function EntityManager({
@@ -83,6 +135,12 @@ export function EntityManager({
   const [page, setPage] = React.useState(1)
   const [search, setSearch] = React.useState("")
   const [limit, setLimit] = React.useState<number>(DEFAULT_PAGE_SIZE)
+  const [sort, setSort] = React.useState<{
+    field: string
+    direction: "asc" | "desc"
+  } | null>(null)
+  const [visibleColumns, setVisibleColumns] = React.useState<string[]>(config.columns)
+  const [selectedId, setSelectedId] = React.useState<string | null>(null)
   const [filters, setFilters] = React.useState<Record<string, string>>({})
   const [filterDraft, setFilterDraft] = React.useState<Record<string, string>>(
     {}
@@ -102,29 +160,40 @@ export function EntityManager({
   const [pending, startTransition] = React.useTransition()
   const router = useRouter()
 
-  const statusField = config.fields.find((field) => field.name === "status")
   const childCount = childEntitiesFor(config.key).length
   const pageCount = Math.max(1, Math.ceil(total / limit))
   const activeFilterCount = Object.values(filters).filter(Boolean).length
   const filterableFields = config.fields.filter(
     (field) => field.type !== "json"
   )
+  const showActions =
+    canUpdate || canDelete || config.key === "employees" || childCount > 0
+  const numericColumns = visibleColumns.filter(
+    (column) => config.fields.find((field) => field.name === column)?.type === "number"
+  )
+  const firstResult = total === 0 ? 0 : (page - 1) * limit + 1
+  const lastResult = Math.min(page * limit, total)
+  const pageNumbers = React.useMemo(() => {
+    const start = Math.max(1, Math.min(page - 2, Math.max(1, pageCount - 4)))
+    return Array.from({ length: Math.min(5, pageCount) }, (_, index) => start + index)
+  }, [page, pageCount])
 
   function refresh(
     nextPage = page,
     nextSearch = search,
-    nextStatus = status,
     nextLimit = limit,
-    nextFilters = filters
+    nextFilters = filters,
+    nextSort = sort
   ) {
     startTransition(async () => {
       const result = await fetchEntities(
         config.key,
         nextPage,
         nextSearch,
-        nextStatus,
+        "all",
         nextLimit,
-        nextFilters
+        nextFilters,
+        nextSort ?? undefined
       )
       if (result.error) {
         setError(result.error)
@@ -240,14 +309,14 @@ export function EntityManager({
     )
     setFilters(next)
     setFilterOpen(false)
-    refresh(1, search, status, limit, next)
+    refresh(1, search, limit, next)
   }
 
   function clearFilters() {
     setFilterDraft({})
     setFilters({})
     setFilterOpen(false)
-    refresh(1, search, status, limit, {})
+    refresh(1, search, limit, {})
   }
 
   function renderFilterControl(field: FieldDef) {
@@ -311,51 +380,150 @@ export function EntityManager({
     )
   }
 
+  function changeSort(
+    field: string,
+    direction: "asc" | "desc" | "clear"
+  ) {
+    const next =
+      direction === "clear" ? null : { field, direction }
+    setSort(next)
+    refresh(1, search, limit, filters, next)
+  }
+
+  function toggleColumn(column: string) {
+    setVisibleColumns((current) => {
+      if (current.includes(column)) {
+        return current.length > 1 ? current.filter((item) => item !== column) : current
+      }
+      return config.columns.filter(
+        (item) => current.includes(item) || item === column
+      )
+    })
+  }
+
+  function exportCsv() {
+    const escape = (value: unknown) => {
+      const text = value === null || value === undefined ? "" : String(value)
+      return `"${text.replace(/"/g, '""')}"`
+    }
+    const header = visibleColumns.map((column) =>
+      escape(
+        fieldDisplayLabel(config.fields.find((field) => field.name === column)) ||
+          column
+      )
+    )
+    const lines = [
+      header.join(","),
+      ...rows.map((row) =>
+        visibleColumns
+          .map((column) => {
+            const field = config.fields.find((item) => item.name === column)
+            const raw =
+              field?.type === "relation"
+                ? (row.__labels?.[column] ?? "")
+                : row[column]
+            return escape(raw)
+          })
+          .join(",")
+      ),
+    ]
+    const blob = new Blob(["\uFEFF" + lines.join("\r\n")], {
+      type: "text/csv;charset=utf-8",
+    })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${config.key}-${new Date().toISOString().slice(0, 10)}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
-    <div className="border bg-card">
-      <div className="flex flex-wrap items-center gap-2 border-b p-3">
+    <div className="rounded-lg border bg-card shadow-sm">
+      <div className="flex flex-wrap items-center gap-2 border-b bg-card p-3">
         <form
           onSubmit={(event) => {
             event.preventDefault()
-            refresh(1, search, status)
+            refresh(1, search)
           }}
-          className="flex min-w-48 flex-1 gap-2"
+          className="min-w-48 flex-1"
         >
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder={`Search ${config.title.toLowerCase()}…`}
-            className="h-7 max-w-xs text-xs"
-            aria-label={`Search ${config.title}`}
-          />
-          <Button type="submit" variant="outline" size="sm" disabled={pending}>
-            Search
-          </Button>
+          <div className="relative">
+            <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(event) => {
+                const next = event.target.value
+                setSearch(next)
+                if (next === "" && search !== "") refresh(1, "")
+              }}
+              placeholder={`Search ${config.title.toLowerCase()}...`}
+              className="h-7 pl-8 text-xs"
+              aria-label={`Search ${config.title}`}
+            />
+          </div>
         </form>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={openFilters}
-          disabled={pending}
-        >
-          <FilterIcon />
-          Filter{activeFilterCount ? ` (${activeFilterCount})` : ""}
-        </Button>
-
-        {canCreate ? (
+        <div className="flex flex-wrap items-center gap-2">
           <Button
+            variant="outline"
             size="sm"
-            onClick={() =>
-              config.key === "employees"
-                ? router.push("/employees/new")
-                : openForm(null)
-            }
+            onClick={openFilters}
+            disabled={pending}
           >
-            <PlusIcon />
-            New {config.singular.toLowerCase()}
+            <FilterIcon />
+            Filter{activeFilterCount ? ` (${activeFilterCount})` : ""}
           </Button>
-        ) : null}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button variant="outline" size="sm" />}
+            >
+              <Columns3Icon />
+              Columns
+              <ChevronDownIcon className="size-3" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuLabel>Visible columns</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {config.columns.map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column}
+                  checked={visibleColumns.includes(column)}
+                  onCheckedChange={() => toggleColumn(column)}
+                >
+                  {fieldDisplayLabel(
+                    config.fields.find((field) => field.name === column)
+                  ) || column}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportCsv}
+            disabled={rows.length === 0}
+          >
+            <DownloadIcon />
+            Export
+          </Button>
+
+          {canCreate ? (
+            <Button
+              size="sm"
+              onClick={() =>
+                config.key === "employees"
+                  ? router.push("/employees/new")
+                  : openForm(null)
+              }
+            >
+              <PlusIcon />
+              Create New
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {error ? <FormError message={error} className="m-3" /> : null}
@@ -373,115 +541,254 @@ export function EntityManager({
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-xs">
             <thead>
-              <tr className="border-b bg-muted/30 text-left">
-                {config.columns.map((column) => {
+              <tr className="border-b bg-muted/40 text-left">
+                {visibleColumns.map((column, columnIndex) => {
                   const field = config.fields.find(
                     (item) => item.name === column
                   )
+                  const active = sort?.field === column
                   return (
                     <th
                       key={column}
-                      className="px-3 py-2 text-[10px] font-medium tracking-wide whitespace-nowrap text-muted-foreground uppercase"
+                      className={cn(
+                        "px-3 py-2 text-[10px] font-medium tracking-wide whitespace-nowrap text-muted-foreground uppercase",
+                        columnIndex === 0 && "sticky left-0 z-20 bg-muted/40"
+                      )}
                     >
-                      {fieldDisplayLabel(field) || column}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="flex items-center gap-1 outline-none hover:text-foreground data-popup-open:text-foreground">
+                          {fieldDisplayLabel(field) || column}
+                          {active ? (
+                            sort.direction === "asc" ? (
+                              <ArrowUpIcon className="size-3" />
+                            ) : (
+                              <ArrowDownIcon className="size-3" />
+                            )
+                          ) : (
+                            <ArrowUpDownIcon className="size-3 opacity-50" />
+                          )}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-40">
+                          <DropdownMenuItem onClick={() => changeSort(column, "asc")}>
+                            <ArrowUpIcon />
+                            Ascending
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => changeSort(column, "desc")}>
+                            <ArrowDownIcon />
+                            Descending
+                          </DropdownMenuItem>
+                          {active ? (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => changeSort(column, "clear")}
+                              >
+                                Clear sort
+                              </DropdownMenuItem>
+                            </>
+                          ) : null}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </th>
                   )
                 })}
-                {canUpdate ||
-                canDelete ||
-                config.key === "employees" ||
-                childCount > 0 ? (
-                  <th className="px-3 py-2 text-right text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
+                {showActions ? (
+                  <th className="px-3 py-2 text-right text-[10px] font-medium tracking-wide whitespace-nowrap text-muted-foreground uppercase">
                     Actions
                   </th>
                 ) : null}
               </tr>
             </thead>
-            <tbody className="divide-y">
-              {rows.map((row, index) => (
-                <tr key={String(row.id ?? index)} className="hover:bg-muted/30">
-                  {config.columns.map((column) => {
-                    const field = config.fields.find(
-                      (item) => item.name === column
-                    )
-                    const raw = row[column]
-                    // Never fall back to a raw reference UUID in the table.
-                    const value =
-                      field?.type === "relation"
-                        ? (row.__labels?.[column] ?? "—")
-                        : column.endsWith("_id") &&
-                            typeof raw === "string" &&
-                            UUID_PATTERN.test(raw)
-                          ? "—"
-                          : displayValue(raw, field)
+            <tbody>
+              {rows.map((row, index) => {
+                const rowId = String(row.id ?? index)
+                const selected = selectedId === rowId
+                return (
+                  <tr
+                    key={rowId}
+                    onClick={() => setSelectedId(selected ? null : rowId)}
+                    className={cn(
+                      "group border-b transition-colors last:border-b-0",
+                      selected ? "bg-primary/5" : "hover:bg-muted/30"
+                    )}
+                  >
+                    {visibleColumns.map((column, columnIndex) => {
+                      const field = config.fields.find(
+                        (item) => item.name === column
+                      )
+                      const raw = row[column]
+                      // Never fall back to a raw reference UUID in the table.
+                      const value =
+                        field?.type === "relation"
+                          ? (row.__labels?.[column] ?? "—")
+                          : column.endsWith("_id") &&
+                              typeof raw === "string" &&
+                              UUID_PATTERN.test(raw)
+                            ? "—"
+                            : displayValue(raw, field)
+                      const text = String(value)
 
+                      return (
+                        <td
+                          key={column}
+                          className={cn(
+                            "px-3 py-2 align-top tabular-nums",
+                            columnIndex === 0 && "sticky left-0 z-10",
+                            columnIndex === 0 &&
+                              (selected
+                                ? "bg-primary/5"
+                                : "bg-card group-hover:bg-muted/30")
+                          )}
+                        >
+                          {field?.name === "status" && value !== "—" ? (
+                            <Badge
+                              variant={statusVariant(value)}
+                              className="rounded-full"
+                            >
+                              {text}
+                            </Badge>
+                          ) : field?.type === "relation" && value !== "—" ? (
+                            <span className="inline-flex max-w-56 items-center gap-2">
+                              <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-[9px] font-medium text-muted-foreground">
+                                {initials(text)}
+                              </span>
+                              <span className="truncate" title={text}>
+                                {text}
+                              </span>
+                            </span>
+                          ) : (
+                            <span className="block max-w-64 truncate" title={text}>
+                              {value}
+                            </span>
+                          )}
+                        </td>
+                      )
+                    })}
+                    {showActions ? (
+                      <td
+                        className="px-3 py-2 text-right whitespace-nowrap"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        {config.key === "employees" && row.id ? (
+                          <Link
+                            href={`/employees/201/${row.id}`}
+                            aria-label="View 201 file"
+                            className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          >
+                            <FileTextIcon className="size-3.5" />
+                          </Link>
+                        ) : null}
+                        {childCount > 0 && row.id ? (
+                          <Link
+                            href={`/${config.module}/${config.key}/${row.id}`}
+                            aria-label="Manage related records"
+                            className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          >
+                            <LayersIcon className="size-3.5" />
+                          </Link>
+                        ) : null}
+                        {canUpdate ? (
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() =>
+                              config.key === "employees" && row.id
+                                ? router.push(`/employees/${row.id}/edit`)
+                                : openForm(row)
+                            }
+                            aria-label={`Edit ${config.singular}`}
+                          >
+                            <PencilIcon />
+                          </Button>
+                        ) : null}
+                        {canDelete ? (
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => setDeleting(row)}
+                            aria-label={`Delete ${config.singular}`}
+                          >
+                            <Trash2Icon />
+                          </Button>
+                        ) : null}
+                      </td>
+                    ) : null}
+                  </tr>
+                )
+              })}
+            </tbody>
+            {numericColumns.length ? (
+              <tfoot className="border-t bg-muted/30">
+                <tr>
+                  {visibleColumns.map((column, columnIndex) => {
+                    const isNumeric = numericColumns.includes(column)
+                    const value = isNumeric
+                      ? rows.reduce((sum, row) => {
+                          const raw = Number(row[column])
+                          return Number.isFinite(raw) ? sum + raw : sum
+                        }, 0)
+                      : null
                     return (
                       <td
                         key={column}
-                        className="px-3 py-2 align-top tabular-nums"
+                        className={cn(
+                          "px-3 py-2 font-medium",
+                          columnIndex === 0 &&
+                            "sticky left-0 z-10 bg-muted/30"
+                        )}
                       >
-                        {value}
+                        {columnIndex === 0 ? "Totals" : isNumeric ? value : ""}
                       </td>
                     )
                   })}
-                  {canUpdate ||
-                  canDelete ||
-                  config.key === "employees" ||
-                  childCount > 0 ? (
-                    <td className="px-3 py-2 text-right whitespace-nowrap">
-                      {config.key === "employees" && row.id ? (
-                        <Link
-                          href={`/employees/201/${row.id}`}
-                          aria-label="View 201 file"
-                          className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          <FileTextIcon className="size-3.5" />
-                        </Link>
-                      ) : null}
-                      {childCount > 0 && row.id ? (
-                        <Link
-                          href={`/${config.module}/${config.key}/${row.id}`}
-                          aria-label="Manage related records"
-                          className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          <LayersIcon className="size-3.5" />
-                        </Link>
-                      ) : null}
-                      {canUpdate ? (
-                        <Button
-                          variant="ghost"
-                          size="icon-xs"
-                          onClick={() =>
-                            config.key === "employees" && row.id
-                              ? router.push(`/employees/${row.id}/edit`)
-                              : openForm(row)
-                          }
-                          aria-label={`Edit ${config.singular}`}
-                        >
-                          <PencilIcon />
-                        </Button>
-                      ) : null}
-                      {canDelete ? (
-                        <Button
-                          variant="ghost"
-                          size="icon-xs"
-                          onClick={() => setDeleting(row)}
-                          aria-label={`Delete ${config.singular}`}
-                        >
-                          <Trash2Icon />
-                        </Button>
-                      ) : null}
-                    </td>
-                  ) : null}
+                  {showActions ? <td /> : null}
                 </tr>
-              ))}
-            </tbody>
+              </tfoot>
+            ) : null}
           </table>
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t px-3 py-2">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t px-3 py-2 text-[11px] text-muted-foreground">
+        <span className="tabular-nums">
+          Showing {firstResult}-{lastResult} of {total} results
+        </span>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              disabled={page <= 1 || pending}
+              onClick={() => refresh(page - 1)}
+              aria-label="Previous page"
+            >
+              <ChevronLeftIcon />
+            </Button>
+            {pageNumbers.map((number) => (
+              <Button
+                key={number}
+                variant={number === page ? "default" : "outline"}
+                size="xs"
+                className="min-w-6"
+                disabled={pending}
+                onClick={() => refresh(number)}
+                aria-label={`Page ${number}`}
+              >
+                {number}
+              </Button>
+            ))}
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              disabled={page >= pageCount || pending}
+              onClick={() => refresh(page + 1)}
+              aria-label="Next page"
+            >
+              <ChevronRightIcon />
+            </Button>
+          </div>
+
           <label className="flex items-center gap-1.5">
             Rows per page
             <select
@@ -489,7 +796,7 @@ export function EntityManager({
               onChange={(event) => {
                 const nextLimit = Number(event.target.value)
                 setLimit(nextLimit)
-                refresh(1, search, status, nextLimit)
+                refresh(1, search, nextLimit)
               }}
               disabled={pending}
               className="h-7 rounded-none border border-input bg-transparent px-2 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-input/30"
@@ -502,30 +809,6 @@ export function EntityManager({
               ))}
             </select>
           </label>
-          <span className="tabular-nums">
-            {total} {total === 1 ? "record" : "records"}
-          </span>
-          <span className="tabular-nums">
-            Page {page} of {pageCount}
-          </span>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="xs"
-            disabled={page <= 1 || pending}
-            onClick={() => refresh(page - 1)}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="xs"
-            disabled={page >= pageCount || pending}
-            onClick={() => refresh(page + 1)}
-          >
-            Next
-          </Button>
         </div>
       </div>
 

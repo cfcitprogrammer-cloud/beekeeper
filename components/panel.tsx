@@ -23,7 +23,9 @@ export function Panel({
         <div className="min-w-0">
           <h2 className="text-xs font-medium">{title}</h2>
           {description ? (
-            <p className="mt-0.5 text-[11px] text-muted-foreground">{description}</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              {description}
+            </p>
           ) : null}
         </div>
         {action ? <div className="shrink-0">{action}</div> : null}
@@ -45,11 +47,16 @@ export function PageHeader({
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-wrap items-end justify-between gap-4", className)}>
+    <div
+      className={cn(
+        "flex flex-wrap items-end justify-between gap-4",
+        className
+      )}
+    >
       <div className="min-w-0">
-        <h1 className="text-xl font-medium tracking-[-0.02em]">{title}</h1>
+        <h1 className="text-lg font-medium tracking-[-0.02em]">{title}</h1>
         {description ? (
-          <p className="mt-1 max-w-[65ch] text-xs leading-relaxed text-muted-foreground">
+          <p className="max-w-[65ch] text-xs leading-relaxed text-muted-foreground">
             {description}
           </p>
         ) : null}

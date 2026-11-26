@@ -340,6 +340,7 @@ export async function listEntities(
     status?: string
     limit?: number
     filters?: Record<string, string>
+    sort?: { field: string; direction: "asc" | "desc" }
   },
 ): Promise<{ rows: EntityRow[]; total: number; error?: string }> {
   const config = getEntity(key)
@@ -409,7 +410,16 @@ export async function listEntities(
     }
   }
 
-  query = query.order(config.defaultOrder, { ascending: false }).range(start, start + pageSize - 1)
+  const requestedSort = options.sort
+  const sortField =
+    requestedSort && config.fields.some((field) => field.name === requestedSort.field)
+      ? requestedSort.field
+      : null
+  query = query
+    .order(sortField ?? config.defaultOrder, {
+      ascending: sortField ? requestedSort!.direction === "asc" : false,
+    })
+    .range(start, start + pageSize - 1)
 
   const { data, count, error } = await query
   if (error) return { rows: [], total: 0, error: error.message }

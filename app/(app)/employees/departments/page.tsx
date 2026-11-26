@@ -33,11 +33,16 @@ export default async function DepartmentsPage() {
       <PageHeader
         title="Departments"
         description="Manage employee departments."
-        action={
-          <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/employees" />}>
-            Back to employees
-          </Button>
-        }
+        // action={
+        //   <Button
+        //     variant="outline"
+        //     size="sm"
+        //     nativeButton={false}
+        //     render={<Link href="/employees" />}
+        //   >
+        //     Back to employees
+        //   </Button>
+        // }
       />
       <div className="mt-4">
         {error ? (
