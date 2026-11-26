@@ -30,6 +30,14 @@ import { FormError } from "@/components/form-message"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -439,8 +447,8 @@ export function EntityManager({
   }
 
   return (
-    <div className="rounded-lg border bg-card shadow-sm">
-      <div className="flex flex-wrap items-center gap-2 border-b bg-card p-3">
+    <div className="flex min-h-[calc(100svh-12rem)] flex-col rounded-lg border bg-card shadow-sm">
+      <div className="flex shrink-0 flex-wrap items-center gap-2 border-b bg-card p-3">
         <form
           onSubmit={(event) => {
             event.preventDefault()
@@ -529,16 +537,18 @@ export function EntityManager({
       {error ? <FormError message={error} className="m-3" /> : null}
 
       {rows.length === 0 ? (
-        <EmptyState
-          title={`No ${config.title.toLowerCase()} yet`}
-          description={
-            canCreate
-              ? `Create the first ${config.singular.toLowerCase()} to start using this module.`
-              : `Nothing is visible to your role in ${config.title} yet.`
-          }
-        />
+        <div className="flex min-h-0 flex-1 items-center justify-center">
+          <EmptyState
+            title={`No ${config.title.toLowerCase()} yet`}
+            description={
+              canCreate
+                ? `Create the first ${config.singular.toLowerCase()} to start using this module.`
+                : `Nothing is visible to your role in ${config.title} yet.`
+            }
+          />
+        </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="min-h-0 flex-1 overflow-x-auto">
           <table className="w-full border-collapse text-xs">
             <thead>
               <tr className="border-b bg-muted/40 text-left">
@@ -749,7 +759,7 @@ export function EntityManager({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t px-3 py-2 text-[11px] text-muted-foreground">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t px-3 py-2 text-[11px] text-muted-foreground">
         <span className="tabular-nums">
           Showing {firstResult}-{lastResult} of {total} results
         </span>
@@ -852,21 +862,21 @@ export function EntityManager({
         </DrawerContent>
       </Drawer>
 
-      <Drawer
+      <Dialog
         open={Boolean(deleting)}
         onOpenChange={(open) => !open && setDeleting(null)}
       >
-        <DrawerContent className="w-full gap-4 p-4 sm:max-w-5xl">
-          <DrawerHeader>
-            <DrawerTitle>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>
               Delete this {config.singular.toLowerCase()}?
-            </DrawerTitle>
-            <DrawerDescription>
+            </DialogTitle>
+            <DialogDescription>
               This removes the record from your organization. The action is
               recorded in the audit log.
-            </DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
             <Button
               variant="outline"
               size="sm"
@@ -882,9 +892,9 @@ export function EntityManager({
             >
               Delete
             </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
         <DrawerContent className="p-0 sm:max-w-md">
