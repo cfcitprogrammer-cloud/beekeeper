@@ -6,6 +6,14 @@ const hiddenFields: Record<string, string[]> = {
   _all: ["client_uuid", "synced_at"],
   organizations: ["settings"],
   approvals: ["remarks"],
+  // Superseded by the employment-type master and per-address location fields.
+  employees: [
+    "employment_type",
+    "province",
+    "city_municipality",
+    "barangay",
+    "zip_code",
+  ],
 }
 
 /**
@@ -44,6 +52,39 @@ const fieldOverrides: Record<string, Record<string, Partial<FieldDef>>> = {
   positions: {
     status: activeStatusField,
   },
+  employees: {
+    name_suffix: { label: "Suffix" },
+    sex: {
+      type: "select",
+      options: [
+        { value: "Male", label: "Male" },
+        { value: "Female", label: "Female" },
+        { value: "Other", label: "Other" },
+      ],
+    },
+    civil_status: {
+      type: "select",
+      options: [
+        { value: "Single", label: "Single" },
+        { value: "Married", label: "Married" },
+        { value: "Widowed", label: "Widowed" },
+        { value: "Separated", label: "Separated" },
+        { value: "Annulled", label: "Annulled" },
+      ],
+    },
+    nationality: {
+      type: "select",
+      options: [
+        { value: "Filipino", label: "Filipino" },
+        { value: "Other", label: "Other" },
+      ],
+    },
+    employment_type_id: {
+      label: "Employment Type",
+      type: "relation",
+      relation: { table: "employment_types", field: "id", labelField: "type" },
+    },
+  },
 }
 
 const displayColumns: Record<string, string[]> = {
@@ -80,8 +121,33 @@ const displayColumns: Record<string, string[]> = {
   approvals: ["entity_type", "entity_id", "level", "approver_id", "status"],
 }
 
+/**
+ * Master data created after the generator tables. Kept here so regeneration
+ * of generated.ts doesn't drop it.
+ */
+const manualEntities: Record<string, EntityConfig> = {
+  employment_types: {
+    key: "employment_types",
+    module: "employees",
+    title: "Employment Types",
+    singular: "Employment Type",
+    table: "employment_types",
+    fields: [
+      { name: "code", label: "Code", type: "text", required: true, notNull: true },
+      { name: "type", label: "Type", type: "text", required: true, notNull: true },
+      { name: "description", label: "Description", type: "textarea", required: false },
+    ],
+    columns: ["code", "type", "description"],
+    searchColumns: ["code", "type"],
+    defaultOrder: "created_at",
+    readOnly: false,
+    tenantScoped: true,
+  },
+}
+
 export const entities: Record<string, EntityConfig> = Object.fromEntries(
-  Object.entries(generatedEntities).map(([key, config]) => {
+  [...Object.entries(generatedEntities), ...Object.entries(manualEntities)].map(
+    ([key, config]) => {
     const hidden = [...(hiddenFields._all ?? []), ...(hiddenFields[key] ?? [])]
     const fields = config.fields
       .filter((field) => !hidden.includes(field.name))

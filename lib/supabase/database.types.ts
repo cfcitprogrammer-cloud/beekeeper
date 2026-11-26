@@ -236,6 +236,15 @@ export type Database = {
       school_name: string | null
       course: string | null
       year_graduated: number | null
+      employment_type_id: string | null
+      present_province: string | null
+      present_city_municipality: string | null
+      present_barangay: string | null
+      present_zip_code: string | null
+      permanent_province: string | null
+      permanent_city_municipality: string | null
+      permanent_barangay: string | null
+      permanent_zip_code: string | null
     }>
     employee_documents: Table<{
       id: string
@@ -1059,6 +1068,15 @@ export type Database = {
       storage_url: string
       uploaded_by: string | null
       created_at: string
+    }>
+    employment_types: Table<{
+      id: string
+      org_id: string
+      code: string
+      type: string
+      description: string | null
+      created_at: string
+      updated_at: string
     }>
     }
     Views: {

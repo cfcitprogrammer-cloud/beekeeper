@@ -195,6 +195,15 @@ export function AppNav({
                                 <span className="truncate">Positions</span>
                               </Link>
                             </li>
+                            <li>
+                              <Link
+                                href="/employees/employment-types"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/employees/employment-types")}
+                              >
+                                <span className="truncate">Employment Types</span>
+                              </Link>
+                            </li>
                           </ul>
                         ) : null}
                       </li>

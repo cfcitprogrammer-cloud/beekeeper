@@ -1413,6 +1413,60 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Year Graduated",
         "type": "number",
         "required": false
+      },
+      {
+        "name": "employment_type_id",
+        "label": "Employment Type Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "present_province",
+        "label": "Present Province",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "present_city_municipality",
+        "label": "Present City Municipality",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "present_barangay",
+        "label": "Present Barangay",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "present_zip_code",
+        "label": "Present Zip Code",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "permanent_province",
+        "label": "Permanent Province",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "permanent_city_municipality",
+        "label": "Permanent City Municipality",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "permanent_barangay",
+        "label": "Permanent Barangay",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "permanent_zip_code",
+        "label": "Permanent Zip Code",
+        "type": "text",
+        "required": false
       }
     ],
     "columns": [
