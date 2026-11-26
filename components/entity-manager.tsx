@@ -194,6 +194,7 @@ export function EntityManager({
     nextSort = sort
   ) {
     startTransition(async () => {
+      toast.loading("Loading records...", { id: "entity-rows" })
       const result = await fetchEntities(
         config.key,
         nextPage,
@@ -203,7 +204,9 @@ export function EntityManager({
         nextFilters,
         nextSort ?? undefined
       )
+      toast.dismiss("entity-rows")
       if (result.error) {
+        toast.error(result.error)
         setError(result.error)
         return
       }
@@ -224,11 +227,13 @@ export function EntityManager({
     )
     if (relationFields.length) {
       startTransition(async () => {
+        toast.loading("Loading form options...", { id: "form-options" })
         const results = await Promise.all(
           relationFields.map((field) =>
             fetchRelationOptions(config.key, field.name)
           )
         )
+        toast.dismiss("form-options")
         setRelationOptions(
           Object.fromEntries(
             relationFields.map((field, index) => [
@@ -245,13 +250,16 @@ export function EntityManager({
 
   function save() {
     startTransition(async () => {
+      toast.loading("Saving record...", { id: "entity-save" })
       try {
         const result = await saveEntityAction(
           config.key,
           editing?.id ?? null,
           values
         )
+        toast.dismiss("entity-save")
         if (!result.ok) {
+          toast.error(result.error ?? "Could not save this record.")
           setError(result.error ?? "Could not save this record.")
           return
         }
@@ -259,11 +267,11 @@ export function EntityManager({
         setFormOpen(false)
         refresh(page)
       } catch (caught) {
-        setError(
-          caught instanceof Error
-            ? caught.message
-            : "Could not save this record."
-        )
+        toast.dismiss("entity-save")
+        const message =
+          caught instanceof Error ? caught.message : "Could not save this record."
+        toast.error(message)
+        setError(message)
       }
     })
   }
@@ -271,8 +279,11 @@ export function EntityManager({
   function remove() {
     if (!deleting?.id) return
     startTransition(async () => {
+      toast.loading("Deleting record...", { id: "entity-delete" })
       const result = await deleteEntityAction(config.key, String(deleting.id))
+      toast.dismiss("entity-delete")
       if (!result.ok) {
+        toast.error(result.error ?? "Could not delete this record.")
         setError(result.error ?? "Could not delete this record.")
         return
       }
@@ -294,11 +305,13 @@ export function EntityManager({
     )
     if (relationFields.length) {
       startTransition(async () => {
+        toast.loading("Loading filter options...", { id: "filter-options" })
         const results = await Promise.all(
           relationFields.map((field) =>
             fetchRelationOptions(config.key, field.name)
           )
         )
+        toast.dismiss("filter-options")
         setFilterOptions(
           Object.fromEntries(
             relationFields.map((field, index) => [

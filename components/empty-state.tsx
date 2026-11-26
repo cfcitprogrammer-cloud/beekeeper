@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react"
+import { Ghost, type LucideIcon } from "lucide-react"
 import type * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -17,12 +17,16 @@ export function EmptyState({
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-col items-start gap-2 px-4 py-6", className)}>
+    <div
+      className={cn("flex flex-col items-center gap-2 px-4 py-6", className)}
+    >
       {Icon ? (
         <span className="flex size-7 items-center justify-center border bg-muted/40 text-muted-foreground">
           <Icon className="size-3.5" />
         </span>
-      ) : null}
+      ) : (
+        <Ghost />
+      )}
       <p className="text-xs font-medium">{title}</p>
       <p className="max-w-[48ch] text-[11px] leading-relaxed text-muted-foreground">
         {description}

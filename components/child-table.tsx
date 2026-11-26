@@ -59,8 +59,11 @@ export function ChildTable({
   function load() {
     startTransition(async () => {
       setLoading(true)
+      toast.loading("Loading rows...", { id: `child-rows-${config.key}` })
       const result = await fetchChildRows(config.key, parentField, parentId)
+      toast.dismiss(`child-rows-${config.key}`)
       if (result.error) {
+        toast.error(result.error)
         setError(result.error)
       } else {
         setError(null)
@@ -83,9 +86,11 @@ export function ChildTable({
     const relationFields = formConfig.fields.filter((field) => field.type === "relation")
     if (relationFields.length) {
       startTransition(async () => {
+        toast.loading("Loading options...", { id: `child-options-${config.key}` })
         const results = await Promise.all(
           relationFields.map((field) => fetchRelationOptions(config.key, field.name)),
         )
+        toast.dismiss(`child-options-${config.key}`)
         setRelationOptions(
           Object.fromEntries(
             relationFields.map((field, index) => [field.name, results[index].options ?? []]),
@@ -98,12 +103,15 @@ export function ChildTable({
 
   function save() {
     startTransition(async () => {
+      toast.loading("Saving row...", { id: `child-save-${config.key}` })
       const keys = editing
         ? Object.fromEntries(keyFields.map((name) => [name, editing[name]]))
         : {}
       const payload = { ...values, [parentField]: parentId }
       const result = await saveChildRow(config.key, payload, keys, !editing)
+      toast.dismiss(`child-save-${config.key}`)
       if (!result.ok) {
+        toast.error(result.error ?? "Could not save this row.")
         setError(result.error ?? "Could not save this row.")
         return
       }
@@ -117,8 +125,11 @@ export function ChildTable({
     if (!deleting) return
     const keys = Object.fromEntries(keyFields.map((name) => [name, deleting[name]]))
     startTransition(async () => {
+      toast.loading("Deleting row...", { id: `child-delete-${config.key}` })
       const result = await removeChildRow(config.key, keys)
+      toast.dismiss(`child-delete-${config.key}`)
       if (!result.ok) {
+        toast.error(result.error ?? "Could not delete this row.")
         setError(result.error ?? "Could not delete this row.")
         return
       }
