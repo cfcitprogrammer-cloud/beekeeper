@@ -34,7 +34,13 @@ import {
 } from "@/app/(app)/entities/actions"
 import { fieldDisplayLabel } from "@/lib/entities/format"
 import { childEntitiesFor } from "@/lib/entities/registry"
-import type { EntityConfig, EntityRow, FieldDef } from "@/lib/entities/types"
+import {
+  DEFAULT_PAGE_SIZE,
+  PAGE_SIZE_OPTIONS,
+  type EntityConfig,
+  type EntityRow,
+  type FieldDef,
+} from "@/lib/entities/types"
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -74,6 +80,7 @@ export function EntityManager({
   const [page, setPage] = React.useState(1)
   const [search, setSearch] = React.useState("")
   const [status, setStatus] = React.useState("all")
+  const [limit, setLimit] = React.useState<number>(DEFAULT_PAGE_SIZE)
   const [error, setError] = React.useState<string | null>(null)
   const [editing, setEditing] = React.useState<EntityRow | null>(null)
   const [formOpen, setFormOpen] = React.useState(false)
@@ -87,11 +94,16 @@ export function EntityManager({
 
   const statusField = config.fields.find((field) => field.name === "status")
   const childCount = childEntitiesFor(config.key).length
-  const pageCount = Math.max(1, Math.ceil(total / 20))
+  const pageCount = Math.max(1, Math.ceil(total / limit))
 
-  function refresh(nextPage = page, nextSearch = search, nextStatus = status) {
+  function refresh(
+    nextPage = page,
+    nextSearch = search,
+    nextStatus = status,
+    nextLimit = limit,
+  ) {
     startTransition(async () => {
-      const result = await fetchEntities(config.key, nextPage, nextSearch, nextStatus)
+      const result = await fetchEntities(config.key, nextPage, nextSearch, nextStatus, nextLimit)
       if (result.error) {
         setError(result.error)
         return
@@ -196,10 +208,6 @@ export function EntityManager({
             ))}
           </select>
         ) : null}
-
-        <span className="ml-auto text-[11px] tabular-nums text-muted-foreground">
-          {total} {total === 1 ? "record" : "records"}
-        </span>
 
         {canCreate ? (
           <Button
@@ -325,10 +333,35 @@ export function EntityManager({
         </div>
       )}
 
-      <div className="flex items-center justify-between gap-3 border-t px-3 py-2">
-        <span className="text-[11px] text-muted-foreground">
-          Page {page} of {pageCount}
-        </span>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t px-3 py-2">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+          <label className="flex items-center gap-1.5">
+            Rows per page
+            <select
+              value={limit}
+              onChange={(event) => {
+                const nextLimit = Number(event.target.value)
+                setLimit(nextLimit)
+                refresh(1, search, status, nextLimit)
+              }}
+              disabled={pending}
+              className="h-7 rounded-none border border-input bg-transparent px-2 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-input/30"
+              aria-label="Rows per page"
+            >
+              {PAGE_SIZE_OPTIONS.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+          <span className="tabular-nums">
+            {total} {total === 1 ? "record" : "records"}
+          </span>
+          <span className="tabular-nums">
+            Page {page} of {pageCount}
+          </span>
+        </div>
         <div className="flex gap-2">
           <Button
             variant="outline"

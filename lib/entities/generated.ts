@@ -942,14 +942,44 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "type": "text",
         "required": true,
         "notNull": true
+      },
+      {
+        "name": "code",
+        "label": "Code",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "description",
+        "label": "Description",
+        "type": "textarea",
+        "required": false
+      },
+      {
+        "name": "manager_id",
+        "label": "Manager Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "status",
+        "label": "Status",
+        "type": "text",
+        "required": false
       }
     ],
     "columns": [
       "parent_id",
-      "name"
+      "name",
+      "code",
+      "description",
+      "manager_id",
+      "status"
     ],
     "searchColumns": [
-      "name"
+      "name",
+      "code",
+      "description"
     ],
     "defaultOrder": "created_at",
     "readOnly": false,

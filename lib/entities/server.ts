@@ -3,7 +3,13 @@ import "server-only"
 import type { Session } from "@/lib/auth"
 import { fieldDisplayLabel } from "./format"
 import { getEntity } from "./registry"
-import type { EntityConfig, EntityRow, FieldDef } from "./types"
+import {
+  DEFAULT_PAGE_SIZE,
+  PAGE_SIZE_OPTIONS,
+  type EntityConfig,
+  type EntityRow,
+  type FieldDef,
+} from "./types"
 
 /**
  * Only tables that actually have an `org_id` column can be scoped to the
@@ -328,7 +334,7 @@ export async function getEntityRow(
 export async function listEntities(
   session: Session,
   key: string,
-  options: { page: number; search?: string; status?: string },
+  options: { page: number; search?: string; status?: string; limit?: number },
 ): Promise<{ rows: EntityRow[]; total: number; error?: string }> {
   const config = getEntity(key)
   if (!config) return { rows: [], total: 0, error: "Unknown module." }
@@ -336,7 +342,11 @@ export async function listEntities(
     return { rows: [], total: 0, error: "You can't view this module." }
   }
 
-  const pageSize = 20
+  // The dropdown is an untrusted input; only allow the published page sizes.
+  const pageSize =
+    options.limit && (PAGE_SIZE_OPTIONS as readonly number[]).includes(options.limit)
+      ? options.limit
+      : DEFAULT_PAGE_SIZE
   const start = Math.max(0, options.page - 1) * pageSize
   let query = from(session, config).select("*", { count: "exact" })
 

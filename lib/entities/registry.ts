@@ -8,13 +8,46 @@ const hiddenFields: Record<string, string[]> = {
   approvals: ["remarks"],
 }
 
+/**
+ * The employees page shows only the Employees list. Departments and positions
+ * have their own pages, and documents belong to the employee detail view, so
+ * none of them should appear as tabs on /employees. Applied here (not in
+ * generated.ts) so regeneration keeps this behaviour.
+ */
+const moduleViewEntities: Record<string, string[]> = {
+  employees: ["employees"],
+}
+
+/**
+ * Columns added with `alter table` aren't fully understood by the entity
+ * generator, so relations and fixed option lists are curated here.
+ */
+const fieldOverrides: Record<string, Record<string, Partial<FieldDef>>> = {
+  departments: {
+    manager_id: {
+      label: "Manager",
+      type: "relation",
+      relation: { table: "employees", field: "id", labelField: "email" },
+    },
+    status: {
+      type: "select",
+      notNull: true,
+      hasDefault: true,
+      options: [
+        { value: "active", label: "Active" },
+        { value: "inactive", label: "Inactive" },
+      ],
+    },
+  },
+}
+
 const displayColumns: Record<string, string[]> = {
   users: ["full_name", "email", "status", "last_login_at"],
   roles: ["name", "description"],
   organizations: ["name", "code", "timezone", "currency_code"],
   audit_logs: ["created_at", "user_id", "module", "entity_type", "action"],
   employees: ["employee_no", "first_name", "last_name", "status", "is_field_staff"],
-  departments: ["name", "code", "is_active"],
+  departments: ["name", "code", "description", "manager_id", "status"],
   positions: ["title", "code", "level"],
   attendances: ["work_date", "employee_id", "status", "late_minutes", "overtime_minutes"],
   leaves: ["employee_id", "leave_type_id", "start_date", "end_date", "days", "status"],
@@ -37,7 +70,9 @@ const displayColumns: Record<string, string[]> = {
 export const entities: Record<string, EntityConfig> = Object.fromEntries(
   Object.entries(generatedEntities).map(([key, config]) => {
     const hidden = [...(hiddenFields._all ?? []), ...(hiddenFields[key] ?? [])]
-    const fields = config.fields.filter((field) => !hidden.includes(field.name))
+    const fields = config.fields
+      .filter((field) => !hidden.includes(field.name))
+      .map((field) => ({ ...field, ...(fieldOverrides[key]?.[field.name] ?? {}) }))
 
     const preferred = displayColumns[key]
     const columns = preferred
@@ -63,7 +98,8 @@ export function getEntity(key: string) {
 }
 
 export function entitiesForModule(module: string): EntityConfig[] {
-  return (moduleEntities[module] ?? [])
+  const keys = moduleViewEntities[module] ?? moduleEntities[module] ?? []
+  return keys
     .map((key) => entities[key])
     .filter((config): config is EntityConfig => Boolean(config) && !config.child)
 }

@@ -1,3 +1,6 @@
+export const PAGE_SIZE_OPTIONS = [50, 100, 500, 1000] as const
+export const DEFAULT_PAGE_SIZE = 50
+
 export type FieldType =
   | "text"
   | "textarea"

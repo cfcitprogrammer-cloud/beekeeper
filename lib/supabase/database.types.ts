@@ -163,6 +163,10 @@ export type Database = {
       name: string
       created_at: string
       updated_at: string
+      code: string | null
+      description: string | null
+      manager_id: string | null
+      status: string | null
     }>
     positions: Table<{
       id: string
@@ -191,6 +195,42 @@ export type Database = {
       is_field_staff: boolean
       created_at: string
       updated_at: string
+      middle_name: string | null
+      name_suffix: string | null
+      date_of_birth: string | null
+      sex: string | null
+      civil_status: string | null
+      nationality: string | null
+      place_of_birth: string | null
+      religion: string | null
+      present_address: string | null
+      permanent_address: string | null
+      province: string | null
+      city_municipality: string | null
+      barangay: string | null
+      zip_code: string | null
+      sss_no: string | null
+      philhealth_no: string | null
+      pagibig_no: string | null
+      tin: string | null
+      umid_no: string | null
+      passport_no: string | null
+      drivers_license_no: string | null
+      prc_license_no: string | null
+      emergency_contact_name: string | null
+      emergency_contact_relationship: string | null
+      emergency_contact_phone: string | null
+      emergency_contact_address: string | null
+      regularization_date: string | null
+      employment_type: string | null
+      basic_salary: number | null
+      pay_frequency: string | null
+      bank_name: string | null
+      bank_account_no: string | null
+      highest_education: string | null
+      school_name: string | null
+      course: string | null
+      year_graduated: number | null
     }>
     employee_documents: Table<{
       id: string

@@ -34,13 +34,16 @@ function DrawerPortal({ ...props }: DrawerPrimitive.Portal.Props) {
   return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />
 }
 
-function DrawerOverlay({ className, ...props }: DrawerPrimitive.Backdrop.Props) {
+function DrawerOverlay({
+  className,
+  ...props
+}: DrawerPrimitive.Backdrop.Props) {
   return (
     <DrawerPrimitive.Backdrop
       data-slot="drawer-overlay"
       className={cn(
         "fixed inset-0 z-50 bg-black/10 text-xs/relaxed transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-backdrop-filter:backdrop-blur-xs",
-        className,
+        className
       )}
       {...props}
     />
@@ -66,8 +69,8 @@ function DrawerContent({
           data-swipe-direction={swipeDirection}
           className={cn(
             "fixed z-50 flex flex-col bg-popover bg-clip-padding text-xs/relaxed text-popover-foreground shadow-lg transition duration-200 ease-in-out",
-            "inset-y-0 right-0 h-full w-3/4 border-l data-ending-style:translate-x-[2.5rem] data-starting-style:translate-x-[2.5rem] data-[swipe-direction=left]:right-auto data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:border-l-0 data-[swipe-direction=left]:border-r data-[swipe-direction=left]:data-ending-style:translate-x-[-2.5rem] data-[swipe-direction=left]:data-starting-style:translate-x-[-2.5rem]",
-            className,
+            "inset-y-0 right-0 h-full w-3/4 border-l data-ending-style:translate-x-[2.5rem] data-starting-style:translate-x-[2.5rem] data-[swipe-direction=left]:right-auto data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:border-r data-[swipe-direction=left]:border-l-0 data-[swipe-direction=left]:data-ending-style:translate-x-[-2.5rem] data-[swipe-direction=left]:data-starting-style:translate-x-[-2.5rem]",
+            className
           )}
           {...props}
         >
@@ -119,13 +122,19 @@ function DrawerTitle({ className, ...props }: DrawerPrimitive.Title.Props) {
   return (
     <DrawerPrimitive.Title
       data-slot="drawer-title"
-      className={cn("font-heading text-sm font-medium text-foreground", className)}
+      className={cn(
+        "font-heading text-sm font-medium text-foreground",
+        className
+      )}
       {...props}
     />
   )
 }
 
-function DrawerDescription({ className, ...props }: DrawerPrimitive.Description.Props) {
+function DrawerDescription({
+  className,
+  ...props
+}: DrawerPrimitive.Description.Props) {
   return (
     <DrawerPrimitive.Description
       data-slot="drawer-description"

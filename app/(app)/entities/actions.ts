@@ -17,9 +17,10 @@ export async function fetchEntities(
   page: number,
   search: string,
   status: string,
+  limit: number,
 ) {
   const session = await requireSession()
-  return listEntities(session, key, { page, search, status })
+  return listEntities(session, key, { page, search, status, limit })
 }
 
 export async function fetchRelationOptions(key: string, fieldName: string) {
