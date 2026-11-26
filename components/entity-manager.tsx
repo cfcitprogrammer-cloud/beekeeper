@@ -148,6 +148,7 @@ export function EntityManager({
     direction: "asc" | "desc"
   } | null>(null)
   const [visibleColumns, setVisibleColumns] = React.useState<string[]>(config.columns)
+  const [showTotals, setShowTotals] = React.useState(false)
   const [selectedId, setSelectedId] = React.useState<string | null>(null)
   const [filters, setFilters] = React.useState<Record<string, string>>({})
   const [filterDraft, setFilterDraft] = React.useState<Record<string, string>>(
@@ -171,6 +172,7 @@ export function EntityManager({
   const childCount = childEntitiesFor(config.key).length
   const pageCount = Math.max(1, Math.ceil(total / limit))
   const activeFilterCount = Object.values(filters).filter(Boolean).length
+  const hasCriteria = search.trim() !== "" || activeFilterCount > 0
   const filterableFields = config.fields.filter(
     (field) => field.type !== "json"
   )
@@ -338,6 +340,13 @@ export function EntityManager({
     setFilters({})
     setFilterOpen(false)
     refresh(1, search, limit, {})
+  }
+
+  function clearSearchAndFilters() {
+    setSearch("")
+    setFilterDraft({})
+    setFilters({})
+    refresh(1, "", limit, {})
   }
 
   function renderFilterControl(field: FieldDef) {
@@ -518,6 +527,17 @@ export function EntityManager({
                   ) || column}
                 </DropdownMenuCheckboxItem>
               ))}
+              {numericColumns.length ? (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem
+                    checked={showTotals}
+                    onCheckedChange={(checked) => setShowTotals(checked)}
+                  >
+                    Show totals
+                  </DropdownMenuCheckboxItem>
+                </>
+              ) : null}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -551,14 +571,32 @@ export function EntityManager({
 
       {rows.length === 0 ? (
         <div className="flex min-h-0 flex-1 items-center justify-center">
-          <EmptyState
-            title={`No ${config.title.toLowerCase()} yet`}
-            description={
-              canCreate
-                ? `Create the first ${config.singular.toLowerCase()} to start using this module.`
-                : `Nothing is visible to your role in ${config.title} yet.`
-            }
-          />
+          {hasCriteria ? (
+            <EmptyState
+              icon={SearchIcon}
+              title={`No matching ${config.title.toLowerCase()}`}
+              description="Nothing matched your search or filters. Try different criteria, or clear them to see all records."
+              action={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearSearchAndFilters}
+                  disabled={pending}
+                >
+                  Clear search and filters
+                </Button>
+              }
+            />
+          ) : (
+            <EmptyState
+              title={`No ${config.title.toLowerCase()} yet`}
+              description={
+                canCreate
+                  ? `Create the first ${config.singular.toLowerCase()} to start using this module.`
+                  : `Nothing is visible to your role in ${config.title} yet.`
+              }
+            />
+          )}
         </div>
       ) : (
         <div className="min-h-0 flex-1 overflow-x-auto">
@@ -740,7 +778,7 @@ export function EntityManager({
                 )
               })}
             </tbody>
-            {numericColumns.length ? (
+            {numericColumns.length && showTotals ? (
               <tfoot className="border-t bg-muted/30">
                 <tr>
                   {visibleColumns.map((column, columnIndex) => {

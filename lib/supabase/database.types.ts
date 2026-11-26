@@ -175,6 +175,11 @@ export type Database = {
       grade: string | null
       created_at: string
       updated_at: string
+      job_level: string | null
+      description: string | null
+      min_salary: number | null
+      max_salary: number | null
+      status: string | null
     }>
     employees: Table<{
       id: string

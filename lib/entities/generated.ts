@@ -1008,15 +1008,50 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Grade",
         "type": "text",
         "required": false
+      },
+      {
+        "name": "job_level",
+        "label": "Job Level",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "description",
+        "label": "Description",
+        "type": "textarea",
+        "required": false
+      },
+      {
+        "name": "min_salary",
+        "label": "Min Salary",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "max_salary",
+        "label": "Max Salary",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "status",
+        "label": "Status",
+        "type": "text",
+        "required": false
       }
     ],
     "columns": [
       "title",
-      "grade"
+      "grade",
+      "job_level",
+      "description",
+      "min_salary",
+      "max_salary"
     ],
     "searchColumns": [
       "title",
-      "grade"
+      "grade",
+      "job_level"
     ],
     "defaultOrder": "created_at",
     "readOnly": false,
