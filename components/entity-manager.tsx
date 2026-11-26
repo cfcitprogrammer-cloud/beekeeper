@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import {
   FileTextIcon,
+  FilterIcon,
   LayersIcon,
   LoaderCircleIcon,
   PencilIcon,
@@ -15,6 +16,7 @@ import {
 
 import { EmptyState } from "@/components/empty-state"
 import { EntityForm, initialFormValues } from "@/components/entity-form"
+import { Field } from "@/components/form-field"
 import { FormError } from "@/components/form-message"
 import { Button } from "@/components/ui/button"
 import {
@@ -50,7 +52,8 @@ function displayValue(value: unknown, field?: FieldDef) {
   if (field?.type === "checkbox") return value ? "Yes" : "No"
   if (field?.type === "select") {
     return (
-      field.options?.find((option) => option.value === String(value))?.label ?? String(value)
+      field.options?.find((option) => option.value === String(value))?.label ??
+      String(value)
     )
   }
   if (typeof value === "object") return JSON.stringify(value)
@@ -79,8 +82,15 @@ export function EntityManager({
   const [total, setTotal] = React.useState(initialTotal)
   const [page, setPage] = React.useState(1)
   const [search, setSearch] = React.useState("")
-  const [status, setStatus] = React.useState("all")
   const [limit, setLimit] = React.useState<number>(DEFAULT_PAGE_SIZE)
+  const [filters, setFilters] = React.useState<Record<string, string>>({})
+  const [filterDraft, setFilterDraft] = React.useState<Record<string, string>>(
+    {}
+  )
+  const [filterOpen, setFilterOpen] = React.useState(false)
+  const [filterOptions, setFilterOptions] = React.useState<
+    Record<string, { value: string; label: string }[]>
+  >({})
   const [error, setError] = React.useState<string | null>(null)
   const [editing, setEditing] = React.useState<EntityRow | null>(null)
   const [formOpen, setFormOpen] = React.useState(false)
@@ -95,15 +105,27 @@ export function EntityManager({
   const statusField = config.fields.find((field) => field.name === "status")
   const childCount = childEntitiesFor(config.key).length
   const pageCount = Math.max(1, Math.ceil(total / limit))
+  const activeFilterCount = Object.values(filters).filter(Boolean).length
+  const filterableFields = config.fields.filter(
+    (field) => field.type !== "json"
+  )
 
   function refresh(
     nextPage = page,
     nextSearch = search,
     nextStatus = status,
     nextLimit = limit,
+    nextFilters = filters
   ) {
     startTransition(async () => {
-      const result = await fetchEntities(config.key, nextPage, nextSearch, nextStatus, nextLimit)
+      const result = await fetchEntities(
+        config.key,
+        nextPage,
+        nextSearch,
+        nextStatus,
+        nextLimit,
+        nextFilters
+      )
       if (result.error) {
         setError(result.error)
         return
@@ -120,16 +142,23 @@ export function EntityManager({
     setValues(initialFormValues(config, row))
     setError(null)
 
-    const relationFields = config.fields.filter((field) => field.type === "relation")
+    const relationFields = config.fields.filter(
+      (field) => field.type === "relation"
+    )
     if (relationFields.length) {
       startTransition(async () => {
         const results = await Promise.all(
-          relationFields.map((field) => fetchRelationOptions(config.key, field.name)),
+          relationFields.map((field) =>
+            fetchRelationOptions(config.key, field.name)
+          )
         )
         setRelationOptions(
           Object.fromEntries(
-            relationFields.map((field, index) => [field.name, results[index].options ?? []]),
-          ),
+            relationFields.map((field, index) => [
+              field.name,
+              results[index].options ?? [],
+            ])
+          )
         )
       })
     }
@@ -140,7 +169,11 @@ export function EntityManager({
   function save() {
     startTransition(async () => {
       try {
-        const result = await saveEntityAction(config.key, editing?.id ?? null, values)
+        const result = await saveEntityAction(
+          config.key,
+          editing?.id ?? null,
+          values
+        )
         if (!result.ok) {
           setError(result.error ?? "Could not save this record.")
           return
@@ -149,7 +182,11 @@ export function EntityManager({
         setFormOpen(false)
         refresh(page)
       } catch (caught) {
-        setError(caught instanceof Error ? caught.message : "Could not save this record.")
+        setError(
+          caught instanceof Error
+            ? caught.message
+            : "Could not save this record."
+        )
       }
     })
   }
@@ -166,6 +203,112 @@ export function EntityManager({
       setDeleting(null)
       refresh(page)
     })
+  }
+
+  const filterSelectClass =
+    "h-8 w-full min-w-0 rounded-none border border-input bg-transparent px-2 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-input/30"
+
+  function openFilters() {
+    setFilterDraft({ ...filters })
+    setFilterOpen(true)
+
+    const relationFields = filterableFields.filter(
+      (field) => field.type === "relation"
+    )
+    if (relationFields.length) {
+      startTransition(async () => {
+        const results = await Promise.all(
+          relationFields.map((field) =>
+            fetchRelationOptions(config.key, field.name)
+          )
+        )
+        setFilterOptions(
+          Object.fromEntries(
+            relationFields.map((field, index) => [
+              field.name,
+              results[index].options ?? [],
+            ])
+          )
+        )
+      })
+    }
+  }
+
+  function applyFilters() {
+    const next = Object.fromEntries(
+      Object.entries(filterDraft).filter(([, value]) => value !== "")
+    )
+    setFilters(next)
+    setFilterOpen(false)
+    refresh(1, search, status, limit, next)
+  }
+
+  function clearFilters() {
+    setFilterDraft({})
+    setFilters({})
+    setFilterOpen(false)
+    refresh(1, search, status, limit, {})
+  }
+
+  function renderFilterControl(field: FieldDef) {
+    const value = filterDraft[field.name] ?? ""
+    const change = (next: string) =>
+      setFilterDraft((current) => ({ ...current, [field.name]: next }))
+    const id = `filter-${field.name}`
+    const label = fieldDisplayLabel(field)
+
+    if (
+      field.type === "select" ||
+      field.type === "relation" ||
+      field.type === "checkbox"
+    ) {
+      const options =
+        field.type === "checkbox"
+          ? [
+              { value: "true", label: "Yes" },
+              { value: "false", label: "No" },
+            ]
+          : field.type === "select"
+            ? (field.options ?? [])
+            : (filterOptions[field.name] ?? [])
+      const missing =
+        Boolean(value) && !options.some((option) => option.value === value)
+
+      return (
+        <select
+          id={id}
+          value={value}
+          onChange={(event) => change(event.target.value)}
+          className={filterSelectClass}
+          aria-label={`Filter by ${label}`}
+        >
+          <option value="">Any</option>
+          {missing ? <option value={value}>Selected</option> : null}
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      )
+    }
+
+    const inputType =
+      field.type === "number"
+        ? "number"
+        : field.type === "date" || field.type === "datetime"
+          ? "date"
+          : "text"
+
+    return (
+      <Input
+        id={id}
+        type={inputType}
+        value={value}
+        onChange={(event) => change(event.target.value)}
+        placeholder="Any"
+      />
+    )
   }
 
   return (
@@ -190,24 +333,15 @@ export function EntityManager({
           </Button>
         </form>
 
-        {statusField?.options?.length ? (
-          <select
-            value={status}
-            onChange={(event) => {
-              setStatus(event.target.value)
-              refresh(1, search, event.target.value)
-            }}
-            className="h-7 rounded-none border border-input bg-transparent px-2 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-input/30"
-            aria-label="Filter by status"
-          >
-            <option value="all">All statuses</option>
-            {statusField.options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        ) : null}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={openFilters}
+          disabled={pending}
+        >
+          <FilterIcon />
+          Filter{activeFilterCount ? ` (${activeFilterCount})` : ""}
+        </Button>
 
         {canCreate ? (
           <Button
@@ -241,17 +375,22 @@ export function EntityManager({
             <thead>
               <tr className="border-b bg-muted/30 text-left">
                 {config.columns.map((column) => {
-                  const field = config.fields.find((item) => item.name === column)
+                  const field = config.fields.find(
+                    (item) => item.name === column
+                  )
                   return (
                     <th
                       key={column}
-                      className="px-3 py-2 text-[10px] font-medium tracking-wide text-muted-foreground uppercase whitespace-nowrap"
+                      className="px-3 py-2 text-[10px] font-medium tracking-wide whitespace-nowrap text-muted-foreground uppercase"
                     >
                       {fieldDisplayLabel(field) || column}
                     </th>
                   )
                 })}
-                {canUpdate || canDelete || config.key === "employees" || childCount > 0 ? (
+                {canUpdate ||
+                canDelete ||
+                config.key === "employees" ||
+                childCount > 0 ? (
                   <th className="px-3 py-2 text-right text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                     Actions
                   </th>
@@ -262,7 +401,9 @@ export function EntityManager({
               {rows.map((row, index) => (
                 <tr key={String(row.id ?? index)} className="hover:bg-muted/30">
                   {config.columns.map((column) => {
-                    const field = config.fields.find((item) => item.name === column)
+                    const field = config.fields.find(
+                      (item) => item.name === column
+                    )
                     const raw = row[column]
                     // Never fall back to a raw reference UUID in the table.
                     const value =
@@ -275,21 +416,27 @@ export function EntityManager({
                           : displayValue(raw, field)
 
                     return (
-                      <td key={column} className="px-3 py-2 align-top tabular-nums">
+                      <td
+                        key={column}
+                        className="px-3 py-2 align-top tabular-nums"
+                      >
                         {value}
                       </td>
                     )
                   })}
-                  {canUpdate || canDelete || config.key === "employees" || childCount > 0 ? (
+                  {canUpdate ||
+                  canDelete ||
+                  config.key === "employees" ||
+                  childCount > 0 ? (
                     <td className="px-3 py-2 text-right whitespace-nowrap">
                       {config.key === "employees" && row.id ? (
-                          <Link
-                            href={`/employees/201/${row.id}`}
-                            aria-label="View 201 file"
-                            className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                          >
-                            <FileTextIcon className="size-3.5" />
-                          </Link>
+                        <Link
+                          href={`/employees/201/${row.id}`}
+                          aria-label="View 201 file"
+                          className="inline-flex size-7 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        >
+                          <FileTextIcon className="size-3.5" />
+                        </Link>
                       ) : null}
                       {childCount > 0 && row.id ? (
                         <Link
@@ -389,7 +536,8 @@ export function EntityManager({
               {editing ? `Edit ${config.singular}` : `New ${config.singular}`}
             </DrawerTitle>
             <DrawerDescription>
-              Changes are scoped to your organization and written to the audit log.
+              Changes are scoped to your organization and written to the audit
+              log.
             </DrawerDescription>
           </DrawerHeader>
 
@@ -406,7 +554,11 @@ export function EntityManager({
           />
 
           <DrawerFooter>
-            <Button variant="outline" size="sm" onClick={() => setFormOpen(false)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFormOpen(false)}
+            >
               Cancel
             </Button>
             <Button size="sm" onClick={save} disabled={pending}>
@@ -417,17 +569,26 @@ export function EntityManager({
         </DrawerContent>
       </Drawer>
 
-      <Drawer open={Boolean(deleting)} onOpenChange={(open) => !open && setDeleting(null)}>
-        <DrawerContent className="gap-4 p-4 w-full sm:max-w-5xl">
+      <Drawer
+        open={Boolean(deleting)}
+        onOpenChange={(open) => !open && setDeleting(null)}
+      >
+        <DrawerContent className="w-full gap-4 p-4 sm:max-w-5xl">
           <DrawerHeader>
-            <DrawerTitle>Delete this {config.singular.toLowerCase()}?</DrawerTitle>
+            <DrawerTitle>
+              Delete this {config.singular.toLowerCase()}?
+            </DrawerTitle>
             <DrawerDescription>
-              This removes the record from your organization. The action is recorded in
-              the audit log.
+              This removes the record from your organization. The action is
+              recorded in the audit log.
             </DrawerDescription>
           </DrawerHeader>
           <DrawerFooter>
-            <Button variant="outline" size="sm" onClick={() => setDeleting(null)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDeleting(null)}
+            >
               Cancel
             </Button>
             <Button
@@ -438,6 +599,51 @@ export function EntityManager({
             >
               Delete
             </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
+        <DrawerContent className="p-0 sm:max-w-md">
+          <DrawerHeader className="pr-12">
+            <DrawerTitle>Filter {config.title.toLowerCase()}</DrawerTitle>
+            <DrawerDescription>
+              Text fields match partial values. Leave a field empty to ignore
+              it.
+            </DrawerDescription>
+          </DrawerHeader>
+
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-4">
+            {filterableFields.map((field) => (
+              <Field
+                key={field.name}
+                id={`filter-${field.name}`}
+                label={fieldDisplayLabel(field)}
+              >
+                {renderFilterControl(field)}
+              </Field>
+            ))}
+          </div>
+
+          <DrawerFooter className="border-t">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearFilters}
+                disabled={pending}
+              >
+                Clear all
+              </Button>
+              <Button
+                className="flex-1"
+                size="sm"
+                onClick={applyFilters}
+                disabled={pending}
+              >
+                Apply filters
+              </Button>
+            </div>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

@@ -334,7 +334,13 @@ export async function getEntityRow(
 export async function listEntities(
   session: Session,
   key: string,
-  options: { page: number; search?: string; status?: string; limit?: number },
+  options: {
+    page: number
+    search?: string
+    status?: string
+    limit?: number
+    filters?: Record<string, string>
+  },
 ): Promise<{ rows: EntityRow[]; total: number; error?: string }> {
   const config = getEntity(key)
   if (!config) return { rows: [], total: 0, error: "Unknown module." }
@@ -361,6 +367,46 @@ export async function listEntities(
   }
   if (options.status && options.status !== "all") {
     query = query.eq("status", options.status)
+  }
+
+  // Only fields declared on the entity can be filtered, so arbitrary column
+  // names and values from the client never reach the query builder.
+  for (const field of config.fields) {
+    if (field.type === "json") continue
+    const raw = options.filters?.[field.name]
+    if (raw === undefined || raw === null || raw === "") continue
+
+    let value: unknown
+    try {
+      value = coerceValue(field, raw)
+    } catch {
+      continue
+    }
+    if (value === null || value === undefined) continue
+
+    if (field.type === "date") {
+      const day = String(value).slice(0, 10)
+      if (/^\d{4}-\d{2}-\d{2}$/.test(day)) query = query.eq(field.name, day)
+    } else if (field.type === "datetime") {
+      const day = String(value).slice(0, 10)
+      if (/^\d{4}-\d{2}-\d{2}$/.test(day)) {
+        const next = new Date(`${day}T00:00:00Z`)
+        next.setUTCDate(next.getUTCDate() + 1)
+        query = query
+          .gte(field.name, `${day}T00:00:00`)
+          .lt(field.name, `${next.toISOString().slice(0, 10)}T00:00:00`)
+      }
+    } else if (
+      field.type === "select" ||
+      field.type === "relation" ||
+      field.type === "checkbox" ||
+      field.type === "number"
+    ) {
+      query = query.eq(field.name, value)
+    } else {
+      const term = String(value).replace(/[%,]/g, "")
+      if (term) query = query.ilike(field.name, `%${term}%`)
+    }
   }
 
   query = query.order(config.defaultOrder, { ascending: false }).range(start, start + pageSize - 1)

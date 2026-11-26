@@ -68,8 +68,10 @@ function DrawerContent({
           data-slot="drawer-content"
           data-swipe-direction={swipeDirection}
           className={cn(
-            "fixed z-50 flex flex-col bg-popover bg-clip-padding text-xs/relaxed text-popover-foreground shadow-lg transition duration-200 ease-in-out",
-            "inset-y-0 right-0 h-full w-3/4 border-l data-ending-style:translate-x-[2.5rem] data-starting-style:translate-x-[2.5rem] data-[swipe-direction=left]:right-auto data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:border-r data-[swipe-direction=left]:border-l-0 data-[swipe-direction=left]:data-ending-style:translate-x-[-2.5rem] data-[swipe-direction=left]:data-starting-style:translate-x-[-2.5rem]",
+            "fixed z-50 flex flex-col bg-popover bg-clip-padding text-xs/relaxed text-popover-foreground shadow-xl transition duration-200 ease-in-out",
+            "inset-y-2 right-2 h-[calc(100%-1rem)] w-[calc(100%-3.5rem)] rounded-3xl border",
+            "data-ending-style:translate-x-[2.5rem] data-starting-style:translate-x-[2.5rem]",
+            "data-[swipe-direction=left]:right-auto data-[swipe-direction=left]:left-2",
             className
           )}
           {...props}
@@ -77,6 +79,7 @@ function DrawerContent({
           <DrawerPrimitive.Content className="flex min-h-0 flex-1 flex-col">
             {children}
           </DrawerPrimitive.Content>
+
           {showCloseButton ? (
             <DrawerPrimitive.Close
               data-slot="drawer-close"
