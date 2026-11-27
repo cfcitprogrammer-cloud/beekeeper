@@ -22,6 +22,8 @@ const hiddenFields: Record<string, string[]> = {
   // Superseded by the account-type master data.
   accounts: ["account_type", "billing_address", "shipping_address"],
   leads: ["converted_account_id", "converted_at"],
+  // Hidden temporarily; contacts are created from the account form for now.
+  contacts: ["account_id"],
 }
 
 /**
@@ -106,6 +108,30 @@ const fieldOverrides: Record<string, Record<string, Partial<FieldDef>>> = {
     },
     owner_id: { searchable: true },
   },
+  contacts: {
+    is_primary: { label: "Primary" },
+    owner_id: {
+      label: "Owner",
+      type: "relation",
+      relation: { table: "employees", field: "id", labelField: "email" },
+    },
+    phone: { label: "Contact Number" },
+    phone2: { label: "Secondary Contact Number" },
+    date_of_birth: { label: "Birth Date" },
+    source_id: {
+      label: "Source",
+      type: "relation",
+      relation: { table: "contact_sources", field: "id", labelField: "name" },
+    },
+    parent_contact_id: {
+      label: "Parent Contact",
+      type: "relation",
+      relation: { table: "contacts", field: "id", labelField: "first_name" },
+    },
+    country: { autocomplete: "country" },
+    state: { autocomplete: "region" },
+    city: { autocomplete: "city" },
+  },
   leads: {
     source_id: {
       label: "Source",
@@ -158,23 +184,22 @@ const displayColumns: Record<string, string[]> = {
   attendances: ["work_date", "employee_id", "status", "late_minutes", "overtime_minutes"],
   leaves: ["employee_id", "leave_type_id", "start_date", "end_date", "days", "status"],
   accounts: ["name", "code", "account_type_id", "credit_limit", "status"],
-  contacts: ["first_name", "last_name", "email", "phone"],
+  contacts: [
+    "first_name",
+    "last_name",
+    "title",
+    "email",
+    "phone",
+    "source_id",
+  ],
   leads: [
-    "owner_id",
     "title",
     "first_name",
     "last_name",
     "email",
-    "phone",
-    "source_id",
     "stage_id",
-    "company",
+    "source_id",
     "industry",
-    "country",
-    "region",
-    "city",
-    "postal_code",
-    "remarks",
   ],
   opportunities: ["name", "stage_id", "expected_value", "probability", "close_date"],
   outlets: ["outlet_code", "name", "outlet_type", "tier", "status"],
@@ -317,6 +342,25 @@ const manualEntities: Record<string, EntityConfig> = {
     title: "Lead Sources",
     singular: "Lead Source",
     table: "lead_sources",
+    fields: [
+      { name: "code", label: "Code", type: "text", required: true, notNull: true },
+      { name: "name", label: "Name", type: "text", required: true, notNull: true },
+      { name: "description", label: "Description", type: "textarea", required: false },
+      { name: "sort_order", label: "Sort Order", type: "number", required: true, notNull: true, hasDefault: true },
+      { ...activeStatusField, name: "status", label: "Status", type: "select" },
+    ],
+    columns: ["code", "name", "description", "sort_order", "status"],
+    searchColumns: ["code", "name"],
+    defaultOrder: "sort_order",
+    readOnly: false,
+    tenantScoped: true,
+  },
+  contact_sources: {
+    key: "contact_sources",
+    module: "accounts",
+    title: "Contact Sources",
+    singular: "Contact Source",
+    table: "contact_sources",
     fields: [
       { name: "code", label: "Code", type: "text", required: true, notNull: true },
       { name: "name", label: "Name", type: "text", required: true, notNull: true },

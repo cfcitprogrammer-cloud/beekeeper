@@ -210,6 +210,15 @@ export function EntityManager({
   )
   const showActions =
     canUpdate || canDelete || config.key === "employees" || childCount > 0
+  const allColumns = React.useMemo(
+    () => [
+      ...new Set([
+        ...config.columns,
+        ...config.fields.map((field) => field.name),
+      ]),
+    ],
+    [config]
+  )
   const numericColumns = visibleColumns.filter(
     (column) => config.fields.find((field) => field.name === column)?.type === "number"
   )
@@ -460,7 +469,7 @@ export function EntityManager({
       if (current.includes(column)) {
         return current.length > 1 ? current.filter((item) => item !== column) : current
       }
-      return config.columns.filter(
+      return allColumns.filter(
         (item) => current.includes(item) || item === column
       )
     })
@@ -555,7 +564,7 @@ export function EntityManager({
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel>Visible columns</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {config.columns.map((column) => (
+              {allColumns.map((column) => (
                 <DropdownMenuCheckboxItem
                   key={column}
                   checked={visibleColumns.includes(column)}

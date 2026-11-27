@@ -59,6 +59,17 @@ const RELATION_LABEL_CONFIG: Record<string, RelationLabelConfig> = {
       return name || stringOr(row.employee_no, stringOr(row.email, stringOr(row.id)))
     },
   },
+  contacts: {
+    columns: ["first_name", "last_name", "email"],
+    orderBy: "first_name",
+    label: (row) => {
+      const name = [row.first_name, row.last_name]
+        .map((part) => stringOr(part).trim())
+        .filter(Boolean)
+        .join(" ")
+      return name || stringOr(row.email, stringOr(row.id))
+    },
+  },
   accounts: {
     columns: ["name", "account_no"],
     orderBy: "name",

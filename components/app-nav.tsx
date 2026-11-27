@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import {
   Building2Icon,
   ChevronDownIcon,
+  ContactIcon,
   ChevronRightIcon,
   PackageIcon,
   StoreIcon,
@@ -36,8 +37,11 @@ export function AppNav({
   const [accountsConfigOpen, setAccountsConfigOpen] = React.useState(true)
   const [leadsOpen, setLeadsOpen] = React.useState(true)
   const [leadStagesConfigOpen, setLeadStagesConfigOpen] = React.useState(true)
+  const [contactsOpen, setContactsOpen] = React.useState(true)
+  const [contactsConfigOpen, setContactsConfigOpen] = React.useState(true)
 
   const showEmployee = allowed.has("employees")
+  const showContacts = allowed.has("accounts")
   const showLeads = allowed.has("leads")
   const showOutlets = allowed.has("outlets")
   const showProduct = allowed.has("products")
@@ -79,6 +83,7 @@ export function AppNav({
         const renderProductSection = group.id === "inventory" && showProduct
         const renderAccountsSection = group.id === "revenue" && showAccounts
         const renderLeadsSection = group.id === "revenue" && showLeads
+        const renderContactsSection = group.id === "revenue" && showContacts
 
         if (
           modules.length === 0 &&
@@ -86,7 +91,8 @@ export function AppNav({
           !renderOutletSection &&
           !renderProductSection &&
           !renderAccountsSection &&
-          !renderLeadsSection
+          !renderLeadsSection &&
+          !renderContactsSection
         ) {
           return null
         }
@@ -129,6 +135,66 @@ export function AppNav({
                   </li>
                 )
               })}
+
+              {renderContactsSection ? (
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setContactsOpen((value) => !value)}
+                    className="group flex h-7 w-full items-center gap-2 px-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                  >
+                    <ContactIcon className="size-3.5 shrink-0" />
+                    <span className="truncate">Contacts</span>
+                    <span className="ml-auto" />
+                    {contactsOpen ? (
+                      <ChevronDownIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      <ChevronRightIcon className="size-3.5 shrink-0" />
+                    )}
+                  </button>
+                  {contactsOpen ? (
+                    <ul className="space-y-px">
+                      <li>
+                        <Link
+                          href="/accounts/contacts"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/accounts/contacts")}
+                        >
+                          <span className="truncate">Contacts</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setContactsConfigOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Configuration</span>
+                          <span className="ml-auto" />
+                          {contactsConfigOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {contactsConfigOpen ? (
+                          <ul className="space-y-px">
+                            <li>
+                              <Link
+                                href="/contacts/sources"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/contacts/sources")}
+                              >
+                                <span className="truncate">Contact Sources</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        ) : null}
+                      </li>
+                    </ul>
+                  ) : null}
+                </li>
+              ) : null}
 
               {renderEmployeeSection ? (
                 <li>

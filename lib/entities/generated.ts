@@ -2304,6 +2304,66 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "required": false,
         "notNull": true,
         "hasDefault": true
+      },
+      {
+        "name": "owner_id",
+        "label": "Owner Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "phone2",
+        "label": "Phone2",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "date_of_birth",
+        "label": "Date Of Birth",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "source_id",
+        "label": "Source Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "parent_contact_id",
+        "label": "Parent Contact Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "country",
+        "label": "Country",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "state",
+        "label": "State",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "city",
+        "label": "City",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "zip",
+        "label": "Zip",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "description",
+        "label": "Description",
+        "type": "textarea",
+        "required": false
       }
     ],
     "columns": [

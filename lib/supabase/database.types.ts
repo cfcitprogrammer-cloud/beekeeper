@@ -358,6 +358,16 @@ export type Database = {
       is_primary: boolean
       created_at: string
       updated_at: string
+      owner_id: string | null
+      phone2: string | null
+      date_of_birth: string | null
+      source_id: string | null
+      parent_contact_id: string | null
+      country: string | null
+      state: string | null
+      city: string | null
+      zip: string | null
+      description: string | null
     }>
     leads: Table<{
       id: string
@@ -1148,6 +1158,17 @@ export type Database = {
       created_at: string
       updated_at: string
       status: string | null
+    }>
+    contact_sources: Table<{
+      id: string
+      org_id: string
+      code: string
+      name: string
+      description: string | null
+      sort_order: number
+      status: string
+      created_at: string
+      updated_at: string
     }>
     }
     Views: {
