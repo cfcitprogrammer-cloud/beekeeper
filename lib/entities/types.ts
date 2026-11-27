@@ -31,6 +31,8 @@ export type FieldDef = {
   readOnly?: boolean
   /** Span both columns of the form grid. */
   wide?: boolean
+  /** Use a searchable combobox that queries the server for more options. */
+  searchable?: boolean
 }
 
 export type EntityConfig = {

@@ -19,6 +19,8 @@ const hiddenFields: Record<string, string[]> = {
     "course",
     "year_graduated",
   ],
+  // Superseded by the account-type master data.
+  accounts: ["account_type"],
 }
 
 /**
@@ -92,6 +94,16 @@ const fieldOverrides: Record<string, Record<string, Partial<FieldDef>>> = {
       relation: { table: "employment_types", field: "id", labelField: "type" },
     },
   },
+  outlets: {
+    account_id: { searchable: true },
+  },
+  accounts: {
+    account_type_id: {
+      label: "Account Type",
+      type: "relation",
+      relation: { table: "account_types", field: "id", labelField: "type" },
+    },
+  },
 }
 
 /** Columns computed from other fields rather than read from the database. */
@@ -124,7 +136,7 @@ const displayColumns: Record<string, string[]> = {
   ],
   attendances: ["work_date", "employee_id", "status", "late_minutes", "overtime_minutes"],
   leaves: ["employee_id", "leave_type_id", "start_date", "end_date", "days", "status"],
-  accounts: ["name", "code", "account_type", "credit_limit", "status"],
+  accounts: ["name", "code", "account_type_id", "credit_limit", "status"],
   contacts: ["first_name", "last_name", "email", "phone"],
   leads: ["name", "source", "status", "score", "owner_id"],
   opportunities: ["name", "stage_id", "expected_value", "probability", "close_date"],
@@ -184,6 +196,23 @@ const manualEntities: Record<string, EntityConfig> = {
     child: true,
     primaryKeys: ["id"],
     parent: { field: "employee_id", table: "employees" },
+  },
+  account_types: {
+    key: "account_types",
+    module: "accounts",
+    title: "Account Types",
+    singular: "Account Type",
+    table: "account_types",
+    fields: [
+      { name: "code", label: "Code", type: "text", required: true, notNull: true },
+      { name: "type", label: "Type", type: "text", required: true, notNull: true },
+      { name: "description", label: "Description", type: "textarea", required: false },
+    ],
+    columns: ["code", "type", "description"],
+    searchColumns: ["code", "type"],
+    defaultOrder: "created_at",
+    readOnly: false,
+    tenantScoped: true,
   },
 }
 

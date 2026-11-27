@@ -344,6 +344,7 @@ export type Database = {
       status: string
       created_at: string
       updated_at: string
+      account_type_id: string | null
     }>
     contacts: Table<{
       id: string
@@ -1085,6 +1086,15 @@ export type Database = {
       education_level: string | null
       course: string | null
       year_graduated: number | null
+      description: string | null
+      created_at: string
+      updated_at: string
+    }>
+    account_types: Table<{
+      id: string
+      org_id: string
+      code: string
+      type: string
       description: string | null
       created_at: string
       updated_at: string

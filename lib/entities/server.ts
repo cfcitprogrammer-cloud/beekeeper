@@ -59,6 +59,11 @@ const RELATION_LABEL_CONFIG: Record<string, RelationLabelConfig> = {
       return name || stringOr(row.employee_no, stringOr(row.email, stringOr(row.id)))
     },
   },
+  accounts: {
+    columns: ["name", "code"],
+    orderBy: "name",
+    label: (row) => stringOr(row.name, stringOr(row.code, stringOr(row.id))),
+  },
   orders: {
     columns: ["order_no"],
     orderBy: "order_no",
@@ -436,6 +441,7 @@ export async function relationOptions(
   session: Session,
   key: string,
   fieldName: string,
+  options: { search?: string; limit?: number } = {},
 ): Promise<{ options: { value: string; label: string }[]; error?: string }> {
   const config = getEntity(key)
   const field = config?.fields.find((item) => item.name === fieldName && item.type === "relation")
@@ -453,7 +459,14 @@ export async function relationOptions(
     query = query.eq("org_id", session.profile.org_id)
   }
 
-  const { data, error } = await query.order(labelConfig.orderBy, { ascending: true }).limit(200)
+  const search = options.search?.trim().replace(/[%,]/g, "")
+  if (search) {
+    const columns = labelConfig.columns.length ? labelConfig.columns : [valueField]
+    query = query.or(columns.map((column) => `${column}.ilike.%${search}%`).join(","))
+  }
+
+  const limit = options.limit && options.limit > 0 ? Math.min(options.limit, 100) : 200
+  const { data, error } = await query.order(labelConfig.orderBy, { ascending: true }).limit(limit)
   if (error) return { options: [], error: error.message }
 
   return {

@@ -1,6 +1,7 @@
 "use client"
 
 import { Field } from "@/components/form-field"
+import { SearchableRelationCombobox } from "@/components/searchable-relation-combobox"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { fieldDisplayLabel } from "@/lib/entities/format"
@@ -94,6 +95,21 @@ export function EntityForm({
                 aria-describedby={describedBy}
               />
             </Field>
+          )
+        }
+
+        if (field.type === "relation" && field.searchable) {
+          return (
+            <SearchableRelationCombobox
+              key={field.name}
+              entityKey={config.key}
+              fieldName={field.name}
+              label={fieldDisplayLabel(field)}
+              value={value}
+              selectedLabel={relationLabels?.[field.name]}
+              disabled={field.readOnly}
+              onChange={(next) => onChange(field.name, next)}
+            />
           )
         }
 

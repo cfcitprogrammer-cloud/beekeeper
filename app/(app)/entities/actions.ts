@@ -30,6 +30,16 @@ export async function fetchRelationOptions(key: string, fieldName: string) {
   return relationOptions(session, key, fieldName)
 }
 
+export async function searchRelationOptions(
+  key: string,
+  fieldName: string,
+  query: string,
+  limit = 10,
+) {
+  const session = await requireSession()
+  return relationOptions(session, key, fieldName, { search: query, limit })
+}
+
 export async function saveEntityAction(
   key: string,
   id: string | null,

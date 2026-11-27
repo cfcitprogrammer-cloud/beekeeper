@@ -2219,6 +2219,12 @@ export const generatedEntities: Record<string, EntityConfig> = {
             "label": "Blocked"
           }
         ]
+      },
+      {
+        "name": "account_type_id",
+        "label": "Account Type Id",
+        "type": "text",
+        "required": false
       }
     ],
     "columns": [

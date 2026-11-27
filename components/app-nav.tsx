@@ -7,6 +7,7 @@ import * as React from "react"
 import { MODULE_GROUPS, MODULES } from "@/lib/modules"
 import { cn } from "@/lib/utils"
 import {
+  Building2Icon,
   ChevronDownIcon,
   ChevronRightIcon,
   PackageIcon,
@@ -30,10 +31,13 @@ export function AppNav({
   const [outletConfigOpen, setOutletConfigOpen] = React.useState(true)
   const [productOpen, setProductOpen] = React.useState(true)
   const [productConfigOpen, setProductConfigOpen] = React.useState(true)
+  const [accountsOpen, setAccountsOpen] = React.useState(true)
+  const [accountsConfigOpen, setAccountsConfigOpen] = React.useState(true)
 
   const showEmployee = allowed.has("employees")
   const showOutlets = allowed.has("outlets")
   const showProduct = allowed.has("products")
+  const showAccounts = allowed.has("accounts")
 
   const subItemClass = (active: boolean) =>
     cn(
@@ -61,18 +65,21 @@ export function AppNav({
           if (group.id === "people" && module.slug === "employees") return false
           if (group.id === "operations" && module.slug === "outlets") return false
           if (group.id === "inventory" && module.slug === "products") return false
+          if (group.id === "revenue" && module.slug === "accounts") return false
           return true
         })
 
         const renderEmployeeSection = group.id === "people" && showEmployee
         const renderOutletSection = group.id === "operations" && showOutlets
         const renderProductSection = group.id === "inventory" && showProduct
+        const renderAccountsSection = group.id === "revenue" && showAccounts
 
         if (
           modules.length === 0 &&
           !renderEmployeeSection &&
           !renderOutletSection &&
-          !renderProductSection
+          !renderProductSection &&
+          !renderAccountsSection
         ) {
           return null
         }
@@ -202,6 +209,75 @@ export function AppNav({
                                 className={nestedItemClass(pathname === "/employees/employment-types")}
                               >
                                 <span className="truncate">Employment Types</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        ) : null}
+                      </li>
+                    </ul>
+                  ) : null}
+                </li>
+              ) : null}
+
+              {renderAccountsSection ? (
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setAccountsOpen((value) => !value)}
+                    className="group flex h-7 w-full items-center gap-2 px-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                  >
+                    <Building2Icon className="size-3.5 shrink-0" />
+                    <span className="truncate">Accounts</span>
+                    <span className="ml-auto" />
+                    {accountsOpen ? (
+                      <ChevronDownIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      <ChevronRightIcon className="size-3.5 shrink-0" />
+                    )}
+                  </button>
+                  {accountsOpen ? (
+                    <ul className="space-y-px">
+                      <li>
+                        <Link
+                          href="/accounts/dashboard"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/accounts/dashboard")}
+                        >
+                          <span className="truncate">Dashboard</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/accounts"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/accounts")}
+                        >
+                          <span className="truncate">Accounts</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setAccountsConfigOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Configuration</span>
+                          <span className="ml-auto" />
+                          {accountsConfigOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {accountsConfigOpen ? (
+                          <ul className="space-y-px">
+                            <li>
+                              <Link
+                                href="/accounts/account-types"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/accounts/account-types")}
+                              >
+                                <span className="truncate">Account Type</span>
                               </Link>
                             </li>
                           </ul>

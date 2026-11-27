@@ -256,7 +256,7 @@ export function EntityManager({
     setError(null)
 
     const relationFields = config.fields.filter(
-      (field) => field.type === "relation"
+      (field) => field.type === "relation" && !field.searchable
     )
     if (relationFields.length) {
       startTransition(async () => {
