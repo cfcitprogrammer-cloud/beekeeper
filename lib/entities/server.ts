@@ -411,9 +411,13 @@ export async function listEntities(
   }
 
   const requestedSort = options.sort
+  const requestedField =
+    requestedSort?.field === "full_name" && key === "employees"
+      ? "last_name"
+      : requestedSort?.field
   const sortField =
-    requestedSort && config.fields.some((field) => field.name === requestedSort.field)
-      ? requestedSort.field
+    requestedField && config.fields.some((field) => field.name === requestedField)
+      ? requestedField
       : null
   query = query
     .order(sortField ?? config.defaultOrder, {

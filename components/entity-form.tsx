@@ -110,6 +110,7 @@ export function EntityForm({
               id={field.name}
               label={fieldDisplayLabel(field)}
               hint={field.hint}
+              className={field.wide ? "sm:col-span-2" : undefined}
             >
               <select
                 id={field.name}
@@ -141,6 +142,7 @@ export function EntityForm({
             id={field.name}
             label={fieldDisplayLabel(field)}
             hint={field.hint}
+            className={field.wide ? "sm:col-span-2" : undefined}
           >
             <Input
               id={field.name}

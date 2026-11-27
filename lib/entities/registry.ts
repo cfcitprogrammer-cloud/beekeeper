@@ -13,6 +13,11 @@ const hiddenFields: Record<string, string[]> = {
     "city_municipality",
     "barangay",
     "zip_code",
+    // Education is now a repeatable child list.
+    "highest_education",
+    "school_name",
+    "course",
+    "year_graduated",
   ],
 }
 
@@ -54,6 +59,8 @@ const fieldOverrides: Record<string, Record<string, Partial<FieldDef>>> = {
   },
   employees: {
     name_suffix: { label: "Suffix" },
+    present_address: { wide: true },
+    permanent_address: { wide: true },
     sex: {
       type: "select",
       options: [
@@ -87,12 +94,24 @@ const fieldOverrides: Record<string, Record<string, Partial<FieldDef>>> = {
   },
 }
 
+/** Columns computed from other fields rather than read from the database. */
+const virtualColumns: Record<string, string[]> = {
+  employees: ["full_name"],
+}
+
 const displayColumns: Record<string, string[]> = {
   users: ["full_name", "email", "status", "last_login_at"],
   roles: ["name", "description"],
   organizations: ["name", "code", "timezone", "currency_code"],
   audit_logs: ["created_at", "user_id", "module", "entity_type", "action"],
-  employees: ["employee_no", "first_name", "last_name", "status", "is_field_staff"],
+  employees: [
+    "employee_no",
+    "full_name",
+    "department_id",
+    "manager_id",
+    "status",
+    "is_field_staff",
+  ],
   departments: ["name", "code", "description", "manager_id", "status"],
   positions: [
     "title",
@@ -143,6 +162,29 @@ const manualEntities: Record<string, EntityConfig> = {
     readOnly: false,
     tenantScoped: true,
   },
+  employee_education: {
+    key: "employee_education",
+    module: "employees",
+    title: "Education History",
+    singular: "Education",
+    table: "employee_education",
+    fields: [
+      { name: "employee_id", label: "Employee", type: "relation", required: true, notNull: true, relation: { table: "employees", field: "id", labelField: "email" } },
+      { name: "school_name", label: "School", type: "text", required: true, notNull: true },
+      { name: "education_level", label: "Education Level", type: "text", required: false },
+      { name: "course", label: "Course", type: "text", required: false },
+      { name: "year_graduated", label: "Year Graduated", type: "number", required: false },
+      { name: "description", label: "Description", type: "textarea", required: false },
+    ],
+    columns: ["school_name", "education_level", "course", "year_graduated"],
+    searchColumns: ["school_name", "course"],
+    defaultOrder: "created_at",
+    readOnly: false,
+    tenantScoped: false,
+    child: true,
+    primaryKeys: ["id"],
+    parent: { field: "employee_id", table: "employees" },
+  },
 }
 
 export const entities: Record<string, EntityConfig> = Object.fromEntries(
@@ -155,7 +197,11 @@ export const entities: Record<string, EntityConfig> = Object.fromEntries(
 
     const preferred = displayColumns[key]
     const columns = preferred
-      ? preferred.filter((name) => fields.some((field) => field.name === name))
+      ? preferred.filter(
+          (name) =>
+            fields.some((field) => field.name === name) ||
+            (virtualColumns[key] ?? []).includes(name)
+        )
       : config.columns
 
     return [

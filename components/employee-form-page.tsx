@@ -58,14 +58,20 @@ const FORM_GROUPS: { title: string; description?: string; fields: string[] }[] =
     ],
   },
   {
-    title: "Address",
-    description: "Present and permanent address, each with its own location details.",
+    title: "Present address",
+    description: "Your current residential address.",
     fields: [
       "present_address",
       "present_province",
       "present_city_municipality",
       "present_barangay",
       "present_zip_code",
+    ],
+  },
+  {
+    title: "Permanent address",
+    description: "Your permanent/home address.",
+    fields: [
       "permanent_address",
       "permanent_province",
       "permanent_city_municipality",
@@ -101,11 +107,6 @@ const FORM_GROUPS: { title: string; description?: string; fields: string[] }[] =
     title: "Compensation & bank",
     description: "Pay and disbursement details.",
     fields: ["basic_salary", "pay_frequency", "bank_name", "bank_account_no"],
-  },
-  {
-    title: "Education",
-    description: "Highest educational attainment.",
-    fields: ["highest_education", "school_name", "course", "year_graduated"],
   },
 ]
 

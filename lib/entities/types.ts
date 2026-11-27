@@ -29,6 +29,8 @@ export type FieldDef = {
   placeholder?: string
   hint?: string
   readOnly?: boolean
+  /** Span both columns of the form grid. */
+  wide?: boolean
 }
 
 export type EntityConfig = {

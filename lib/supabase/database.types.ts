@@ -1078,6 +1078,17 @@ export type Database = {
       created_at: string
       updated_at: string
     }>
+    employee_education: Table<{
+      id: string
+      employee_id: string
+      school_name: string
+      education_level: string | null
+      course: string | null
+      year_graduated: number | null
+      description: string | null
+      created_at: string
+      updated_at: string
+    }>
     }
     Views: {
     rpt_attendance_daily: Table<{

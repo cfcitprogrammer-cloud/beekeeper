@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
 import { notFound, redirect } from "next/navigation"
 
+import { ChildTable } from "@/components/child-table"
 import { PageHeader } from "@/components/panel"
 import { PrintButton } from "@/components/print-button"
 import { requireOrganization } from "@/lib/auth"
+import { getEntity } from "@/lib/entities/registry"
 
 export const metadata: Metadata = { title: "Employee 201 File" }
 
@@ -88,6 +90,7 @@ export default async function Employee201Page({
     .join(" ")
 
   const manager = managerResult?.data as Record<string, unknown> | null
+  const educationConfig = getEntity("employee_education")
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 lg:py-8 print:px-0 print:py-0">
@@ -170,13 +173,15 @@ export default async function Employee201Page({
           <Field label="Address" value={e.emergency_contact_address} />
         </Section>
 
-        <Section title="Education">
-          <Field label="Highest Education" value={e.highest_education} />
-          <Field label="School" value={e.school_name} />
-          <Field label="Course" value={e.course} />
-          <Field label="Year Graduated" value={e.year_graduated} />
-        </Section>
       </article>
+
+      {educationConfig ? (
+        <ChildTable
+          config={educationConfig}
+          parentField="employee_id"
+          parentId={id}
+        />
+      ) : null}
     </div>
   )
 }

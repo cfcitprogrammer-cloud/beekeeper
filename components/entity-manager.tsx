@@ -123,6 +123,37 @@ function initials(value: string) {
   )
 }
 
+function columnLabel(config: EntityConfig, column: string, field?: FieldDef) {
+  if (column === "full_name" && config.key === "employees") return "Full Name"
+  return fieldDisplayLabel(field) || column
+}
+
+function cellValue(
+  config: EntityConfig,
+  row: EntityRow,
+  column: string,
+  field?: FieldDef
+) {
+  if (column === "full_name" && config.key === "employees") {
+    const name = [row.first_name, row.middle_name, row.last_name, row.name_suffix]
+      .map((part) => String(part ?? "").trim())
+      .filter(Boolean)
+      .join(" ")
+    return name || "—"
+  }
+
+  const raw = row[column]
+  if (field?.type === "relation") return row.__labels?.[column] ?? "—"
+  if (
+    column.endsWith("_id") &&
+    typeof raw === "string" &&
+    UUID_PATTERN.test(raw)
+  ) {
+    return "—"
+  }
+  return displayValue(raw, field)
+}
+
 export function EntityManager({
   config,
   initialRows,
@@ -438,8 +469,11 @@ export function EntityManager({
     }
     const header = visibleColumns.map((column) =>
       escape(
-        fieldDisplayLabel(config.fields.find((field) => field.name === column)) ||
-          column
+        columnLabel(
+          config,
+          column,
+          config.fields.find((field) => field.name === column)
+        )
       )
     )
     const lines = [
@@ -447,12 +481,13 @@ export function EntityManager({
       ...rows.map((row) =>
         visibleColumns
           .map((column) => {
-            const field = config.fields.find((item) => item.name === column)
-            const raw =
-              field?.type === "relation"
-                ? (row.__labels?.[column] ?? "")
-                : row[column]
-            return escape(raw)
+            const value = cellValue(
+              config,
+              row,
+              column,
+              config.fields.find((item) => item.name === column)
+            )
+            return escape(value === "—" ? "" : value)
           })
           .join(",")
       ),
@@ -522,9 +557,11 @@ export function EntityManager({
                   checked={visibleColumns.includes(column)}
                   onCheckedChange={() => toggleColumn(column)}
                 >
-                  {fieldDisplayLabel(
+                  {columnLabel(
+                    config,
+                    column,
                     config.fields.find((field) => field.name === column)
-                  ) || column}
+                  )}
                 </DropdownMenuCheckboxItem>
               ))}
               {numericColumns.length ? (
@@ -618,7 +655,7 @@ export function EntityManager({
                     >
                       <DropdownMenu>
                         <DropdownMenuTrigger className="flex items-center gap-1 outline-none hover:text-foreground data-popup-open:text-foreground">
-                          {fieldDisplayLabel(field) || column}
+                          {columnLabel(config, column, field)}
                           {active ? (
                             sort.direction === "asc" ? (
                               <ArrowUpIcon className="size-3" />
@@ -677,17 +714,10 @@ export function EntityManager({
                       const field = config.fields.find(
                         (item) => item.name === column
                       )
-                      const raw = row[column]
-                      // Never fall back to a raw reference UUID in the table.
-                      const value =
-                        field?.type === "relation"
-                          ? (row.__labels?.[column] ?? "—")
-                          : column.endsWith("_id") &&
-                              typeof raw === "string" &&
-                              UUID_PATTERN.test(raw)
-                            ? "—"
-                            : displayValue(raw, field)
+                      const value = cellValue(config, row, column, field)
                       const text = String(value)
+                      const withAvatar =
+                        column === "full_name" || column === "manager_id"
 
                       return (
                         <td
@@ -708,7 +738,7 @@ export function EntityManager({
                             >
                               {text}
                             </Badge>
-                          ) : field?.type === "relation" && value !== "—" ? (
+                          ) : withAvatar && value !== "—" ? (
                             <span className="inline-flex max-w-56 items-center gap-2">
                               <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-[9px] font-medium text-muted-foreground">
                                 {initials(text)}
