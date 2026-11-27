@@ -71,6 +71,16 @@ for (const match of sql.matchAll(
   }
 }
 
+for (const match of sql.matchAll(
+  /alter\s+table\s+public\.(\w+)\s+drop\s+column\s+(?:if\s+exists\s+)?(\w+)/gi,
+)) {
+  const meta = tables.get(match[1])
+  if (!meta) continue
+  meta.columns = meta.columns.filter((column) => column.name !== match[2])
+  delete meta.relations[match[2]]
+  delete meta.options[match[2]]
+}
+
 for (const name of [
   "visits",
   "form_submissions",

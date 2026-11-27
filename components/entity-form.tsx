@@ -1,6 +1,8 @@
 "use client"
 
+import { AutocompleteField } from "@/components/autocomplete-field"
 import { Field } from "@/components/form-field"
+import { MasterDataSelect } from "@/components/master-data-select"
 import { SearchableRelationCombobox } from "@/components/searchable-relation-combobox"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -95,6 +97,35 @@ export function EntityForm({
                 aria-describedby={describedBy}
               />
             </Field>
+          )
+        }
+
+        if (field.autocomplete) {
+          return (
+            <AutocompleteField
+              key={field.name}
+              kind={field.autocomplete}
+              label={fieldDisplayLabel(field)}
+              value={value}
+              country={String(values.country ?? "")}
+              region={String(values.region ?? "")}
+              disabled={field.readOnly}
+              onChange={(next) => onChange(field.name, next)}
+            />
+          )
+        }
+
+        if (field.masterDataType) {
+          return (
+            <MasterDataSelect
+              key={field.name}
+              fieldName={field.name}
+              typeCode={field.masterDataType}
+              label={fieldDisplayLabel(field)}
+              value={value}
+              disabled={field.readOnly}
+              onChange={(next) => onChange(field.name, next)}
+            />
           )
         }
 

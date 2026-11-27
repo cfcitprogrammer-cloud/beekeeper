@@ -60,9 +60,10 @@ const RELATION_LABEL_CONFIG: Record<string, RelationLabelConfig> = {
     },
   },
   accounts: {
-    columns: ["name", "code"],
+    columns: ["name", "account_no"],
     orderBy: "name",
-    label: (row) => stringOr(row.name, stringOr(row.code, stringOr(row.id))),
+    label: (row) =>
+      stringOr(row.name, stringOr(row.account_no, stringOr(row.id))),
   },
   orders: {
     columns: ["order_no"],
@@ -477,7 +478,7 @@ export async function relationOptions(
   }
 }
 
-async function validateRelations(
+export async function validateRelations(
   session: Session,
   config: EntityConfig,
   data: Record<string, unknown>,

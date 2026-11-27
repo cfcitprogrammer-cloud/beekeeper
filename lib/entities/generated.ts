@@ -2335,13 +2335,6 @@ export const generatedEntities: Record<string, EntityConfig> = {
     "table": "leads",
     "fields": [
       {
-        "name": "name",
-        "label": "Name",
-        "type": "text",
-        "required": true,
-        "notNull": true
-      },
-      {
         "name": "company",
         "label": "Company",
         "type": "text",
@@ -2360,12 +2353,6 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "required": false
       },
       {
-        "name": "source",
-        "label": "Source",
-        "type": "text",
-        "required": false
-      },
-      {
         "name": "owner_id",
         "label": "Owner Id",
         "type": "relation",
@@ -2375,36 +2362,6 @@ export const generatedEntities: Record<string, EntityConfig> = {
           "field": "id",
           "labelField": "email"
         }
-      },
-      {
-        "name": "status",
-        "label": "Status",
-        "type": "select",
-        "required": false,
-        "notNull": true,
-        "hasDefault": true,
-        "options": [
-          {
-            "value": "new",
-            "label": "New"
-          },
-          {
-            "value": "contacted",
-            "label": "Contacted"
-          },
-          {
-            "value": "qualified",
-            "label": "Qualified"
-          },
-          {
-            "value": "unqualified",
-            "label": "Unqualified"
-          },
-          {
-            "value": "converted",
-            "label": "Converted"
-          }
-        ]
       },
       {
         "name": "score",
@@ -2434,20 +2391,86 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Converted At",
         "type": "datetime",
         "required": false
+      },
+      {
+        "name": "stage_id",
+        "label": "Stage Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "first_name",
+        "label": "First Name",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "last_name",
+        "label": "Last Name",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "title",
+        "label": "Title",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "industry",
+        "label": "Industry",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "country",
+        "label": "Country",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "region",
+        "label": "Region",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "city",
+        "label": "City",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "postal_code",
+        "label": "Postal Code",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "remarks",
+        "label": "Remarks",
+        "type": "textarea",
+        "required": false
+      },
+      {
+        "name": "source_id",
+        "label": "Source Id",
+        "type": "text",
+        "required": false
       }
     ],
     "columns": [
-      "name",
       "company",
       "email",
       "phone",
-      "source",
-      "owner_id"
+      "owner_id",
+      "score",
+      "location"
     ],
     "searchColumns": [
-      "name",
       "company",
-      "email"
+      "email",
+      "phone"
     ],
     "defaultOrder": "created_at",
     "readOnly": false,
@@ -2544,7 +2567,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "relation": {
           "table": "leads",
           "field": "id",
-          "labelField": "name"
+          "labelField": "title"
         }
       },
       {

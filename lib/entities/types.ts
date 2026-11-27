@@ -33,6 +33,10 @@ export type FieldDef = {
   wide?: boolean
   /** Use a searchable combobox that queries the server for more options. */
   searchable?: boolean
+  /** Load dropdown options from master_data_items of this type code. */
+  masterDataType?: string
+  /** Use an autocomplete backed by a static or location dataset. */
+  autocomplete?: "country" | "region" | "city" | "industry"
 }
 
 export type EntityConfig = {

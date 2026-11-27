@@ -12,6 +12,7 @@ import {
   ChevronRightIcon,
   PackageIcon,
   StoreIcon,
+  TargetIcon,
   UsersIcon,
 } from "lucide-react"
 
@@ -33,8 +34,11 @@ export function AppNav({
   const [productConfigOpen, setProductConfigOpen] = React.useState(true)
   const [accountsOpen, setAccountsOpen] = React.useState(true)
   const [accountsConfigOpen, setAccountsConfigOpen] = React.useState(true)
+  const [leadsOpen, setLeadsOpen] = React.useState(true)
+  const [leadStagesConfigOpen, setLeadStagesConfigOpen] = React.useState(true)
 
   const showEmployee = allowed.has("employees")
+  const showLeads = allowed.has("leads")
   const showOutlets = allowed.has("outlets")
   const showProduct = allowed.has("products")
   const showAccounts = allowed.has("accounts")
@@ -66,6 +70,7 @@ export function AppNav({
           if (group.id === "operations" && module.slug === "outlets") return false
           if (group.id === "inventory" && module.slug === "products") return false
           if (group.id === "revenue" && module.slug === "accounts") return false
+          if (group.id === "revenue" && module.slug === "leads") return false
           return true
         })
 
@@ -73,13 +78,15 @@ export function AppNav({
         const renderOutletSection = group.id === "operations" && showOutlets
         const renderProductSection = group.id === "inventory" && showProduct
         const renderAccountsSection = group.id === "revenue" && showAccounts
+        const renderLeadsSection = group.id === "revenue" && showLeads
 
         if (
           modules.length === 0 &&
           !renderEmployeeSection &&
           !renderOutletSection &&
           !renderProductSection &&
-          !renderAccountsSection
+          !renderAccountsSection &&
+          !renderLeadsSection
         ) {
           return null
         }
@@ -278,6 +285,75 @@ export function AppNav({
                                 className={nestedItemClass(pathname === "/accounts/account-types")}
                               >
                                 <span className="truncate">Account Type</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        ) : null}
+                      </li>
+                    </ul>
+                  ) : null}
+                </li>
+              ) : null}
+
+              {renderLeadsSection ? (
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setLeadsOpen((value) => !value)}
+                    className="group flex h-7 w-full items-center gap-2 px-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                  >
+                    <TargetIcon className="size-3.5 shrink-0" />
+                    <span className="truncate">Leads</span>
+                    <span className="ml-auto" />
+                    {leadsOpen ? (
+                      <ChevronDownIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      <ChevronRightIcon className="size-3.5 shrink-0" />
+                    )}
+                  </button>
+                  {leadsOpen ? (
+                    <ul className="space-y-px">
+                      <li>
+                        <Link
+                          href="/leads"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/leads")}
+                        >
+                          <span className="truncate">Leads</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setLeadStagesConfigOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Configuration</span>
+                          <span className="ml-auto" />
+                          {leadStagesConfigOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {leadStagesConfigOpen ? (
+                          <ul className="space-y-px">
+                            <li>
+                              <Link
+                                href="/leads/stages"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/leads/stages")}
+                              >
+                                <span className="truncate">Lead Stages</span>
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                href="/leads/sources"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/leads/sources")}
+                              >
+                                <span className="truncate">Lead Sources</span>
                               </Link>
                             </li>
                           </ul>

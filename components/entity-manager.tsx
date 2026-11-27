@@ -58,6 +58,7 @@ import { Input } from "@/components/ui/input"
 import {
   deleteEntityAction,
   fetchEntities,
+  fetchMasterDataOptions,
   fetchRelationOptions,
   saveEntityAction,
 } from "@/app/(app)/entities/actions"
@@ -333,21 +334,23 @@ export function EntityManager({
     setFilterDraft({ ...filters })
     setFilterOpen(true)
 
-    const relationFields = filterableFields.filter(
-      (field) => field.type === "relation"
+    const optionFields = filterableFields.filter(
+      (field) => field.type === "relation" || field.masterDataType
     )
-    if (relationFields.length) {
+    if (optionFields.length) {
       startTransition(async () => {
         toast.loading("Loading filter options...", { id: "filter-options" })
         const results = await Promise.all(
-          relationFields.map((field) =>
-            fetchRelationOptions(config.key, field.name)
+          optionFields.map((field) =>
+            field.masterDataType
+              ? fetchMasterDataOptions(field.masterDataType)
+              : fetchRelationOptions(config.key, field.name)
           )
         )
         toast.dismiss("filter-options")
         setFilterOptions(
           Object.fromEntries(
-            relationFields.map((field, index) => [
+            optionFields.map((field, index) => [
               field.name,
               results[index].options ?? [],
             ])
@@ -390,7 +393,8 @@ export function EntityManager({
     if (
       field.type === "select" ||
       field.type === "relation" ||
-      field.type === "checkbox"
+      field.type === "checkbox" ||
+      field.masterDataType
     ) {
       const options =
         field.type === "checkbox"
@@ -398,9 +402,9 @@ export function EntityManager({
               { value: "true", label: "Yes" },
               { value: "false", label: "No" },
             ]
-          : field.type === "select"
-            ? (field.options ?? [])
-            : (filterOptions[field.name] ?? [])
+          : field.masterDataType || field.type === "relation"
+            ? (filterOptions[field.name] ?? [])
+            : (field.options ?? [])
       const missing =
         Boolean(value) && !options.some((option) => option.value === value)
 
@@ -594,7 +598,9 @@ export function EntityManager({
               onClick={() =>
                 config.key === "employees"
                   ? router.push("/employees/new")
-                  : openForm(null)
+                  : config.key === "accounts"
+                    ? router.push("/accounts/new")
+                    : openForm(null)
               }
             >
               <PlusIcon />

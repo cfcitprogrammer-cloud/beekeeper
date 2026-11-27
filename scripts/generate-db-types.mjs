@@ -101,6 +101,13 @@ for (const match of sql.matchAll(
   }
 }
 
+for (const match of sql.matchAll(
+  /alter\s+table\s+public\.(\w+)\s+drop\s+column\s+(?:if\s+exists\s+)?(\w+)/gi,
+)) {
+  const rows = tableRows.get(match[1])
+  if (rows) tableRows.set(match[1], rows.filter((row) => row.name !== match[2]))
+}
+
 for (const name of [
   "visits",
   "form_submissions",

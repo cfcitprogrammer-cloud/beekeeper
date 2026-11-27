@@ -362,19 +362,27 @@ export type Database = {
     leads: Table<{
       id: string
       org_id: string
-      name: string
       company: string | null
       email: string | null
       phone: string | null
-      source: string | null
       owner_id: string | null
-      status: string
       score: number | null
       location: unknown | null
       converted_account_id: string | null
       converted_at: string | null
       created_at: string
       updated_at: string
+      stage_id: string | null
+      first_name: string | null
+      last_name: string | null
+      title: string | null
+      industry: string | null
+      country: string | null
+      region: string | null
+      city: string | null
+      postal_code: string | null
+      remarks: string | null
+      source_id: string | null
     }>
     pipeline_stages: Table<{
       id: string
@@ -1098,6 +1106,48 @@ export type Database = {
       description: string | null
       created_at: string
       updated_at: string
+    }>
+    addresses: Table<{
+      id: string
+      org_id: string
+      account_id: string
+      address_type: string
+      label: string | null
+      line1: string
+      line2: string | null
+      barangay: string | null
+      city: string
+      province: string | null
+      postal_code: string | null
+      country_code: string
+      location: unknown | null
+      contact_id: string | null
+      is_default: boolean
+      is_active: boolean
+      created_at: string
+      updated_at: string
+    }>
+    lead_stages: Table<{
+      id: string
+      org_id: string
+      code: string
+      name: string
+      description: string | null
+      sort_order: number
+      created_at: string
+      updated_at: string
+      status: string | null
+    }>
+    lead_sources: Table<{
+      id: string
+      org_id: string
+      code: string
+      name: string
+      description: string | null
+      sort_order: number
+      created_at: string
+      updated_at: string
+      status: string | null
     }>
     }
     Views: {
