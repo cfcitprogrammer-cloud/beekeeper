@@ -109,6 +109,12 @@ for (const match of sql.matchAll(
 }
 
 for (const match of sql.matchAll(
+  /drop\s+table\s+(?:if\s+exists\s+)?public\.(\w+)/gi,
+)) {
+  tableRows.delete(match[1])
+}
+
+for (const match of sql.matchAll(
   /alter\s+table\s+public\.(\w+)\s+rename\s+column\s+(\w+)\s+to\s+(\w+)/gi,
 )) {
   const rows = tableRows.get(match[1])
@@ -149,7 +155,7 @@ const tables = Array.from(tableRows, ([name, rows]) => renderRow(name, rows))
 const viewPattern =
   /create\s+or\s+replace\s+view\s+public\.(\w+)[\s\S]*?\s+as\s+([\s\S]*?);\s*(?=\n\s*(?:create|grant|--|$))/gi
 
-const views = []
+const viewsByName = new Map()
 for (const match of sql.matchAll(viewPattern)) {
   const aliases = Array.from(match[2].matchAll(/\bas\s+(\w+)/gi)).map((alias) => alias[1])
   const unique = Array.from(new Set(["org_id", ...aliases]))
@@ -157,8 +163,10 @@ for (const match of sql.matchAll(viewPattern)) {
     name: alias,
     type: alias === "org_id" ? "string" : "string | number | null",
   }))
-  views.push(renderRow(match[1], rows))
+  // A view can be redefined in a later migration; keep the latest definition.
+  viewsByName.set(match[1], renderRow(match[1], rows))
 }
+const views = [...viewsByName.values()]
 
 const output = `/**
  * Generated from supabase/migrations by scripts/generate-db-types.mjs.

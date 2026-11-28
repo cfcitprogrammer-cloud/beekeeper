@@ -4,6 +4,7 @@ import { AutocompleteField } from "@/components/autocomplete-field"
 import { FileField } from "@/components/file-field"
 import { Field } from "@/components/form-field"
 import { MasterDataSelect } from "@/components/master-data-select"
+import { MultiFileField } from "@/components/multi-file-field"
 import { SearchableRelationCombobox } from "@/components/searchable-relation-combobox"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -19,8 +20,8 @@ export function initialFormValues(config: EntityConfig, row: EntityRow | null) {
 
     if (raw !== undefined && raw !== null) {
       values[field.name] =
-        field.type === "json" && typeof raw === "object"
-          ? JSON.stringify(raw, null, 2)
+        (field.type === "json" || field.type === "attachments") && typeof raw === "object"
+          ? JSON.stringify(raw)
           : String(raw)
       continue
     }
@@ -74,6 +75,21 @@ export function EntityForm({
         if (field.readOnly) return null
         const value = String(values[field.name] ?? "")
         const describedBy = field.hint ? `${field.name}-hint` : undefined
+
+        if (field.type === "attachments") {
+          return (
+            <MultiFileField
+              key={field.name}
+              id={field.name}
+              label={fieldDisplayLabel(field)}
+              hint={field.hint}
+              value={value}
+              bucket={field.storageBucket ?? "attachments"}
+              entityKey={config.key}
+              onChange={(next) => onChange(field.name, next)}
+            />
+          )
+        }
 
         if (field.type === "file") {
           return (

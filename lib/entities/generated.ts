@@ -5849,8 +5849,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "required": false
       },
       {
-        "name": "total_amount",
-        "label": "Total Amount",
+        "name": "total_expense",
+        "label": "Total Expense",
         "type": "number",
         "required": false,
         "notNull": true,
@@ -5897,13 +5897,25 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Reimbursed At",
         "type": "datetime",
         "required": false
+      },
+      {
+        "name": "total_reimbursable",
+        "label": "Total Reimbursable",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "approved_amount",
+        "label": "Approved Amount",
+        "type": "number",
+        "required": false
       }
     ],
     "columns": [
       "report_no",
       "employee_id",
       "title",
-      "total_amount",
+      "total_expense",
       "status",
       "submitted_at"
     ],
@@ -5962,8 +5974,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         }
       },
       {
-        "name": "expense_date",
-        "label": "Expense Date",
+        "name": "date_from",
+        "label": "Date From",
         "type": "date",
         "required": true,
         "notNull": true
@@ -5976,40 +5988,9 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "notNull": true
       },
       {
-        "name": "currency_code",
-        "label": "Currency Code",
-        "type": "text",
-        "required": false,
-        "notNull": true,
-        "hasDefault": true
-      },
-      {
         "name": "description",
         "label": "Description",
         "type": "textarea",
-        "required": false
-      },
-      {
-        "name": "receipt_url",
-        "label": "Receipt Url",
-        "type": "text",
-        "required": false
-      },
-      {
-        "name": "visit_id",
-        "label": "Visit Id",
-        "type": "relation",
-        "required": false,
-        "relation": {
-          "table": "visits",
-          "field": "id",
-          "labelField": "id"
-        }
-      },
-      {
-        "name": "distance_km",
-        "label": "Distance Km",
-        "type": "number",
         "required": false
       },
       {
@@ -6039,6 +6020,30 @@ export const generatedEntities: Record<string, EntityConfig> = {
         ]
       },
       {
+        "name": "date_to",
+        "label": "Date To",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "outlet_id",
+        "label": "Outlet Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "attachment_path",
+        "label": "Attachment Path",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "is_reimbursable",
+        "label": "Is Reimbursable",
+        "type": "checkbox",
+        "required": false
+      },
+      {
         "name": "client_uuid",
         "label": "Client Uuid",
         "type": "text",
@@ -6055,14 +6060,14 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "report_id",
       "employee_id",
       "category_id",
-      "expense_date",
+      "date_from",
       "amount",
-      "currency_code"
+      "description"
     ],
     "searchColumns": [
-      "currency_code",
       "description",
-      "receipt_url"
+      "outlet_id",
+      "attachment_path"
     ],
     "defaultOrder": "created_at",
     "readOnly": false,

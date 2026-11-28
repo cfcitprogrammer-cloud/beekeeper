@@ -82,6 +82,12 @@ for (const match of sql.matchAll(
 }
 
 for (const match of sql.matchAll(
+  /drop\s+table\s+(?:if\s+exists\s+)?public\.(\w+)/gi,
+)) {
+  tables.delete(match[1])
+}
+
+for (const match of sql.matchAll(
   /alter\s+table\s+public\.(\w+)\s+rename\s+column\s+(\w+)\s+to\s+(\w+)/gi,
 )) {
   const meta = tables.get(match[1])

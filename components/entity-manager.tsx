@@ -149,6 +149,10 @@ function cellValue(
 
   const raw = row[column]
   if (field?.type === "file") return raw ? String(raw).split("/").pop() || "—" : "—"
+  if (field?.type === "attachments") {
+    const paths = Array.isArray(raw) ? raw : []
+    return paths.length ? `${paths.length} file${paths.length === 1 ? "" : "s"}` : "—"
+  }
   if (field?.type === "relation") return row.__labels?.[column] ?? "—"
   if (
     column.endsWith("_id") &&

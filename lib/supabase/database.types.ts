@@ -826,12 +826,14 @@ export type Database = {
       report_no: string
       employee_id: string
       title: string | null
-      total_amount: number
+      total_expense: number
       status: string
       submitted_at: string | null
       reimbursed_at: string | null
       created_at: string
       updated_at: string
+      total_reimbursable: number | null
+      approved_amount: number | null
     }>
     expenses: Table<{
       id: string
@@ -839,16 +841,16 @@ export type Database = {
       org_id: string
       employee_id: string
       category_id: string
-      expense_date: string
+      date_from: string
       amount: number
-      currency_code: string
       description: string | null
-      receipt_url: string | null
-      visit_id: string | null
-      distance_km: number | null
       status: string
       created_at: string
       updated_at: string
+      date_to: string | null
+      outlet_id: string | null
+      attachment_path: string | null
+      is_reimbursable: boolean | null
       client_uuid: string | null
       synced_at: string | null
     }>
@@ -1202,17 +1204,6 @@ export type Database = {
       purpose_other: string | null
       attachment_path: string | null
     }>
-    business_development_funds: Table<{
-      id: string
-      org_id: string
-      employee_id: string
-      fund_date: string
-      amount: number
-      purpose: string | null
-      status: string
-      created_at: string
-      updated_at: string
-    }>
     field_expenses: Table<{
       id: string
       org_id: string
@@ -1235,6 +1226,58 @@ export type Database = {
       description: string | null
       sort_order: number
       status: string
+      created_at: string
+      updated_at: string
+    }>
+    bdf_areas: Table<{
+      id: string
+      org_id: string
+      code: string
+      name: string
+      description: string | null
+      sort_order: number
+      status: string
+      created_at: string
+      updated_at: string
+    }>
+    bdf_categories: Table<{
+      id: string
+      org_id: string
+      code: string
+      name: string
+      description: string | null
+      sort_order: number
+      status: string
+      created_at: string
+      updated_at: string
+    }>
+    bdf_reports: Table<{
+      id: string
+      org_id: string
+      outlet_id: string | null
+      area_id: string | null
+      date_from: string
+      date_to: string | null
+      account_id: string | null
+      address: string | null
+      employee_id: string
+      category_id: string | null
+      attachment_paths: Json
+      created_at: string
+      updated_at: string
+    }>
+    bdf_items: Table<{
+      id: string
+      org_id: string
+      report_id: string
+      employee_id: string
+      particular: string
+      qty: number
+      unit_amount: number
+      total_amount: number | null
+      date: string
+      remarks: string | null
+      attachment_path: string | null
       created_at: string
       updated_at: string
     }>

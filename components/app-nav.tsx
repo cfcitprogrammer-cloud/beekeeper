@@ -43,6 +43,8 @@ export function AppNav({
   const [opportunityStagesOpen, setOpportunityStagesOpen] = React.useState(true)
   const [expensesOpen, setExpensesOpen] = React.useState(true)
   const [expenseConfigOpen, setExpenseConfigOpen] = React.useState(true)
+  const [bdfOpen, setBdfOpen] = React.useState(true)
+  const [fieldExpenseOpen, setFieldExpenseOpen] = React.useState(true)
   const [contactsOpen, setContactsOpen] = React.useState(true)
   const [contactsConfigOpen, setContactsConfigOpen] = React.useState(true)
 
@@ -565,15 +567,95 @@ export function AppNav({
                                 <span className="truncate">Cash Advance Purpose</span>
                               </Link>
                             </li>
+                            <li>
+                              <Link
+                                href="/expenses/bdf-areas"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/expenses/bdf-areas")}
+                              >
+                                <span className="truncate">BDF Area</span>
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                href="/expenses/bdf-categories"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/expenses/bdf-categories")}
+                              >
+                                <span className="truncate">BDF Category</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        ) : null}
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setBdfOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Business Development Fund</span>
+                          <span className="ml-auto" />
+                          {bdfOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {bdfOpen ? (
+                          <ul className="space-y-px">
+                            {[
+                              ["bdf-items", "Items"],
+                              ["bdf-reports", "Reports"],
+                            ].map(([slug, label]) => (
+                              <li key={slug}>
+                                <Link
+                                  href={`/expenses/${slug}`}
+                                  onClick={onNavigate}
+                                  className={nestedItemClass(pathname === `/expenses/${slug}`)}
+                                >
+                                  <span className="truncate">{label}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : null}
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setFieldExpenseOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Field Expense</span>
+                          <span className="ml-auto" />
+                          {fieldExpenseOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {fieldExpenseOpen ? (
+                          <ul className="space-y-px">
+                            {[
+                              ["expense-items", "Expense Items"],
+                              ["expense-reports", "Expense Reports"],
+                            ].map(([slug, label]) => (
+                              <li key={slug}>
+                                <Link
+                                  href={`/expenses/${slug}`}
+                                  onClick={onNavigate}
+                                  className={nestedItemClass(pathname === `/expenses/${slug}`)}
+                                >
+                                  <span className="truncate">{label}</span>
+                                </Link>
+                              </li>
+                            ))}
                           </ul>
                         ) : null}
                       </li>
                       {[
                         ["cash-advances", "Cash Advance"],
-                        ["business-development-funds", "Business Development Fund"],
-                        ["field-expenses", "Field Expense"],
-                        ["expense-items", "Expense Items"],
-                        ["expense-reports", "Expense Report"],
                       ].map(([slug, label]) => (
                         <li key={slug}>
                           <Link

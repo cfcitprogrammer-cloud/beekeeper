@@ -12,6 +12,7 @@ export type FieldType =
   | "select"
   | "relation"
   | "file"
+  | "attachments"
   | "json"
 
 export type FieldOption = { value: string; label: string }

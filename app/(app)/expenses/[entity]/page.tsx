@@ -21,10 +21,25 @@ const VIEWS: Record<string, { key: string; title: string; description: string }>
     title: "Cash Advance Purposes",
     description: "Manage the purpose options available on cash advances.",
   },
-  "business-development-funds": {
-    key: "business_development_funds",
-    title: "Business Development Funds",
-    description: "Funds issued for business development activities.",
+  "bdf-items": {
+    key: "bdf_items",
+    title: "BDF Items",
+    description: "Line items for business development funds.",
+  },
+  "bdf-reports": {
+    key: "bdf_reports",
+    title: "BDF Reports",
+    description: "Business development fund reports and their items.",
+  },
+  "bdf-areas": {
+    key: "bdf_areas",
+    title: "BDF Areas",
+    description: "Manage the areas available on BDF reports.",
+  },
+  "bdf-categories": {
+    key: "bdf_categories",
+    title: "BDF Categories",
+    description: "Manage the categories available on BDF reports.",
   },
   "field-expenses": {
     key: "field_expenses",

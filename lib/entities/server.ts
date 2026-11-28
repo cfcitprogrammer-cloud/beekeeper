@@ -112,6 +112,15 @@ const RELATION_LABEL_CONFIG: Record<string, RelationLabelConfig> = {
       return "Visit"
     },
   },
+  bdf_reports: {
+    columns: ["date_from", "date_to"],
+    orderBy: "date_from",
+    label: (row) => {
+      const from = datePart(row.date_from)
+      const to = datePart(row.date_to)
+      return from ? `BDF report · ${from}${to && to !== from ? ` – ${to}` : ""}` : "BDF report"
+    },
+  },
   boms: {
     columns: ["version"],
     orderBy: "version",
@@ -178,6 +187,13 @@ export function coerceValue(field: FieldDef, raw: unknown) {
       } catch {
         throw new Error(`${fieldDisplayLabel(field)} must be valid JSON.`)
       }
+    case "attachments": {
+      const parsed: unknown = JSON.parse(String(raw))
+      if (!Array.isArray(parsed)) {
+        throw new Error(`${fieldDisplayLabel(field)} must be a list of files.`)
+      }
+      return parsed
+    }
     default:
       return String(raw)
   }
