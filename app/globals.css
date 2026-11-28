@@ -152,3 +152,70 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Dashboard · all-clear delight */
+.dashboard-home .spark {
+  color: var(--primary);
+  opacity: 1;
+}
+.dashboard-home .clear-glow {
+  background: radial-gradient(
+    circle at 50% 25%,
+    color-mix(in srgb, var(--primary) 22%, transparent),
+    transparent 72%
+  );
+}
+.dashboard-home .clear-ring {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--border));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  color: var(--primary);
+}
+.dashboard-home .clear-ring svg {
+  width: 20px;
+  height: 20px;
+}
+.dashboard-home .clear-title {
+  color: color-mix(in srgb, var(--primary) 60%, var(--foreground));
+}
+
+/* Dashboard · metric tile color hierarchy */
+.dashboard-home .tile .tile-value {
+  color: color-mix(in oklch, var(--primary) 95%, var(--foreground));
+}
+.dashboard-home .tile .tile-icon {
+  color: color-mix(in oklch, var(--primary) 95%, var(--muted-foreground));
+}
+
+/* Dashboard · today section legibility */
+.dashboard-home .visit-section .visit-body,
+.dashboard-home .attendance-section .attendance-body {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.dashboard-home .visit-section .visit-heading,
+.dashboard-home .visit-section .visit-link,
+.dashboard-home .attendance-section .attendance-heading,
+.dashboard-home .attendance-section .attendance-link {
+  font-size: 12px;
+}
+
+/* Empty states · legible centered description */
+.empty-description {
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Panel header · legible description */
+.panel-heading .panel-title {
+  font-size: 13px;
+}
+.panel-heading .panel-description {
+  font-size: 12px;
+  line-height: 1.5;
+}

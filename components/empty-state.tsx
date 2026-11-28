@@ -28,7 +28,7 @@ export function EmptyState({
         <Ghost />
       )}
       <p className="text-xs font-medium">{title}</p>
-      <p className="max-w-[48ch] text-[11px] leading-relaxed text-muted-foreground">
+      <p className="empty-description max-w-[48ch] text-[11px] leading-relaxed text-muted-foreground">
         {description}
       </p>
       {action}

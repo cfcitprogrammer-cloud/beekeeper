@@ -51,13 +51,15 @@ function MetricTile({ metric }: { metric: Metric }) {
   return (
     <Link
       href={metric.href}
-      className="group bg-card p-4 transition-colors hover:bg-muted/40 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+      className="tile group bg-card p-4 transition-colors hover:bg-muted/40 focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-[11px] font-medium text-muted-foreground">{metric.label}</p>
-        <Icon className="size-3.5 text-muted-foreground/70 group-hover:text-foreground" />
+        <Icon className="tile-icon size-3.5 text-muted-foreground/70 group-hover:text-foreground" />
       </div>
-      <p className="mt-3 text-2xl font-medium tracking-tight tabular-nums">{metric.value}</p>
+      <p className="tile-value mt-3 text-2xl font-medium tracking-tight tabular-nums">
+        {metric.value}
+      </p>
       <p className="mt-0.5 text-[11px] text-muted-foreground">{metric.detail}</p>
     </Link>
   )
@@ -191,16 +193,27 @@ export default async function DashboardPage() {
     can("announcements") && data.announcements !== null && enabled.has("announcements")
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:py-8">
-      <PageHeader
-        title={`${greeting(now, timezone)}, ${firstName(profile)}`}
-        description={`${formatLongDate(now, timezone)} · ${organization?.name ?? "Your organization"}`}
-        action={
+    <div className="dashboard-home mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:py-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-medium tracking-[-0.02em]">
+              {`${greeting(now, timezone)}, ${firstName(profile)}`}
+            </h1>
+            <svg className="spark size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+              <path d="M12 2c0 5 5 10 10 10-5 0-10 5-10 10 0-5-5-10-10-10 5 0 10-5 10-10Z" />
+            </svg>
+          </div>
+          <p className="max-w-[65ch] text-xs leading-relaxed text-muted-foreground">
+            {`${formatLongDate(now, timezone)} · ${organization?.name ?? "Your organization"}`}
+          </p>
+        </div>
+        <div className="shrink-0">
           <Button variant="outline" size="sm" nativeButton={false} render={<Link href="/dashboard/settings" />}>
             Configure widgets
           </Button>
-        }
-      />
+        </div>
+      </div>
 
       {metrics.length > 0 ? (
         <div className="mt-6 grid grid-cols-2 gap-px border bg-border sm:grid-cols-3 xl:grid-cols-6">
@@ -222,12 +235,12 @@ export default async function DashboardPage() {
         <Panel title="Today" description={formatLongDate(now, timezone)}>
           <div className="divide-y">
             {data.visits !== null && enabled.has("today") ? (
-              <section className="px-4 py-3">
+              <section className="visit-section px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-[11px] font-medium">Visits</h3>
+                  <h3 className="visit-heading text-[11px] font-medium">Visits</h3>
                   <Link
                     href="/visits"
-                    className="text-[11px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                    className="visit-link text-[11px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                   >
                     Open visits
                   </Link>
@@ -239,7 +252,7 @@ export default async function DashboardPage() {
                     <MiniStat label="Missed" value={data.visits.missed} />
                   </dl>
                 ) : (
-                  <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
+                  <p className="visit-body mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
                     No visits are planned for today. Scheduled outlet visits will appear
                     here.
                   </p>
@@ -248,12 +261,12 @@ export default async function DashboardPage() {
             ) : null}
 
             {data.attendance !== null && enabled.has("today") ? (
-              <section className="px-4 py-3">
+              <section className="attendance-section px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-[11px] font-medium">Attendance</h3>
+                  <h3 className="attendance-heading text-[11px] font-medium">Attendance</h3>
                   <Link
                     href="/attendance"
-                    className="text-[11px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                    className="attendance-link text-[11px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                   >
                     Open attendance
                   </Link>
@@ -270,7 +283,7 @@ export default async function DashboardPage() {
                     <MiniStat label="On leave" value={data.attendance.onLeave} />
                   </dl>
                 ) : (
-                  <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
+                  <p className="attendance-body mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
                     No clock-ins recorded today. Attendance appears here as your team
                     starts their day.
                   </p>
@@ -320,11 +333,14 @@ export default async function DashboardPage() {
                 })}
               </div>
             ) : (
-              <EmptyState
-                icon={CircleCheckIcon}
-                title="Nothing is waiting"
-                description="Pending approvals, overdue invoices and open tickets will surface here as they appear."
-              />
+              <div className="clear-glow flex flex-col items-center gap-2 px-4 py-6">
+                <span className="clear-ring"><CircleCheckIcon /></span>
+                <p className="clear-title text-xs font-medium">You're all caught up</p>
+                <p className="max-w-[48ch] text-center text-[11px] leading-relaxed text-muted-foreground">
+                  Pending approvals, overdue invoices and open tickets will surface here
+                  as they appear.
+                </p>
+              </div>
             )}
           </Panel>
         ) : null}

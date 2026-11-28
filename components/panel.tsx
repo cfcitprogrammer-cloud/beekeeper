@@ -20,10 +20,10 @@ export function Panel({
   return (
     <section className={cn("border bg-card", className)}>
       <header className="flex items-start justify-between gap-3 border-b px-4 py-3">
-        <div className="min-w-0">
-          <h2 className="text-xs font-medium">{title}</h2>
+        <div className="panel-heading min-w-0">
+          <h2 className="panel-title text-xs font-medium">{title}</h2>
           {description ? (
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
+            <p className="panel-description mt-0.5 text-[11px] text-muted-foreground">
               {description}
             </p>
           ) : null}
