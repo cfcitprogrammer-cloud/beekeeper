@@ -34,32 +34,6 @@ const emptyContact = (): Contact => ({
   is_primary: false,
 })
 
-type AddressInput = {
-  address_type: "billing" | "shipping"
-  label: string
-  line1: string
-  line2: string
-  barangay: string
-  city: string
-  province: string
-  postal_code: string
-  country_code: string
-  is_default: boolean
-}
-
-const emptyAddress = (address_type: "billing" | "shipping"): AddressInput => ({
-  address_type,
-  label: "",
-  line1: "",
-  line2: "",
-  barangay: "",
-  city: "",
-  province: "",
-  postal_code: "",
-  country_code: "PH",
-  is_default: true,
-})
-
 export function AccountFormPage({
   config,
   initialRow,
@@ -75,10 +49,6 @@ export function AccountFormPage({
     Record<string, { value: string; label: string }[]>
   >({})
   const [contacts, setContacts] = React.useState<Contact[]>([emptyContact()])
-  const [addresses, setAddresses] = React.useState({
-    billing: emptyAddress("billing"),
-    shipping: emptyAddress("shipping"),
-  })
   const [error, setError] = React.useState<string | null>(null)
   const [pending, startTransition] = React.useTransition()
 
@@ -109,25 +79,11 @@ export function AccountFormPage({
     )
   }
 
-  function updateAddress(
-    kind: "billing" | "shipping",
-    key: keyof AddressInput,
-    value: string | boolean
-  ) {
-    setAddresses((current) => ({
-      ...current,
-      [kind]: { ...current[kind], [key]: value },
-    }))
-  }
-
   function save() {
     startTransition(async () => {
       toast.loading("Saving account...", { id: "account-save" })
       try {
-        const result = await saveAccountWithContacts(values, contacts, [
-          addresses.billing,
-          addresses.shipping,
-        ])
+        const result = await saveAccountWithContacts(values, contacts)
         toast.dismiss("account-save")
         if (!result.ok) {
           toast.error(result.error ?? "Could not save this account.")
@@ -235,12 +191,12 @@ export function AccountFormPage({
                     placeholder="name@example.com"
                   />
                 </Field>
-                <Field id={`contact-phone-${index}`} label="Phone">
+                <Field id={`contact-phone-${index}`} label="Contact Number">
                   <Input
                     id={`contact-phone-${index}`}
                     value={contact.phone}
                     onChange={(event) => updateContact(index, "phone", event.target.value)}
-                    placeholder="Phone number"
+                    placeholder="Contact number"
                   />
                 </Field>
                 <div className="flex items-end justify-between gap-3">
@@ -269,88 +225,6 @@ export function AccountFormPage({
           </div>
         </section>
 
-        {(["billing", "shipping"] as const).map((kind) => {
-          const address = addresses[kind]
-          const title = kind === "billing" ? "Billing address" : "Shipping address"
-          return (
-            <section key={kind} className="overflow-hidden rounded-lg border bg-card">
-              <header className="border-b bg-muted/20 px-5 py-3">
-                <h2 className="text-xs font-medium">{title}</h2>
-              </header>
-              <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
-                <Field id={`${kind}-label`} label="Label">
-                  <Input
-                    id={`${kind}-label`}
-                    value={address.label}
-                    onChange={(event) => updateAddress(kind, "label", event.target.value)}
-                    placeholder="Head Office"
-                  />
-                </Field>
-                <Field id={`${kind}-line1`} label="Address line 1">
-                  <Input
-                    id={`${kind}-line1`}
-                    value={address.line1}
-                    onChange={(event) => updateAddress(kind, "line1", event.target.value)}
-                    placeholder="Street address"
-                  />
-                </Field>
-                <Field id={`${kind}-line2`} label="Address line 2">
-                  <Input
-                    id={`${kind}-line2`}
-                    value={address.line2}
-                    onChange={(event) => updateAddress(kind, "line2", event.target.value)}
-                    placeholder="Unit, floor, building"
-                  />
-                </Field>
-                <Field id={`${kind}-barangay`} label="Barangay">
-                  <Input
-                    id={`${kind}-barangay`}
-                    value={address.barangay}
-                    onChange={(event) => updateAddress(kind, "barangay", event.target.value)}
-                  />
-                </Field>
-                <Field id={`${kind}-city`} label="City">
-                  <Input
-                    id={`${kind}-city`}
-                    value={address.city}
-                    onChange={(event) => updateAddress(kind, "city", event.target.value)}
-                  />
-                </Field>
-                <Field id={`${kind}-province`} label="Province">
-                  <Input
-                    id={`${kind}-province`}
-                    value={address.province}
-                    onChange={(event) => updateAddress(kind, "province", event.target.value)}
-                  />
-                </Field>
-                <Field id={`${kind}-postal`} label="Postal code">
-                  <Input
-                    id={`${kind}-postal`}
-                    value={address.postal_code}
-                    onChange={(event) => updateAddress(kind, "postal_code", event.target.value)}
-                  />
-                </Field>
-                <Field id={`${kind}-country`} label="Country code">
-                  <Input
-                    id={`${kind}-country`}
-                    value={address.country_code}
-                    maxLength={2}
-                    onChange={(event) => updateAddress(kind, "country_code", event.target.value)}
-                  />
-                </Field>
-                <label className="flex items-center gap-2 pb-2 text-xs lg:self-end">
-                  <input
-                    type="checkbox"
-                    checked={address.is_default}
-                    onChange={(event) => updateAddress(kind, "is_default", event.target.checked)}
-                    className="size-3.5 accent-[var(--primary)]"
-                  />
-                  Default address
-                </label>
-              </div>
-            </section>
-          )
-        })}
       </div>
 
       <div className="mt-6 flex justify-end gap-2 rounded-lg border bg-card p-4">

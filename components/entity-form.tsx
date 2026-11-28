@@ -1,6 +1,7 @@
 "use client"
 
 import { AutocompleteField } from "@/components/autocomplete-field"
+import { FileField } from "@/components/file-field"
 import { Field } from "@/components/form-field"
 import { MasterDataSelect } from "@/components/master-data-select"
 import { SearchableRelationCombobox } from "@/components/searchable-relation-combobox"
@@ -58,10 +59,36 @@ export function EntityForm({
           : "grid max-h-[60vh] gap-4 overflow-y-auto pr-1 sm:grid-cols-2"
       }
     >
-      {config.fields.map((field: FieldDef) => {
+      {config.fields
+        .filter((field: FieldDef) => {
+          const condition = field.showWhenRelation
+          if (!condition) return true
+          const selected = String(values[condition.field] ?? "")
+          if (!selected) return false
+          const source = config.fields.find((item) => item.name === condition.field)
+          const options =
+            source?.type === "relation" ? (relationOptions[condition.field] ?? []) : []
+          return options.find((option) => option.value === selected)?.label === condition.label
+        })
+        .map((field: FieldDef) => {
         if (field.readOnly) return null
         const value = String(values[field.name] ?? "")
         const describedBy = field.hint ? `${field.name}-hint` : undefined
+
+        if (field.type === "file") {
+          return (
+            <FileField
+              key={field.name}
+              id={field.name}
+              label={fieldDisplayLabel(field)}
+              hint={field.hint}
+              value={value}
+              bucket={field.storageBucket ?? "attachments"}
+              entityKey={config.key}
+              onChange={(next) => onChange(field.name, next)}
+            />
+          )
+        }
 
         if (field.type === "checkbox") {
           return (

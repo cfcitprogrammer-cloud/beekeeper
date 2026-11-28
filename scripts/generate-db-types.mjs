@@ -108,6 +108,24 @@ for (const match of sql.matchAll(
   if (rows) tableRows.set(match[1], rows.filter((row) => row.name !== match[2]))
 }
 
+for (const match of sql.matchAll(
+  /alter\s+table\s+public\.(\w+)\s+rename\s+column\s+(\w+)\s+to\s+(\w+)/gi,
+)) {
+  const rows = tableRows.get(match[1])
+  const row = rows?.find((item) => item.name === match[2])
+  if (row) row.name = match[3]
+}
+
+for (const match of sql.matchAll(
+  /alter\s+table\s+public\.(\w+)\s+rename\s+to\s+(\w+)/gi,
+)) {
+  const rows = tableRows.get(match[1])
+  if (rows) {
+    tableRows.delete(match[1])
+    tableRows.set(match[2], rows)
+  }
+}
+
 for (const name of [
   "visits",
   "form_submissions",

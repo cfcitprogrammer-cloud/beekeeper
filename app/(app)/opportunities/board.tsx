@@ -9,10 +9,10 @@ import { moveOpportunity } from "./actions"
 type Stage = { id: string; name: string; probability: number | null; is_won: boolean; is_lost: boolean }
 type Opportunity = {
   id: string
-  name: string
+  opportunity_name: string
   amount: number
   stage_id: string
-  expected_close: string | null
+  close_date: string | null
 }
 
 export function OpportunityBoard({
@@ -74,10 +74,10 @@ export function OpportunityBoard({
               ) : null}
               {items.map((item) => (
                 <article key={item.id} className="border bg-background p-2.5">
-                  <p className="text-xs font-medium leading-snug">{item.name}</p>
+                  <p className="text-xs font-medium leading-snug">{item.opportunity_name}</p>
                   <p className="mt-1 text-[11px] tabular-nums text-muted-foreground">
                     {currency.format(Number(item.amount))}
-                    {item.expected_close ? ` · ${item.expected_close}` : ""}
+                    {item.close_date ? ` · ${item.close_date}` : ""}
                   </p>
                   {canUpdate ? (
                     <select
@@ -85,7 +85,7 @@ export function OpportunityBoard({
                       onChange={(event) => move(item.id, event.target.value)}
                       disabled={pending}
                       className="mt-2 h-6 w-full rounded-none border border-input bg-transparent px-1 text-[11px] outline-none focus-visible:ring-1 focus-visible:ring-ring dark:bg-input/30"
-                      aria-label={`Move ${item.name} to stage`}
+                      aria-label={`Move ${item.opportunity_name} to stage`}
                     >
                       {stages.map((option) => (
                         <option key={option.id} value={option.id}>

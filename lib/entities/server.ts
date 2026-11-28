@@ -323,6 +323,115 @@ async function attachRelationLabels(
   })
 }
 
+/**
+ * Accounts have no phone column of their own: the contact number comes from
+ * the account's primary contact (or its first contact with a phone).
+ */
+async function attachAccountContactNumbers(
+  session: Session,
+  config: EntityConfig,
+  rows: EntityRow[],
+): Promise<EntityRow[]> {
+  if (config.key !== "accounts" || !rows.length) return rows
+
+  const ids = rows
+    .map((row) => row.id)
+    .filter((id): id is string => typeof id === "string" && Boolean(id))
+  if (!ids.length) return rows
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (session.supabase as any)
+    .from("contacts")
+    .select("account_id, phone, is_primary")
+    .in("account_id", ids)
+    .eq("org_id", session.profile.org_id)
+
+  if (error) {
+    console.error(`Could not load account contact numbers: ${error.message}`)
+    return rows
+  }
+
+  const byAccount = new Map<string, string>()
+  for (const contact of (data ?? []) as Record<string, unknown>[]) {
+    const accountId = stringOr(contact.account_id)
+    const phone = stringOr(contact.phone)
+    if (!accountId || !phone) continue
+    if (!byAccount.has(accountId) || contact.is_primary === true) {
+      byAccount.set(accountId, phone)
+    }
+  }
+
+  return rows.map((row) => ({
+    ...row,
+    contact_number: byAccount.get(stringOr(row.id)) ?? null,
+  }))
+}
+
+/** Department and position are read from the selected employee, not stored on the advance. */
+async function attachCashAdvanceEmployeeDetails(
+  session: Session,
+  config: EntityConfig,
+  rows: EntityRow[],
+): Promise<EntityRow[]> {
+  if (config.key !== "cash_advances" || !rows.length) return rows
+
+  const employeeIds = [
+    ...new Set(rows.map((row) => stringOr(row.employee_id)).filter(Boolean)),
+  ]
+  if (!employeeIds.length) return rows
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = session.supabase as any
+  const { data: employees, error } = await db
+    .from("employees")
+    .select("id, department_id, position_id")
+    .in("id", employeeIds)
+    .eq("org_id", session.profile.org_id)
+
+  if (error) {
+    console.error(`Could not load cash advance employees: ${error.message}`)
+    return rows
+  }
+
+  const departmentIds = [
+    ...new Set((employees ?? []).map((item: Record<string, unknown>) => stringOr(item.department_id)).filter(Boolean)),
+  ]
+  const positionIds = [
+    ...new Set((employees ?? []).map((item: Record<string, unknown>) => stringOr(item.position_id)).filter(Boolean)),
+  ]
+
+  const [departmentsResult, positionsResult] = await Promise.all([
+    departmentIds.length
+      ? db.from("departments").select("id, name").in("id", departmentIds).eq("org_id", session.profile.org_id)
+      : Promise.resolve({ data: [] }),
+    positionIds.length
+      ? db.from("positions").select("id, title").in("id", positionIds).eq("org_id", session.profile.org_id)
+      : Promise.resolve({ data: [] }),
+  ])
+
+  const departments = new Map<string, string>()
+  for (const department of departmentsResult.data ?? []) {
+    departments.set(String(department.id), stringOr(department.name))
+  }
+  const positions = new Map<string, string>()
+  for (const position of positionsResult.data ?? []) {
+    positions.set(String(position.id), stringOr(position.title))
+  }
+  const employeesById = new Map<string, Record<string, unknown>>()
+  for (const employee of (employees ?? []) as Record<string, unknown>[]) {
+    employeesById.set(String(employee.id), employee)
+  }
+
+  return rows.map((row) => {
+    const employee = employeesById.get(stringOr(row.employee_id))
+    return {
+      ...row,
+      department: employee ? departments.get(stringOr(employee.department_id)) ?? "" : "",
+      position: employee ? positions.get(stringOr(employee.position_id)) ?? "" : "",
+    }
+  })
+}
+
 export async function getEntityRow(
   session: Session,
   key: string,
@@ -344,7 +453,9 @@ export async function getEntityRow(
   if (error) return { config, row: null, error: error.message }
   if (!data) return { config, row: null, error: "Record not found." }
 
-  const [row] = await attachRelationLabels(session, config, [data as EntityRow])
+  const related = await attachRelationLabels(session, config, [data as EntityRow])
+  const withContacts = await attachAccountContactNumbers(session, config, related)
+  const [row] = await attachCashAdvanceEmployeeDetails(session, config, withContacts)
   return { config, row: row ?? (data as EntityRow) }
 }
 
@@ -445,7 +556,9 @@ export async function listEntities(
   const { data, count, error } = await query
   if (error) return { rows: [], total: 0, error: error.message }
 
-  const rows = await attachRelationLabels(session, config, (data ?? []) as EntityRow[])
+  const related = await attachRelationLabels(session, config, (data ?? []) as EntityRow[])
+  const withContacts = await attachAccountContactNumbers(session, config, related)
+  const rows = await attachCashAdvanceEmployeeDetails(session, config, withContacts)
   return { rows, total: count ?? 0 }
 }
 

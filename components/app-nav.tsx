@@ -7,6 +7,7 @@ import * as React from "react"
 import { MODULE_GROUPS, MODULES } from "@/lib/modules"
 import { cn } from "@/lib/utils"
 import {
+  BadgeDollarSignIcon,
   Building2Icon,
   ChevronDownIcon,
   ContactIcon,
@@ -15,6 +16,7 @@ import {
   StoreIcon,
   TargetIcon,
   UsersIcon,
+  WalletIcon,
 } from "lucide-react"
 
 export function AppNav({
@@ -37,15 +39,21 @@ export function AppNav({
   const [accountsConfigOpen, setAccountsConfigOpen] = React.useState(true)
   const [leadsOpen, setLeadsOpen] = React.useState(true)
   const [leadStagesConfigOpen, setLeadStagesConfigOpen] = React.useState(true)
+  const [opportunitiesOpen, setOpportunitiesOpen] = React.useState(true)
+  const [opportunityStagesOpen, setOpportunityStagesOpen] = React.useState(true)
+  const [expensesOpen, setExpensesOpen] = React.useState(true)
+  const [expenseConfigOpen, setExpenseConfigOpen] = React.useState(true)
   const [contactsOpen, setContactsOpen] = React.useState(true)
   const [contactsConfigOpen, setContactsConfigOpen] = React.useState(true)
 
   const showEmployee = allowed.has("employees")
   const showContacts = allowed.has("accounts")
   const showLeads = allowed.has("leads")
+  const showOpportunities = allowed.has("opportunities")
   const showOutlets = allowed.has("outlets")
   const showProduct = allowed.has("products")
   const showAccounts = allowed.has("accounts")
+  const showExpenses = allowed.has("expenses")
 
   const subItemClass = (active: boolean) =>
     cn(
@@ -75,6 +83,8 @@ export function AppNav({
           if (group.id === "inventory" && module.slug === "products") return false
           if (group.id === "revenue" && module.slug === "accounts") return false
           if (group.id === "revenue" && module.slug === "leads") return false
+          if (group.id === "revenue" && module.slug === "opportunities") return false
+          if (group.id === "finance" && module.slug === "expenses") return false
           return true
         })
 
@@ -83,6 +93,8 @@ export function AppNav({
         const renderProductSection = group.id === "inventory" && showProduct
         const renderAccountsSection = group.id === "revenue" && showAccounts
         const renderLeadsSection = group.id === "revenue" && showLeads
+        const renderOpportunitiesSection = group.id === "revenue" && showOpportunities
+        const renderExpensesSection = group.id === "finance" && showExpenses
         const renderContactsSection = group.id === "revenue" && showContacts
 
         if (
@@ -92,6 +104,8 @@ export function AppNav({
           !renderProductSection &&
           !renderAccountsSection &&
           !renderLeadsSection &&
+          !renderOpportunitiesSection &&
+          !renderExpensesSection &&
           !renderContactsSection
         ) {
           return null
@@ -353,6 +367,15 @@ export function AppNav({
                                 <span className="truncate">Account Type</span>
                               </Link>
                             </li>
+                            <li>
+                              <Link
+                                href="/accounts/sources"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/accounts/sources")}
+                              >
+                                <span className="truncate">Account Source</span>
+                              </Link>
+                            </li>
                           </ul>
                         ) : null}
                       </li>
@@ -425,6 +448,143 @@ export function AppNav({
                           </ul>
                         ) : null}
                       </li>
+                    </ul>
+                  ) : null}
+                </li>
+              ) : null}
+
+              {renderOpportunitiesSection ? (
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setOpportunitiesOpen((value) => !value)}
+                    className="group flex h-7 w-full items-center gap-2 px-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                  >
+                    <BadgeDollarSignIcon className="size-3.5 shrink-0" />
+                    <span className="truncate">Opportunities</span>
+                    <span className="ml-auto" />
+                    {opportunitiesOpen ? (
+                      <ChevronDownIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      <ChevronRightIcon className="size-3.5 shrink-0" />
+                    )}
+                  </button>
+                  {opportunitiesOpen ? (
+                    <ul className="space-y-px">
+                      <li>
+                        <Link
+                          href="/opportunities"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/opportunities")}
+                        >
+                          <span className="truncate">Opportunities</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/opportunities/dashboard"
+                          onClick={onNavigate}
+                          className={subItemClass(pathname === "/opportunities/dashboard")}
+                        >
+                          <span className="truncate">Dashboard</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setOpportunityStagesOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Configuration</span>
+                          <span className="ml-auto" />
+                          {opportunityStagesOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {opportunityStagesOpen ? (
+                          <ul className="space-y-px">
+                            <li>
+                              <Link
+                                href="/opportunities/stages"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/opportunities/stages")}
+                              >
+                                <span className="truncate">Opportunity Stages</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        ) : null}
+                      </li>
+                    </ul>
+                  ) : null}
+                </li>
+              ) : null}
+
+              {renderExpensesSection ? (
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setExpensesOpen((value) => !value)}
+                    className="group flex h-7 w-full items-center gap-2 px-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                  >
+                    <WalletIcon className="size-3.5 shrink-0" />
+                    <span className="truncate">Expenses</span>
+                    <span className="ml-auto" />
+                    {expensesOpen ? (
+                      <ChevronDownIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      <ChevronRightIcon className="size-3.5 shrink-0" />
+                    )}
+                  </button>
+                  {expensesOpen ? (
+                    <ul className="space-y-px">
+                      <li>
+                        <button
+                          type="button"
+                          onClick={() => setExpenseConfigOpen((value) => !value)}
+                          className="group flex h-7 w-full items-center gap-2 px-2 pl-7 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground"
+                        >
+                          <span className="truncate">Configuration</span>
+                          <span className="ml-auto" />
+                          {expenseConfigOpen ? (
+                            <ChevronDownIcon className="size-3.5 shrink-0" />
+                          ) : (
+                            <ChevronRightIcon className="size-3.5 shrink-0" />
+                          )}
+                        </button>
+                        {expenseConfigOpen ? (
+                          <ul className="space-y-px">
+                            <li>
+                              <Link
+                                href="/expenses/cash-advance-purposes"
+                                onClick={onNavigate}
+                                className={nestedItemClass(pathname === "/expenses/cash-advance-purposes")}
+                              >
+                                <span className="truncate">Cash Advance Purpose</span>
+                              </Link>
+                            </li>
+                          </ul>
+                        ) : null}
+                      </li>
+                      {[
+                        ["cash-advances", "Cash Advance"],
+                        ["business-development-funds", "Business Development Fund"],
+                        ["field-expenses", "Field Expense"],
+                        ["expense-items", "Expense Items"],
+                        ["expense-reports", "Expense Report"],
+                      ].map(([slug, label]) => (
+                        <li key={slug}>
+                          <Link
+                            href={`/expenses/${slug}`}
+                            onClick={onNavigate}
+                            className={subItemClass(pathname === `/expenses/${slug}`)}
+                          >
+                            <span className="truncate">{label}</span>
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   ) : null}
                 </li>

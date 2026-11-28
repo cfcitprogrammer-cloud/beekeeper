@@ -81,6 +81,23 @@ for (const match of sql.matchAll(
   delete meta.options[match[2]]
 }
 
+for (const match of sql.matchAll(
+  /alter\s+table\s+public\.(\w+)\s+rename\s+column\s+(\w+)\s+to\s+(\w+)/gi,
+)) {
+  const meta = tables.get(match[1])
+  const column = meta?.columns.find((item) => item.name === match[2])
+  if (!meta || !column) continue
+  column.name = match[3]
+  if (meta.relations[match[2]]) {
+    meta.relations[match[3]] = meta.relations[match[2]]
+    delete meta.relations[match[2]]
+  }
+  if (meta.options[match[2]]) {
+    meta.options[match[3]] = meta.options[match[2]]
+    delete meta.options[match[2]]
+  }
+}
+
 for (const name of [
   "visits",
   "form_submissions",
@@ -112,6 +129,28 @@ const moduleMap = {
 for (const match of rls.matchAll(/\('([a-z_]+)',\s*'([a-z_]+)'(?:,\s*'([a-z_]+)',\s*'([a-z_]+)')?\)/g)) {
   if (match[4]) moduleMap[match[1]] = match[4]
   else moduleMap[match[2]] = match[1]
+}
+
+for (const match of sql.matchAll(
+  /alter\s+table\s+public\.(\w+)\s+rename\s+to\s+(\w+)/gi,
+)) {
+  const meta = tables.get(match[1])
+  if (meta) {
+    tables.delete(match[1])
+    tables.set(match[2], meta)
+    for (const relation of Object.values(meta.relations)) {
+      if (relation.table === match[1]) relation.table = match[2]
+    }
+    for (const tableMeta of tables.values()) {
+      for (const value of Object.values(tableMeta.relations)) {
+        if (value.table === match[1]) value.table = match[2]
+      }
+    }
+  }
+  if (moduleMap[match[1]]) {
+    moduleMap[match[2]] = moduleMap[match[1]]
+    delete moduleMap[match[1]]
+  }
 }
 
 function titleCase(value) {

@@ -2144,12 +2144,6 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "required": false
       },
       {
-        "name": "account_type",
-        "label": "Account Type",
-        "type": "text",
-        "required": false
-      },
-      {
         "name": "owner_id",
         "label": "Owner Id",
         "type": "relation",
@@ -2183,18 +2177,6 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "hasDefault": true
       },
       {
-        "name": "billing_address",
-        "label": "Billing Address",
-        "type": "json",
-        "required": false
-      },
-      {
-        "name": "shipping_address",
-        "label": "Shipping Address",
-        "type": "json",
-        "required": false
-      },
-      {
         "name": "status",
         "label": "Status",
         "type": "select",
@@ -2225,6 +2207,114 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Account Type Id",
         "type": "text",
         "required": false
+      },
+      {
+        "name": "source_id",
+        "label": "Source Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "parent_account_id",
+        "label": "Parent Account Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "account_site",
+        "label": "Account Site",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "website",
+        "label": "Website",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "is_partner",
+        "label": "Is Partner",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "rating",
+        "label": "Rating",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "industry",
+        "label": "Industry",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "number_of_employees",
+        "label": "Number Of Employees",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "ownership",
+        "label": "Ownership",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "description",
+        "label": "Description",
+        "type": "textarea",
+        "required": false
+      },
+      {
+        "name": "billing_country",
+        "label": "Billing Country",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "billing_city",
+        "label": "Billing City",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "billing_region",
+        "label": "Billing Region",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "billing_zip",
+        "label": "Billing Zip",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "shipping_country",
+        "label": "Shipping Country",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "shipping_city",
+        "label": "Shipping City",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "shipping_region",
+        "label": "Shipping Region",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "shipping_zip",
+        "label": "Shipping Zip",
+        "type": "text",
+        "required": false
       }
     ],
     "columns": [
@@ -2232,8 +2322,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "name",
       "legal_name",
       "tax_id",
-      "account_type",
-      "owner_id"
+      "owner_id",
+      "price_list_id"
     ],
     "searchColumns": [
       "account_no",
@@ -2540,66 +2630,6 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "table": "employees"
     }
   },
-  pipeline_stages: {
-    "key": "pipeline_stages",
-    "module": "opportunities",
-    "title": "Pipeline Stages",
-    "singular": "Pipeline Stage",
-    "table": "pipeline_stages",
-    "fields": [
-      {
-        "name": "name",
-        "label": "Name",
-        "type": "text",
-        "required": true,
-        "notNull": true
-      },
-      {
-        "name": "sort_order",
-        "label": "Sort Order",
-        "type": "number",
-        "required": true,
-        "notNull": true
-      },
-      {
-        "name": "probability",
-        "label": "Probability",
-        "type": "number",
-        "required": false,
-        "notNull": true,
-        "hasDefault": true
-      },
-      {
-        "name": "is_won",
-        "label": "Is Won",
-        "type": "checkbox",
-        "required": false,
-        "notNull": true,
-        "hasDefault": true
-      },
-      {
-        "name": "is_lost",
-        "label": "Is Lost",
-        "type": "checkbox",
-        "required": false,
-        "notNull": true,
-        "hasDefault": true
-      }
-    ],
-    "columns": [
-      "name",
-      "sort_order",
-      "probability",
-      "is_won",
-      "is_lost"
-    ],
-    "searchColumns": [
-      "name"
-    ],
-    "defaultOrder": "created_at",
-    "readOnly": false,
-    "tenantScoped": true
-  },
   opportunities: {
     "key": "opportunities",
     "module": "opportunities",
@@ -2620,19 +2650,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         }
       },
       {
-        "name": "lead_id",
-        "label": "Lead Id",
-        "type": "relation",
-        "required": false,
-        "relation": {
-          "table": "leads",
-          "field": "id",
-          "labelField": "title"
-        }
-      },
-      {
-        "name": "name",
-        "label": "Name",
+        "name": "opportunity_name",
+        "label": "Opportunity Name",
         "type": "text",
         "required": true,
         "notNull": true
@@ -2644,7 +2663,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "required": true,
         "notNull": true,
         "relation": {
-          "table": "pipeline_stages",
+          "table": "opportunity_stages",
           "field": "id",
           "labelField": "name"
         }
@@ -2658,8 +2677,8 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "hasDefault": true
       },
       {
-        "name": "expected_close",
-        "label": "Expected Close",
+        "name": "close_date",
+        "label": "Close Date",
         "type": "date",
         "required": false
       },
@@ -2679,19 +2698,44 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "label": "Lost Reason",
         "type": "text",
         "required": false
+      },
+      {
+        "name": "email",
+        "label": "Email",
+        "type": "email",
+        "required": false
+      },
+      {
+        "name": "quantity",
+        "label": "Quantity",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "source_id",
+        "label": "Source Id",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "description",
+        "label": "Description",
+        "type": "textarea",
+        "required": false
       }
     ],
     "columns": [
       "account_id",
-      "lead_id",
-      "name",
+      "opportunity_name",
       "stage_id",
       "amount",
-      "expected_close"
+      "close_date",
+      "owner_id"
     ],
     "searchColumns": [
-      "name",
-      "lost_reason"
+      "opportunity_name",
+      "lost_reason",
+      "email"
     ],
     "defaultOrder": "created_at",
     "readOnly": false,
@@ -5103,7 +5147,7 @@ export const generatedEntities: Record<string, EntityConfig> = {
         "relation": {
           "table": "opportunities",
           "field": "id",
-          "labelField": "name"
+          "labelField": "email"
         }
       },
       {
@@ -7817,6 +7861,66 @@ export const generatedEntities: Record<string, EntityConfig> = {
       "table": "users"
     }
   },
+  opportunity_stages: {
+    "key": "opportunity_stages",
+    "module": "opportunities",
+    "title": "Opportunity Stages",
+    "singular": "Opportunity Stage",
+    "table": "opportunity_stages",
+    "fields": [
+      {
+        "name": "name",
+        "label": "Name",
+        "type": "text",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "sort_order",
+        "label": "Sort Order",
+        "type": "number",
+        "required": true,
+        "notNull": true
+      },
+      {
+        "name": "probability",
+        "label": "Probability",
+        "type": "number",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "is_won",
+        "label": "Is Won",
+        "type": "checkbox",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      },
+      {
+        "name": "is_lost",
+        "label": "Is Lost",
+        "type": "checkbox",
+        "required": false,
+        "notNull": true,
+        "hasDefault": true
+      }
+    ],
+    "columns": [
+      "name",
+      "sort_order",
+      "probability",
+      "is_won",
+      "is_lost"
+    ],
+    "searchColumns": [
+      "name"
+    ],
+    "defaultOrder": "created_at",
+    "readOnly": false,
+    "tenantScoped": true
+  },
 }
 
 export const moduleEntities: Record<string, string[]> = {
@@ -7866,8 +7970,8 @@ export const moduleEntities: Record<string, string[]> = {
     "leads"
   ],
   "opportunities": [
-    "pipeline_stages",
-    "opportunities"
+    "opportunities",
+    "opportunity_stages"
   ],
   "activities": [
     "activities"

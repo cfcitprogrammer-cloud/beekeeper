@@ -36,18 +36,6 @@ export async function saveAccountWithContacts(
     phone: string
     is_primary: boolean
   }[],
-  addresses: {
-    address_type: "billing" | "shipping" | "both"
-    label: string
-    line1: string
-    line2: string
-    barangay: string
-    city: string
-    province: string
-    postal_code: string
-    country_code: string
-    is_default: boolean
-  }[] = [],
 ) {
   const session = await requireSession()
   if (!session.can("accounts", "create")) {
@@ -92,29 +80,6 @@ export async function saveAccountWithContacts(
       if (contactsError) throw new Error(contactsError.message)
     }
 
-    const addressRows = addresses
-      .filter((address) => address.line1.trim() && address.city.trim())
-      .map((address) => ({
-        org_id: session.profile.org_id,
-        account_id: newAccountId,
-        address_type: address.address_type,
-        label: address.label.trim() || null,
-        line1: address.line1.trim(),
-        line2: address.line2.trim() || null,
-        barangay: address.barangay.trim() || null,
-        city: address.city.trim(),
-        province: address.province.trim() || null,
-        postal_code: address.postal_code.trim() || null,
-        country_code: address.country_code.trim().toUpperCase().slice(0, 2) || "PH",
-        is_default: address.is_default,
-        is_active: true,
-      }))
-
-    if (addressRows.length) {
-      const { error: addressesError } = await supabase.from("addresses").insert(addressRows)
-      if (addressesError) throw new Error(addressesError.message)
-    }
-
     await session.supabase.rpc("log_audit", {
       p_module: "accounts",
       p_entity: "accounts",
@@ -123,7 +88,6 @@ export async function saveAccountWithContacts(
       p_changes: {
         fields: Object.keys(data),
         contacts: rows.length,
-        addresses: addressRows.length,
       },
     })
 
@@ -186,6 +150,13 @@ export async function searchRelationOptions(
   return relationOptions(session, key, fieldName, { search: query, limit })
 }
 
+function revalidateModuleViews(entityModule: string) {
+  const modulePath = `/${entityModule.replace("_", "-")}`
+  revalidatePath(modulePath)
+  // The pipeline board lives at a dashboard sub-route.
+  if (entityModule === "opportunities") revalidatePath(`${modulePath}/dashboard`)
+}
+
 export async function saveEntityAction(
   key: string,
   id: string | null,
@@ -195,7 +166,7 @@ export async function saveEntityAction(
   const result = await saveEntity(session, key, id, values)
   if (result.ok) {
     const entityModule = getEntity(key)?.module
-    if (entityModule) revalidatePath(`/${entityModule.replace("_", "-")}`)
+    if (entityModule) revalidateModuleViews(entityModule)
   }
   return result
 }
@@ -205,7 +176,7 @@ export async function deleteEntityAction(key: string, id: string) {
   const result = await removeEntity(session, key, id)
   if (result.ok) {
     const entityModule = getEntity(key)?.module
-    if (entityModule) revalidatePath(`/${entityModule.replace("_", "-")}`)
+    if (entityModule) revalidateModuleViews(entityModule)
   }
   return result
 }

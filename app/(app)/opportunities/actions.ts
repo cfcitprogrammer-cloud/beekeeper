@@ -18,7 +18,7 @@ export async function moveOpportunity(id: string, stageId: string) {
       .eq("org_id", session.profile.org_id ?? "")
       .maybeSingle(),
     session.supabase
-      .from("pipeline_stages")
+      .from("opportunity_stages")
       .select("id")
       .eq("id", stageId)
       .eq("org_id", session.profile.org_id ?? "")
@@ -43,5 +43,6 @@ export async function moveOpportunity(id: string, stageId: string) {
   })
 
   revalidatePath("/opportunities")
+  revalidatePath("/opportunities/dashboard")
   return { ok: true }
 }

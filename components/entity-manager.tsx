@@ -126,6 +126,10 @@ function initials(value: string) {
 
 function columnLabel(config: EntityConfig, column: string, field?: FieldDef) {
   if (column === "full_name" && config.key === "employees") return "Full Name"
+  if (column === "contact_number" && config.key === "accounts") return "Contact Number"
+  if (config.key === "cash_advances" && (column === "department" || column === "position")) {
+    return column === "department" ? "Department" : "Position"
+  }
   return fieldDisplayLabel(field) || column
 }
 
@@ -144,6 +148,7 @@ function cellValue(
   }
 
   const raw = row[column]
+  if (field?.type === "file") return raw ? String(raw).split("/").pop() || "—" : "—"
   if (field?.type === "relation") return row.__labels?.[column] ?? "—"
   if (
     column.endsWith("_id") &&

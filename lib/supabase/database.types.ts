@@ -334,17 +334,32 @@ export type Database = {
       name: string
       legal_name: string | null
       tax_id: string | null
-      account_type: string | null
       owner_id: string | null
       price_list_id: string | null
       payment_term_days: number
       credit_limit: number
-      billing_address: Json | null
-      shipping_address: Json | null
       status: string
       created_at: string
       updated_at: string
       account_type_id: string | null
+      source_id: string | null
+      parent_account_id: string | null
+      account_site: string | null
+      website: string | null
+      is_partner: boolean | null
+      rating: string | null
+      industry: string | null
+      number_of_employees: number | null
+      ownership: string | null
+      description: string | null
+      billing_country: string | null
+      billing_city: string | null
+      billing_region: string | null
+      billing_zip: string | null
+      shipping_country: string | null
+      shipping_city: string | null
+      shipping_region: string | null
+      shipping_zip: string | null
     }>
     contacts: Table<{
       id: string
@@ -394,30 +409,22 @@ export type Database = {
       remarks: string | null
       source_id: string | null
     }>
-    pipeline_stages: Table<{
-      id: string
-      org_id: string
-      name: string
-      sort_order: number
-      probability: number
-      is_won: boolean
-      is_lost: boolean
-      created_at: string
-      updated_at: string
-    }>
     opportunities: Table<{
       id: string
       org_id: string
       account_id: string
-      lead_id: string | null
-      name: string
+      opportunity_name: string
       stage_id: string
       amount: number
-      expected_close: string | null
+      close_date: string | null
       owner_id: string | null
       lost_reason: string | null
       created_at: string
       updated_at: string
+      email: string | null
+      quantity: number | null
+      source_id: string | null
+      description: string | null
     }>
     activities: Table<{
       id: string
@@ -1167,6 +1174,78 @@ export type Database = {
       description: string | null
       sort_order: number
       status: string
+      created_at: string
+      updated_at: string
+    }>
+    account_sources: Table<{
+      id: string
+      org_id: string
+      code: string
+      name: string
+      description: string | null
+      sort_order: number
+      status: string
+      created_at: string
+      updated_at: string
+    }>
+    cash_advances: Table<{
+      id: string
+      org_id: string
+      employee_id: string
+      date_from: string
+      amount: number
+      status: string
+      created_at: string
+      updated_at: string
+      date_to: string | null
+      purpose_id: string | null
+      purpose_other: string | null
+      attachment_path: string | null
+    }>
+    business_development_funds: Table<{
+      id: string
+      org_id: string
+      employee_id: string
+      fund_date: string
+      amount: number
+      purpose: string | null
+      status: string
+      created_at: string
+      updated_at: string
+    }>
+    field_expenses: Table<{
+      id: string
+      org_id: string
+      employee_id: string
+      expense_date: string
+      category_id: string | null
+      visit_id: string | null
+      amount: number
+      description: string | null
+      receipt_url: string | null
+      status: string
+      created_at: string
+      updated_at: string
+    }>
+    cash_advance_purposes: Table<{
+      id: string
+      org_id: string
+      code: string
+      name: string
+      description: string | null
+      sort_order: number
+      status: string
+      created_at: string
+      updated_at: string
+    }>
+    opportunity_stages: Table<{
+      id: string
+      org_id: string
+      name: string
+      sort_order: number
+      probability: number
+      is_won: boolean
+      is_lost: boolean
       created_at: string
       updated_at: string
     }>
